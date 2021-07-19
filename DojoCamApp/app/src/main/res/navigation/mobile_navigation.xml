@@ -22,4 +22,9 @@
         android:name="com.pinneapple.dojocam_app.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/perfil"
+        android:name="com.pinneapple.dojocam_app.Perfil"
+        android:label="fragment_perfil"
+        tools:layout="@layout/fragment_perfil" />
 </navigation>
