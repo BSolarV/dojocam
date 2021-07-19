@@ -63,7 +63,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="95dp"
                             android:gravity="center"
-                            android:text="Patada Aérea"
+                            android:text="Patada Abdomen"
                             android:textSize="22sp" />
 
                         <TextView

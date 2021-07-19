@@ -65,6 +65,36 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         fis_img.setOnClickListener((View.OnClickListener) this);
 
 
+        //Esto manda al fragment de exercise detail
+        TextView one = (TextView) getView().findViewById(R.id.textView6);
+        TextView two = (TextView) getView().findViewById(R.id.textView7);
+        ImageView three = (ImageView) getView().findViewById(R.id.imageView6);
+
+        one.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.exerciseDetail);
+
+            }
+        });
+        two.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.exerciseDetail);
+
+            }
+        });
+        three.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.exerciseDetail);
+
+            }
+        });
+
+
+
+
     }
     @Override
     public void onClick(View view) {
