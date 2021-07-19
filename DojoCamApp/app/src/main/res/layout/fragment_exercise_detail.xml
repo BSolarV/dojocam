@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="47dp"
             android:gravity="center"
-            android:text="Ejercicio"
+            android:text="Patada Abdomen"
             android:textSize="22sp" />
 
         <LinearLayout
