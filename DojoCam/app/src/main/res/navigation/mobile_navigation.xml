@@ -8,5 +8,32 @@
         android:id="@+id/dashboard"
         android:name="com.pinneapple.dojocam.Dashboard"
         android:label="fragment_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/action_dashboard_to_selectDificulty"
+            app:destination="@id/selectDificulty" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectDificulty"
+        android:name="com.pinneapple.dojocam.SelectDificulty"
+        android:label="fragment_select_dificulty"
+        tools:layout="@layout/fragment_select_dificulty" >
+        <action
+            android:id="@+id/action_selectDificulty_to_ejercicios"
+            app:destination="@id/ejercicios" />
+    </fragment>
+    <fragment
+        android:id="@+id/ejercicios"
+        android:name="com.pinneapple.dojocam.Ejercicios"
+        android:label="fragment_ejercicios"
+        tools:layout="@layout/fragment_ejercicios" >
+        <action
+            android:id="@+id/action_ejercicios_to_exerciseDetail"
+            app:destination="@id/exerciseDetail" />
+    </fragment>
+    <fragment
+        android:id="@+id/exerciseDetail"
+        android:name="com.pinneapple.dojocam.ExerciseDetail"
+        android:label="fragment_exercise_detail"
+        tools:layout="@layout/fragment_exercise_detail" />
 </navigation>
