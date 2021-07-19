@@ -1,11 +1,15 @@
 package com.pinneapple.dojocam_app;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+
+import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,6 +56,12 @@ public class ExerciseDetail extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        if (!Python.isStarted()) {
+            Context context = this.getContext();
+            Python.start(new AndroidPlatform(context));
+        }
+
+        Python py = Python.getInstance();
     }
 
     @Override
