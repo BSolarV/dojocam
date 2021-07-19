@@ -24,17 +24,39 @@
             android:layout_height="299dp"
             android:orientation="horizontal">
 
-            <RelativeLayout
-                android:layout_width="209dp"
-                android:layout_height="match_parent">
+            <VideoView
+                android:id="@+id/videoView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
 
-            </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="204dp"
+            android:elevation="10dp"
+            android:padding="10dp"
+            android:background="@android:color/white"
+            android:orientation="vertical">
 
-            <RelativeLayout
+            <TextView
+                android:id="@+id/textView9"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="40dp"
+                android:text="Descripción"
+                android:textSize="22sp" />
 
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="match_parent"
+                android:layout_height="86dp"
+                android:text="Con tu pie izquierdo atrás, \n debes levantar tu pierna derecha \n y en conjunto con tu torso apuntar \n una patada al abdomen" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="EMPEZAR" />
         </LinearLayout>
     </LinearLayout>
 
