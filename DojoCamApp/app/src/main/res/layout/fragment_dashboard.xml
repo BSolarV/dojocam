@@ -55,7 +55,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="203dp"
+                        android:layout_height="match_parent"
                         android:orientation="vertical">
 
                         <TextView
@@ -73,6 +73,12 @@
                             android:gravity="center"
                             android:text="Dificultad: Intermedio"
                             android:textSize="17sp" />
+
+                        <Button
+                            android:id="@+id/button2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Practicar" />
                     </LinearLayout>
 
                 </RelativeLayout>

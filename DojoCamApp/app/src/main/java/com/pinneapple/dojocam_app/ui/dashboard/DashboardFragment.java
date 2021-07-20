@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -69,6 +70,17 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         TextView one = (TextView) getView().findViewById(R.id.textView6);
         TextView two = (TextView) getView().findViewById(R.id.textView7);
         ImageView three = (ImageView) getView().findViewById(R.id.imageView6);
+
+        Button btn = (Button) getView().findViewById(R.id.button2);
+
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.exerciseDetail);
+
+            }
+        });
 
         one.setOnClickListener(new View.OnClickListener() {
             @Override

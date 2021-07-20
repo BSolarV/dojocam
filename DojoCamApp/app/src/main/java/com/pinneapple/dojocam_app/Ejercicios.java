@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -74,8 +75,18 @@ public class Ejercicios extends Fragment implements View.OnClickListener {
         TextView pri = (TextView) getView().findViewById(R.id.textView);
         ImageView pri_img = (ImageView) getView().findViewById(R.id.imageView);
 
+        Button btn3 = (Button) getView().findViewById(R.id.button3);
+        Button btn4 = (Button) getView().findViewById(R.id.button4);
+        Button btn5 = (Button) getView().findViewById(R.id.button5);
+
+
         pri.setOnClickListener((View.OnClickListener) this);
         pri_img.setOnClickListener((View.OnClickListener) this);
+        btn3.setOnClickListener((View.OnClickListener) this);
+        btn4.setOnClickListener((View.OnClickListener) this);
+        btn5.setOnClickListener((View.OnClickListener) this);
+
+
     }
     @Override
     public void onClick(View view) {
