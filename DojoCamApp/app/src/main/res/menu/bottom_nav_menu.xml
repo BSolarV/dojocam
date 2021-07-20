@@ -14,11 +14,11 @@
     <item
         android:id="@+id/navigation_notifications"
         android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="Estadísticas" />
+        android:title="@string/title_notifications" />
 
-    <!--<item
+    <item
         android:id="@+id/perfil"
         android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="Perfil" />-->
+        android:title="Perfil" />
 
 </menu>
