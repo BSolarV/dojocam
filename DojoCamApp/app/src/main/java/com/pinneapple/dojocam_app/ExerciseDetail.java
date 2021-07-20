@@ -1,12 +1,15 @@
 package com.pinneapple.dojocam_app;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -66,6 +69,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_exercise_detail, container, false);
     }
 
@@ -74,10 +78,16 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         Button pri = (Button) getView().findViewById(R.id.button);
-
-
         pri.setOnClickListener((View.OnClickListener) this);
 
+        VideoView vid = (VideoView) getView().findViewById(R.id.videoView);
+        String vid_path = "android.resource://" + getContext().getPackageName() +"/" + R.raw.vid;
+        Uri uri = Uri.parse(vid_path);
+        vid.setVideoURI(uri);
+
+        MediaController mediaController = new MediaController(getContext());
+        vid.setMediaController(mediaController);
+        mediaController.setAnchorView(getView());
     }
 
     @Override
