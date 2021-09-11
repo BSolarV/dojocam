@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="47dp"
             android:gravity="center"
-            android:text="Patada Abdomen"
+            android:text="Braceadas Defensivas"
             android:textSize="22sp" />
 
         <LinearLayout
@@ -28,7 +28,8 @@
                 android:id="@+id/videoView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"/>
+
         </LinearLayout>
 
         <LinearLayout
@@ -50,7 +51,8 @@
                 android:id="@+id/textView10"
                 android:layout_width="match_parent"
                 android:layout_height="86dp"
-                android:text="Con tu pie izquierdo atrás, \n debes levantar tu pierna derecha \n y en conjunto con tu torso apuntar \n una patada al abdomen" />
+                android:text="Alternar golpes de brazos, hacia el frente y luego hacia los costados con la intención de bloquear golpes entrantes."
+                android:textSize="16sp" />
 
             <Button
                 android:id="@+id/button"

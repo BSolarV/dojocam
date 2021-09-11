@@ -1,5 +1,6 @@
 package com.pinneapple.dojocam_app;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -60,6 +62,11 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        VideoView videoView = (VideoView) getActivity().findViewById(R.id.videoView);  //casting to VideoView is not Strictly required above API level 26
+        String videoPath = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.braceadas_defensivas1;
+        Uri uri = Uri.parse(videoPath);
+        videoView.setVideoURI(uri); //set the path of the video that we need to use in our VideoView
+        videoView.start();  //start() method of the VideoView class will start the video to play
     }
 
     @Override
