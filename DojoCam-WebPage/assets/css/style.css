@@ -695,6 +695,13 @@ p {
   margin-top: 15px;
 }
 
+.hero_content .hero_subtitle {
+  font-size: 36px;
+  line-height: 85px;
+  color: #fff;
+  margin-top: 15px;
+}
+
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
   .hero_content .hero_title {
     font-size: 44px;
