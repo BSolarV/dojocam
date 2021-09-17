@@ -1433,7 +1433,7 @@ p.form-message.success.form-message.error, p.form-message.error.form-message.err
 }
 
 .footer_social ul li a {
-  font-size: 26px;
+  font-size: 60px;
   color: rgba(255, 255, 255, 0.8);
   transition: all 0.3s ease-out 0s;
 }
