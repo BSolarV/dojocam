@@ -1232,7 +1232,7 @@ p {
 }
 
 .single_testimonial .author_name {
-  font-size: 20px;
+  font-size: 40px;
   font-weight: 600;
   color: #fff;
   margin-top: 25px;
@@ -1245,6 +1245,7 @@ p {
 
 .single_testimonial p {
   color: #fff;
+  font-size: 25px;
   margin-top: 15px;
 }
 
