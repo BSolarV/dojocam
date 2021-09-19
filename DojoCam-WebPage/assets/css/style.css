@@ -146,7 +146,7 @@ p {
   cursor: pointer;
   z-index: 5;
   transition: all 0.4s ease-out 0s;
-  background-color: #E84E4E;
+  background-color: #78568A;
 }
 
 .main-btn:hover {
@@ -169,7 +169,7 @@ p {
 .section_title p {
   margin-top: 15px;
   font-size: 18px;
-  color: #9e9db3;
+  color: #111111;
 }
 
 .section_title.section_title_2 .title,
@@ -251,7 +251,7 @@ p {
   height: 100%;
   border-style: solid;
   /* Spinner Color */
-  border-color: #E84E4E #E84E4E #F9F9F9;
+  border-color: #78568A #78568A #F9F9F9;
   border-radius: 50%;
   border-width: 6px;
 }
@@ -506,13 +506,13 @@ p {
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .navbar-nav .nav-item a.active, .navbar-nav .nav-item a:hover {
-    color: #E84E4E;
+    color: #78568A;
   }
 }
 
 @media (max-width: 767px) {
   .navbar-nav .nav-item a.active, .navbar-nav .nav-item a:hover {
-    color: #E84E4E;
+    color: #78568A;
   }
 }
 
@@ -584,7 +584,7 @@ p {
 
 .navbar-nav .nav-item .sub-menu li a.active, .navbar-nav .nav-item .sub-menu li a:hover {
   padding-left: 25px;
-  color: #E84E4E;
+  color: #78568A;
 }
 
 .navbar-nav .sub-nav-toggler {
@@ -640,11 +640,11 @@ p {
 }
 
 .sticky .navbar-nav .nav-item a::before {
-  background-color: #E84E4E;
+  background-color: #78568A;
 }
 
 .sticky .navbar-nav .nav-item a.active, .sticky .navbar-nav .nav-item a:hover {
-  color: #E84E4E;
+  color: #78568A;
 }
 
 /*===== hero =====*/
@@ -732,7 +732,7 @@ p {
 
 .hero_content .hero_title span {
   display: contents;
-  color: #E84E4E;
+  color: #78568A;
 }
 
 .hero_content p {
@@ -757,7 +757,7 @@ p {
 .single_features i {
   font-size: 60px;
   line-height: 60px;
-  color: #E84E4E;
+  color: #78568A;
   transition: all 0.3s ease-out 0s;
 }
 
@@ -769,7 +769,7 @@ p {
 }
 
 .single_features .features_title {
-  color: #E84E4E;
+  color: #78568A;
   margin-top: 15px;
   font-size: 24px;
   font-weight: 600;
@@ -787,7 +787,7 @@ p {
 }
 
 .single_features:hover i {
-  color: #E84E4E;
+  color: #78568A;
 }
 
 /*===========================
@@ -825,7 +825,7 @@ p {
 .about_image .image_content {
   width: 185px;
   height: 185px;
-  background-color: #E84E4E;
+  background-color: #78568A;
   display: table;
   text-align: center;
   position: relative;
@@ -983,7 +983,7 @@ p {
 
 .single_portfolio .portfolio_content .meta li a:hover {
   background-color: #fff;
-  color: #E84E4E;
+  color: #78568A;
 }
 
 .single_portfolio .portfolio_content .meta li:first-child {
@@ -1062,7 +1062,7 @@ p {
 }
 
 .single_pricing .price {
-  color: #E84E4E;
+  color: #78568A;
   font-size: 44px;
   margin-top: 25px;
   font-weight: 700;
@@ -1086,7 +1086,7 @@ p {
   line-height: 43px;
   text-align: center;
   padding: 0 25px;
-  color: #E84E4E;
+  color: #78568A;
   transition: all 0.3s ease-out 0s;
   margin-top: 30px;
 }
@@ -1096,7 +1096,7 @@ p {
 }
 
 .single_pricing.active {
-  background-color: #E84E4E;
+  background-color: #78568A;
 }
 
 .single_pricing.active .pricing_title {
@@ -1145,7 +1145,7 @@ p {
 }
 
 .single_team .team_content .team_name a:hover {
-  color: #E84E4E;
+  color: #78568A;
 }
 
 .single_team .team_content p {
@@ -1170,7 +1170,7 @@ p {
 }
 
 .single_team .team_content .social li a:hover {
-  color: #E84E4E;
+  color: #78568A;
 }
 
 /*===========================
@@ -1217,7 +1217,7 @@ p {
 }
 
 .testimonial_active_wrapper .tns-nav button.tns-nav-active {
-  background-color: #E84E4E;
+  background-color: #78568A;
 }
 
 .single_testimonial img {
@@ -1274,7 +1274,7 @@ p {
 }
 
 .single_blog .blog_content .blog_title a:hover {
-  color: #E84E4E;
+  color: #78568A;
 }
 
 .single_blog .blog_content p {
@@ -1290,7 +1290,7 @@ p {
 }
 
 .single_blog .blog_content .more:hover {
-  color: #E84E4E;
+  color: #78568A;
 }
 
 .single_blog.blog_2 .blog_content {
@@ -1384,7 +1384,7 @@ p.form-message.success.form-message.error, p.form-message.error.form-message.err
     11.FOOTER css 
 ===========================*/
 .footer_area {
-  background-color: #E84E4E;
+  background-color: #78568A;
   padding-top: 15px;
   padding-bottom: 30px;
 }
@@ -1459,7 +1459,7 @@ p.form-message.success.form-message.error, p.form-message.error.form-message.err
   height: 40px;
   line-height: 40px;
   border-radius: 5px;
-  background-color: #E84E4E;
+  background-color: #78568A;
   text-align: center;
   z-index: 99;
   transition: all 0.3s ease-out 0s;
@@ -1469,5 +1469,5 @@ p.form-message.success.form-message.error, p.form-message.error.form-message.err
 
 .back-to-top:hover {
   color: #fff;
-  background-color: #E84E4E;
+  background-color: #78568A;
 }
