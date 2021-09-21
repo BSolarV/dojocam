@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.pinneapple.dojocam_app.Login.FirstFragment"
+        android:name="com.pinneapple.dojocam_app.Login.LoginFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_login">
 
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.pinneapple.dojocam_app.Login.SecondFragment"
+        android:name="com.pinneapple.dojocam_app.Login.RegisterFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_register"/>
 </navigation>
