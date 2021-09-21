@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Indi Kazka 4F';
+    src: local('Indi Kazka 4F Regular'), local('Indi-Kazka-4F-Regular'),
+        url('IndiKazka4F.woff2') format('woff2'),
+        url('IndiKazka4F.woff') format('woff'),
+        url('IndiKazka4F.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+  }
