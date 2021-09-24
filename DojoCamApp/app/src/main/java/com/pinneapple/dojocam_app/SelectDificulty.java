@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
  * Use the {@link SelectDificulty#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SelectDificulty extends Fragment implements View.OnClickListener{
+public class SelectDificulty extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -79,17 +79,55 @@ public class SelectDificulty extends Fragment implements View.OnClickListener{
         TextView thi = (TextView) getView().findViewById(R.id.textView3);
         ImageView thi_img = (ImageView) getView().findViewById(R.id.imageView3);
 
-        pri.setOnClickListener((View.OnClickListener) this);
-        pri_img.setOnClickListener((View.OnClickListener) this);
-        sec.setOnClickListener((View.OnClickListener) this);
-        sec_img.setOnClickListener((View.OnClickListener) this);
-        thi.setOnClickListener((View.OnClickListener) this);
-        thi_img.setOnClickListener((View.OnClickListener) this);
+        pri.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigate(view, "basico");
+            }
+        });
+        pri_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigate(view, "basico");
+            }
+        });
+        sec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigate(view, "intermedio");
+            }
+        });
+        sec_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigate(view, "intermedio");
+            }
+        });
+        thi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigate(view, "avanzado");
+            }
+        });
+        thi_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigate(view, "avanzado");
+            }
+        });
     }
 
+    /*
     @Override
     public void onClick(View view) {
 
-        Navigation.findNavController(view).navigate(R.id.ejercicios);
+    }*/
+
+    public void navigate(View view, String difficulty) {
+        Bundle bundle = new Bundle();
+
+        bundle.putString("difficulty" , difficulty);
+
+        Navigation.findNavController(view).navigate(R.id.ejercicios, bundle);
     }
 }

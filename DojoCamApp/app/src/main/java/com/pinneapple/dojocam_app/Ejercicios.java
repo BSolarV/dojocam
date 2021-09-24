@@ -31,6 +31,8 @@ public class Ejercicios extends Fragment implements View.OnClickListener {
     private String mParam1;
     private String mParam2;
 
+
+    private String difficulty;
     public Ejercicios() {
         // Required empty public constructor
     }
@@ -72,6 +74,8 @@ public class Ejercicios extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        difficulty = getArguments().getString("difficulty");
+
         TextView pri = (TextView) getView().findViewById(R.id.textView);
         ImageView pri_img = (ImageView) getView().findViewById(R.id.imageView);
 
@@ -90,6 +94,10 @@ public class Ejercicios extends Fragment implements View.OnClickListener {
     }
     @Override
     public void onClick(View view) {
+        Bundle bundle = new Bundle();
+
+        bundle.putString("difficulty" , difficulty);
+        bundle.putString("name", "Test Video");
 
         Navigation.findNavController(view).navigate(R.id.exerciseDetail);
     }
