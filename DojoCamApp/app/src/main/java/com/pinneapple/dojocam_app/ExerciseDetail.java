@@ -77,7 +77,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        /*VideoView videoView = (VideoView) getActivity().findViewById(R.id.videoView);  //casting to VideoView is not Strictly required above API level 26
+        /*videoView = (VideoView) getActivity().findViewById(R.id.videoView);  //casting to VideoView is not Strictly required above API level 26
         String videoPath = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.braceadas_defensivas1;
         Uri uri = Uri.parse(videoPath);
         videoView.setVideoURI(uri); //set the path of the video that we need to use in our VideoView
@@ -104,10 +104,13 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
         pri.setOnClickListener((View.OnClickListener) this);
 
         vid = (VideoView) getView().findViewById(R.id.videoView);
-        String vid_path = "android.resource://" + getContext().getPackageName() +"/" + R.raw.braceadas_defensivas1;
+        /*String vid_path = "android.resource://" + getContext().getPackageName() +"/" + R.raw.braceadas_defensivas1;
         Uri uri = Uri.parse(vid_path);
         vid.setVideoURI(uri);
 
+        MediaController mediaController = new MediaController(getContext());
+        vid.setMediaController(mediaController);
+        mediaController.setAnchorView(getView());*/
         MediaController mediaController = new MediaController(getContext());
         vid.setMediaController(mediaController);
         mediaController.setAnchorView(getView());
@@ -132,6 +135,12 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
             title.setText(command.get("nombre").toString());
             desc.setText(command.get("descripcion").toString());
             //vid.setText(command.get("authorEmail").toString());
+            String vid_path = command.get("vid_path").toString();
+            //String vid_path = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.braceadas_defensivas1;
+            Uri uri = Uri.parse(vid_path);
+            vid.setVideoURI(uri);
+
+
         });
     }
 }
