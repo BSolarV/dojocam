@@ -72,7 +72,7 @@
                 android:autofillHints="@string/confirmPassword" />
 
             <Button
-                android:id="@+id/LoginRegister"
+                android:id="@+id/RegisterSubmit"
                 android:backgroundTint="@color/colorPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -69,34 +69,14 @@
                 android:inputType="textPersonName"
                 android:hint="@string/email" />
 
-            <EditText
-                android:id="@+id/RegisterPass"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:layout_marginVertical="5dp"
-                android:layout_marginHorizontal="30dp"
-                android:inputType="textPersonName"
-                android:hint="@string/password" />
-
-            <EditText
-                android:id="@+id/RegisterConfirmPass"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:layout_marginVertical="5dp"
-                android:layout_marginHorizontal="30dp"
-                android:inputType="textPersonName"
-                android:hint="@string/confirmPassword" />
-
             <Button
-                android:id="@+id/REgisterSubmit"
+                android:id="@+id/ProfileLogoutButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/colorPrimary"
+                android:backgroundTint="@color/danger"
                 android:layout_marginTop="30dp"
                 android:layout_marginHorizontal="50dp"
-                android:text="@string/register" />
+                android:text="@string/logout" />
         </LinearLayout>
     </ScrollView>
 </FrameLayout>

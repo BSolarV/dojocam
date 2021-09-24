@@ -4,20 +4,23 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/light_bg</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSecondary">@color/dark_bg</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
-        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowBackground">@color/light_bg</item>
+        <item name="background">@color/light_bg</item>
     </style>
 
     <style name="Theme.DojoCamApp.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/light_bg</item>
+        <item name="background">@color/light_bg</item>
     </style>
 
     <style name="Theme.DojoCamApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -25,7 +28,7 @@
     <style name="Theme.DojoCamApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="SplashTheme" parent="Theme.DojoCamApp.NoActionBar">
-        <item name="android:windowBackground">@drawable/splashscreen</item>
+        <item name="background">@drawable/splashscreen</item>
     </style>
 
 </resources>
