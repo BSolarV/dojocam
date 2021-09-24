@@ -50,8 +50,13 @@ public class RegisterFragment extends Fragment {
                                         binding.RegisterPassword.getText().toString())
                                 .addOnCompleteListener(resultTask -> {
                                     if( resultTask.isSuccessful() ){
+                                        /*
                                         NavHostFragment.findNavController(RegisterFragment.this)
                                                 .navigate(R.id.action_LoginFragment_to_RegisterFragment);
+                                        */
+                                        Intent mainActivity = new Intent(getContext(), MainActivity.class);
+                                        startActivity(mainActivity);
+                                        getActivity().finish();
                                     }
                                 });
                     }
