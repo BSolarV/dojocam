@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Desktop/2021-2/App/dojocam/dojocam/DojoCamApp/app/src/main/res/drawable-xxxhdpi/rounded_edge.xml" value="0.20729166666666668" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/dojocam/DojoCamApp/app/src/main/res/layout/activity_main_ml.xml" value="0.36666666666666664" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/dojocam/DojoCamApp/app/src/main/res/layout/bottom_sheet_layout.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/cajal/Documents/USM/SEMESTRE 9-10/II/FDSW/dojocam/DojoCamApp/app/src/main/res/layout/fragment_exercise_detail.xml" value="0.176" />
       </map>
     </option>

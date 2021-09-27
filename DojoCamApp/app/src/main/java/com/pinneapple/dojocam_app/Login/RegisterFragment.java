@@ -2,22 +2,16 @@ package com.pinneapple.dojocam_app.Login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
-import com.pinneapple.dojocam_app.MainActivity;
-import com.pinneapple.dojocam_app.R;
+import com.pinneapple.dojocam_app.MainActivity_ml;
 import com.pinneapple.dojocam_app.databinding.FragmentRegisterBinding;
-
-import org.jetbrains.annotations.NotNull;
 
 public class RegisterFragment extends Fragment {
 
@@ -54,7 +48,7 @@ public class RegisterFragment extends Fragment {
                                         NavHostFragment.findNavController(RegisterFragment.this)
                                                 .navigate(R.id.action_LoginFragment_to_RegisterFragment);
                                         */
-                                        Intent mainActivity = new Intent(getContext(), MainActivity.class);
+                                        Intent mainActivity = new Intent(getContext(), MainActivity_ml.class);
                                         startActivity(mainActivity);
                                         getActivity().finish();
                                     }

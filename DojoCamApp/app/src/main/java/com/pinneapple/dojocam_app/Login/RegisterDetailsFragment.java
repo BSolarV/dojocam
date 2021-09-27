@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.pinneapple.dojocam_app.MainActivity;
+import com.pinneapple.dojocam_app.MainActivity_ml;
 import com.pinneapple.dojocam_app.R;
 
 /**
@@ -58,7 +58,7 @@ public class RegisterDetailsFragment extends Fragment {
     }
 
     private void toMainActivity(){
-        Intent mainActivity = new Intent(getContext(), MainActivity.class);
+        Intent mainActivity = new Intent(getContext(), MainActivity_ml.class);
         startActivity(mainActivity);
         getActivity().finish();
     }
