@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.pinneapple.dojocam_app.MainActivity_ml;
+import com.pinneapple.dojocam_app.MainActivity;
 import com.pinneapple.dojocam_app.R;
 import com.pinneapple.dojocam_app.databinding.FragmentLoginBinding;
 
@@ -44,7 +44,7 @@ public class LoginFragment extends Fragment {
                             binding.LoginPassword.getText().toString())
                         .addOnCompleteListener(resultTask -> {
                             if( resultTask.isSuccessful() ){
-                                Intent mainActivity = new Intent(getContext(), MainActivity_ml.class);
+                                Intent mainActivity = new Intent(getContext(), MainActivity.class);
                                 startActivity(mainActivity);
                                 getActivity().finish();
                             }

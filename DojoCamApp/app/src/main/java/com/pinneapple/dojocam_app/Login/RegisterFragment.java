@@ -10,7 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.pinneapple.dojocam_app.MainActivity_ml;
+import com.pinneapple.dojocam_app.MainActivity;
+import com.pinneapple.dojocam_app.Ml_model;
 import com.pinneapple.dojocam_app.databinding.FragmentRegisterBinding;
 
 public class RegisterFragment extends Fragment {
@@ -48,7 +49,7 @@ public class RegisterFragment extends Fragment {
                                         NavHostFragment.findNavController(RegisterFragment.this)
                                                 .navigate(R.id.action_LoginFragment_to_RegisterFragment);
                                         */
-                                        Intent mainActivity = new Intent(getContext(), MainActivity_ml.class);
+                                        Intent mainActivity = new Intent(getContext(), MainActivity.class);
                                         startActivity(mainActivity);
                                         getActivity().finish();
                                     }

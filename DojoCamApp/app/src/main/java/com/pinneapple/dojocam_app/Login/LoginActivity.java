@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.pinneapple.dojocam_app.MainActivity_ml;
+import com.pinneapple.dojocam_app.MainActivity;
 import com.pinneapple.dojocam_app.R;
 import com.pinneapple.dojocam_app.databinding.ActivityLoginBinding;
 
@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     private void checkAuth(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if( user != null ){
-            Intent mainActivity = new Intent(this, MainActivity_ml.class);
+            Intent mainActivity = new Intent(this, MainActivity.class);
             startActivity(mainActivity);
             finish();
         }
