@@ -1,26 +1,40 @@
 package com.pinneapple.dojocam_app;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.pinneapple.dojocam_app.objects.VideoInfo;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link Ejercicios#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Ejercicios extends Fragment implements View.OnClickListener {
+public class Ejercicios extends Fragment implements AdapterView.OnItemClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,6 +44,14 @@ public class Ejercicios extends Fragment implements View.OnClickListener {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    TextView title ,desc;
+
+    private List<String> vid_list = new ArrayList();
+    private List<String> id_list = new ArrayList();
+    private ArrayAdapter adapter;
+
 
 
     private String difficulty;
@@ -76,7 +98,7 @@ public class Ejercicios extends Fragment implements View.OnClickListener {
 
         difficulty = getArguments().getString("difficulty");
 
-        TextView pri = (TextView) getView().findViewById(R.id.textView);
+        /*TextView pri = (TextView) getView().findViewById(R.id.textView);
         ImageView pri_img = (ImageView) getView().findViewById(R.id.imageView);
 
         Button btn3 = (Button) getView().findViewById(R.id.button3);
@@ -88,17 +110,61 @@ public class Ejercicios extends Fragment implements View.OnClickListener {
         pri_img.setOnClickListener((View.OnClickListener) this);
         btn3.setOnClickListener((View.OnClickListener) this);
         btn4.setOnClickListener((View.OnClickListener) this);
-        btn5.setOnClickListener((View.OnClickListener) this);
+        btn5.setOnClickListener((View.OnClickListener) this);*/
+
+        adapter = new ArrayAdapter(getContext(), R.layout.list_vid, vid_list );
+        ListView lv = (ListView) getView().findViewById(R.id.vid_list);
+        lv.setAdapter(adapter);
+        lv.setOnItemClickListener(this);
 
 
     }
     @Override
-    public void onClick(View view) {
+    public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
         Bundle bundle = new Bundle();
 
         bundle.putString("difficulty" , difficulty);
+        bundle.putString("videoId",  id_list.get(pos));
         bundle.putString("name", "Test Video");
 
-        Navigation.findNavController(view).navigate(R.id.exerciseDetail);
+        Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
+    }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
+
+        vid_list.clear();
+        id_list.clear();
+
+        // Get post and answers from database
+
+        Task<QuerySnapshot> data = db.collection("ejercicios").whereEqualTo("dificultad", difficulty).get();
+        data.addOnSuccessListener(command -> {
+            List<VideoInfo> docList = command.toObjects(VideoInfo.class);
+
+            if ( data.isComplete() ){
+                int i = 0;
+                for (VideoInfo videoInfo:
+                        docList) {
+
+
+                    String aux =videoInfo.getNombre();
+                    vid_list.add(aux);
+                    id_list.add(command.getDocuments().get(i).getId());
+                    i++;
+                }
+                //Toast.makeText(getContext(), "Wena", Toast.LENGTH_LONG).show();
+                adapter.notifyDataSetChanged();
+                //loadingDialog.dismissDialog();
+            }
+
+            //title.setText(command.get("nombre").toString());
+            //desc.setText(command.get("descripcion").toString());
+
+
+
+        });
     }
 }

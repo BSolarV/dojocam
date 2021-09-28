@@ -47,6 +47,8 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     TextView title ,desc;
     VideoView vid;
+    private String videoId;
+
 
     public ExerciseDetail() {
         // Required empty public constructor
@@ -96,6 +98,9 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        videoId = getArguments().getString("videoId");
+
+
         title = (TextView) getView().findViewById(R.id.excersiceTitle);
         desc = (TextView)  getView().findViewById(R.id.textView10);
 
@@ -130,7 +135,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
 
         // Get post and answers from database
 
-        Task<DocumentSnapshot> data = db.collection("ejercicios").document("5W2MvSmfZ0plWKClL6sE").get();
+        Task<DocumentSnapshot> data = db.collection("ejercicios").document(videoId).get();
         data.addOnSuccessListener(command -> {
             title.setText(command.get("nombre").toString());
             desc.setText(command.get("descripcion").toString());
