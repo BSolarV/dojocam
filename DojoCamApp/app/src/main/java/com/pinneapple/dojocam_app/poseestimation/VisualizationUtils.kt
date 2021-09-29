@@ -17,12 +17,12 @@ object VisualizationUtils {
 
     /** Pair of keypoints to draw lines between.  */
     private val bodyJoints = listOf(
-        Pair(BodyPart.NOSE, BodyPart.LEFT_EYE),
-        Pair(BodyPart.NOSE, BodyPart.RIGHT_EYE),
-        Pair(BodyPart.LEFT_EYE, BodyPart.LEFT_EAR),
-        Pair(BodyPart.RIGHT_EYE, BodyPart.RIGHT_EAR),
-        Pair(BodyPart.NOSE, BodyPart.LEFT_SHOULDER),
-        Pair(BodyPart.NOSE, BodyPart.RIGHT_SHOULDER),
+        //Pair(BodyPart.NOSE, BodyPart.LEFT_EYE),
+        //Pair(BodyPart.NOSE, BodyPart.RIGHT_EYE),
+        //Pair(BodyPart.LEFT_EYE, BodyPart.LEFT_EAR),
+        //Pair(BodyPart.RIGHT_EYE, BodyPart.RIGHT_EAR),
+        //Pair(BodyPart.NOSE, BodyPart.LEFT_SHOULDER),
+        //Pair(BodyPart.NOSE, BodyPart.RIGHT_SHOULDER),
         Pair(BodyPart.LEFT_SHOULDER, BodyPart.LEFT_ELBOW),
         Pair(BodyPart.LEFT_ELBOW, BodyPart.LEFT_WRIST),
         Pair(BodyPart.RIGHT_SHOULDER, BodyPart.RIGHT_ELBOW),
@@ -41,12 +41,12 @@ object VisualizationUtils {
     fun drawBodyKeypoints(input: Bitmap, person: Person): Bitmap {
         val paintCircle = Paint().apply {
             strokeWidth = CIRCLE_RADIUS
-            color = Color.BLACK
+            color = Color.TRANSPARENT
             style = Paint.Style.FILL
         }
         val paintLine = Paint().apply {
             strokeWidth = LINE_WIDTH
-            color = Color.RED
+            color = Color.MAGENTA
             style = Paint.Style.FILL
         }
 
