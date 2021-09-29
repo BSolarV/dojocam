@@ -51,6 +51,7 @@ public class Ejercicios extends Fragment implements AdapterView.OnItemClickListe
     private List<String> vid_list = new ArrayList();
     private List<String> id_list = new ArrayList();
     private ArrayAdapter adapter;
+    private LoadingDialog loadingDialog = new LoadingDialog(this);
 
 
 
@@ -117,6 +118,9 @@ public class Ejercicios extends Fragment implements AdapterView.OnItemClickListe
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(this);
 
+        loadingDialog.startLoadingDialog();
+
+
 
     }
     @Override
@@ -157,7 +161,7 @@ public class Ejercicios extends Fragment implements AdapterView.OnItemClickListe
                 }
                 //Toast.makeText(getContext(), "Wena", Toast.LENGTH_LONG).show();
                 adapter.notifyDataSetChanged();
-                //loadingDialog.dismissDialog();
+                loadingDialog.dismissDialog();
             }
 
             //title.setText(command.get("nombre").toString());

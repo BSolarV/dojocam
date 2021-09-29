@@ -49,6 +49,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
     TextView title ,desc;
     VideoView vid;
     private String videoId;
+    private LoadingDialog loadingDialog = new LoadingDialog(this);
 
 
     public ExerciseDetail() {
@@ -120,6 +121,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
         MediaController mediaController = new MediaController(getContext());
         vid.setMediaController(mediaController);
         mediaController.setAnchorView(getView());
+        loadingDialog.startLoadingDialog();
     }
 
     @Override
@@ -148,6 +150,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
             //String vid_path = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.braceadas_defensivas1;
             Uri uri = Uri.parse(vid_path);
             vid.setVideoURI(uri);
+            loadingDialog.dismissDialog();
 
 
         });
