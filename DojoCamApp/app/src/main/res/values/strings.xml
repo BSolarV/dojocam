@@ -18,13 +18,26 @@
     <string name="lastnameInput">Apellido</string>
     <string name="confirmPassword">Repetir Contraseña</string>
 
+    <string name="RegisterDefaultDate">--/--/--</string>
+    <string name="RegisterBirthDateLabel">Nacimiento:</string>
+    <string name="RegisterHeightLabel">Altura:</string>
+    <string name="DefaultNumber">--</string>
+    <string name="RetgisterWeightLabel">Peso:</string>
+    <string name="SexLabel">Sexo:</string>
+    <string-array name="sexOptions">
+        <item>Femenino</item>
+        <item>Masculino</item>
+        <item>Omitir</item>
+    </string-array>
+
     <!-- profile Strings -->
     <string name="logout">Cerrar Sesión</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_login">LoginActivity</string>
-    <!-- Strings used for fragments for navigation -->
+    <
+    !-- Strings used for fragments for navigation -->
     <string name="login_label">Inicio Sesión</string>
     <string name="register_label">Registro</string>
     <string name="register_detail_label">Perfil</string>
@@ -47,6 +60,9 @@
     <string name="tfe_pe_tv_fps">Fps: %d</string>
     <string name="tfe_pe_tv_device">Device: </string>
     <string name="tfe_pe_tv_classification_value">- %s</string>
+    <string name="RegisterSaveLabel">Guardar</string>
+
+
     <string-array name="tfe_pe_models_array">
         <item>Movenet Lightning</item>
         <item>Movenet Thunder</item>
