@@ -94,13 +94,13 @@ public class SelectDificulty extends Fragment {
         sec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navigate(view, "intermedio");
+                navigate(view, "medio");
             }
         });
         sec_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navigate(view, "intermedio");
+                navigate(view, "medio");
             }
         });
         thi.setOnClickListener(new View.OnClickListener() {
