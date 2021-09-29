@@ -14,15 +14,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 import com.pinneapple.dojocam_app.MainActivity;
 //import com.pinneapple.dojocam_app.Ml_model;
 import com.pinneapple.dojocam_app.R;
 import com.pinneapple.dojocam_app.dialogs.DatePickerFragment;
+import com.pinneapple.dojocam_app.dialogs.HeightPickerFragment;
+import com.pinneapple.dojocam_app.dialogs.WeightPickerFragment;
+import com.pinneapple.dojocam_app.objets.UserData;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +46,7 @@ import java.util.Objects;
  * Use the {@link RegisterDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RegisterDetailsFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+public class RegisterDetailsFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,6 +56,8 @@ public class RegisterDetailsFragment extends DialogFragment implements DatePicke
     private String mParam1;
 
     // Attributes
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     private EditText name;
     private EditText lastname;
     private Spinner sex;
@@ -55,6 +65,7 @@ public class RegisterDetailsFragment extends DialogFragment implements DatePicke
     private Date birthDateValue;
     private TextView height;
     private TextView weight;
+    private Button save;
 
     public RegisterDetailsFragment() {
         // Required empty public constructor
@@ -82,6 +93,12 @@ public class RegisterDetailsFragment extends DialogFragment implements DatePicke
         birthdate = view.findViewById( R.id.RegisterBirthDate );
         height = view.findViewById( R.id.RegisterHeight );
         weight = view.findViewById( R.id.RegisterWeight );
+        save = view.findViewById(R.id.RegisterDetailSubmit);
+
+        birthdate.setText(R.string.RegisterDefaultDate);
+        height.setText(R.string.DefaultNumber);
+        weight.setText(R.string.DefaultNumber);
+
 
         // Sex Spinner
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -100,8 +117,41 @@ public class RegisterDetailsFragment extends DialogFragment implements DatePicke
             }
         });
 
+        //heightPickerSetup
+        height.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showHeightPickerDialog(v);
+            }
+        });
 
+        //weightPickerSetup
+        weight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showWeightPickerDialog(v);
+            }
+        });
 
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveInformation();
+                toMainActivity();
+            }
+        });
+
+    }
+
+    private void saveInformation() {
+        UserData user = new UserData(
+                name.getText().toString(),
+                lastname.getText().toString(),
+                sex.getSelectedItem().toString(),
+                birthDateValue,
+                Integer.valueOf(height.getText().toString()),
+                Integer.valueOf(weight.getText().toString()));
+        db.collection("Users").document( FirebaseAuth.getInstance().getCurrentUser().getEmail()).set(user);
     }
 
     @Override
@@ -111,42 +161,48 @@ public class RegisterDetailsFragment extends DialogFragment implements DatePicke
         return inflater.inflate(R.layout.fragment_register_details, container, false);
     }
 
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the current date as the default date in the picker
-        final Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
 
-        // Create a new instance of DatePickerDialog and return it
-        return new DatePickerDialog(getActivity(), this, year, month, day);
+    public void showDatePickerDialog(View v) {
+        DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                TextView birthdate = requireView().findViewById( R.id.RegisterBirthDate );
+                Calendar calendar = new GregorianCalendar(year, month, dayOfMonth);
+                DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                birthdate.setText( formatter.format(calendar.getTime()) );
+                birthDateValue = calendar.getTime();
+            }
+        });
+        newFragment.show(requireActivity().getSupportFragmentManager(), String.valueOf(R.string.RegisterBirthDateLabel));
+        birthDateValue = newFragment.getBirthDateValue();
     }
 
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        Calendar calendar = new GregorianCalendar(year, month, dayOfMonth);
-        DateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
-        birthdate.setText( formatter.format(calendar.getTime()) );
-        birthDateValue = calendar.getTime();
+    public void showHeightPickerDialog(View v) {
+        DialogFragment newFragment = HeightPickerFragment.newInstance(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                TextView height = requireView().findViewById(R.id.RegisterHeight);
+                height.setText(String.valueOf(newVal));
+            }
+        });
+        newFragment.show(requireActivity().getSupportFragmentManager(), String.valueOf(R.string.RegisterHeightLabel));
     }
+
+    public void showWeightPickerDialog(View v) {
+        DialogFragment newFragment = WeightPickerFragment.newInstance(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                TextView weight = requireView().findViewById(R.id.RegisterWeight);
+                weight.setText(String.valueOf(newVal));
+            }
+        });
+        newFragment.show(requireActivity().getSupportFragmentManager(), String.valueOf(R.string.RetgisterWeightLabel));
+    }
+
 
     private void toMainActivity(){
         Intent mainActivity = new Intent(getContext(), MainActivity.class);
         startActivity(mainActivity);
         getActivity().finish();
     }
-
-    public void showDatePickerDialog(View v) {
-        DatePickerFragment newFragment = new DatePickerFragment();
-        newFragment.show(requireActivity().getSupportFragmentManager(), String.valueOf(R.string.RegisterBirthDateLabel));
-        birthDateValue = newFragment.getBirthDateValue();
-    }
-
-    public void showHeightPickerDialog(View v) {
-        DatePickerFragment newFragment = new DatePickerFragment();
-        newFragment.show(requireActivity().getSupportFragmentManager(), String.valueOf(R.string.RegisterBirthDateLabel));
-        birthDateValue = newFragment.getBirthDateValue();
-    }
-
 }

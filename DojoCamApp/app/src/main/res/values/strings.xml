@@ -11,6 +11,12 @@
     <string name="login">Iniciar Sesión</string>
     <string name="noAccount">¿No tienes cuenta?</string>
     <string name="register">Registrarse</string>
+    <string name="LoginForgottenLabel">¿Ha olvidado su contraseña?</string>
+    <string name="LoginForgotten">¡Presiona Aquí!</string>
+    <string name="LoginEmailRequest">Ingrese su Email</string>
+    <string name="LoginEmailRequestHint">abc@company.com</string>
+    <string name="LoginEmailNotify">Se ha enviado un link a su correo para restablecer su contraseña.</string>
+
 
     <!-- register Strings -->
     <string name="imagenRegister">register image</string>
@@ -29,6 +35,14 @@
         <item>Masculino</item>
         <item>Omitir</item>
     </string-array>
+    <string name="RegisterSaveLabel">Guardar</string>
+
+    <!-- Dialogs -->
+    <string name="heightUnit">cm</string>
+    <string name="weightUnit">kg</string>
+
+    <string name="accept">Aceptar</string>
+    <string name="cancel">Cancelar</string>
 
     <!-- profile Strings -->
     <string name="logout">Cerrar Sesión</string>
@@ -36,7 +50,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_login">LoginActivity</string>
-    <
+
     !-- Strings used for fragments for navigation -->
     <string name="login_label">Inicio Sesión</string>
     <string name="register_label">Registro</string>
@@ -60,7 +74,7 @@
     <string name="tfe_pe_tv_fps">Fps: %d</string>
     <string name="tfe_pe_tv_device">Device: </string>
     <string name="tfe_pe_tv_classification_value">- %s</string>
-    <string name="RegisterSaveLabel">Guardar</string>
+
 
 
     <string-array name="tfe_pe_models_array">

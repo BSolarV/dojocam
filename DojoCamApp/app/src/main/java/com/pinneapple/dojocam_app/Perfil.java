@@ -13,7 +13,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.pinneapple.dojocam_app.Login.LoginActivity;
+import com.pinneapple.dojocam_app.objets.UserData;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,6 +36,10 @@ public class Perfil extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+
+    // Attributes
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public Perfil() {
         // Required empty public constructor
@@ -78,6 +86,10 @@ public class Perfil extends Fragment {
     }
 
     void setUp(){
+        DocumentReference userReference = db.collection("Users").document( FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
+
+        // Logout
         Button logout = (Button) getView().findViewById(R.id.ProfileLogoutButton);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -8,10 +8,12 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.pinneapple.dojocam_app.MainActivity;
 import com.pinneapple.dojocam_app.Ml_model;
+import com.pinneapple.dojocam_app.R;
 import com.pinneapple.dojocam_app.databinding.FragmentRegisterBinding;
 
 public class RegisterFragment extends Fragment {
@@ -45,13 +47,9 @@ public class RegisterFragment extends Fragment {
                                         binding.RegisterPassword.getText().toString())
                                 .addOnCompleteListener(resultTask -> {
                                     if( resultTask.isSuccessful() ){
-                                        /*
+
                                         NavHostFragment.findNavController(RegisterFragment.this)
-                                                .navigate(R.id.action_LoginFragment_to_RegisterFragment);
-                                        */
-                                        Intent mainActivity = new Intent(getContext(), MainActivity.class);
-                                        startActivity(mainActivity);
-                                        getActivity().finish();
+                                                .navigate(R.id.action_RegisterFragment_to_RegisterDetailsFragment);
                                     }
                                 });
                     }
@@ -59,11 +57,4 @@ public class RegisterFragment extends Fragment {
             }
         });
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-
 }

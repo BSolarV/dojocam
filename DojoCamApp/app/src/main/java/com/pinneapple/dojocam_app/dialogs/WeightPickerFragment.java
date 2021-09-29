@@ -1,7 +1,6 @@
 package com.pinneapple.dojocam_app.dialogs;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -15,12 +14,12 @@ import androidx.fragment.app.DialogFragment;
 
 import com.pinneapple.dojocam_app.R;
 
-public class HeightPickerFragment extends DialogFragment{
+public class WeightPickerFragment extends DialogFragment {
 
     private NumberPicker.OnValueChangeListener listener;
 
-    public static HeightPickerFragment newInstance( NumberPicker.OnValueChangeListener listener) {
-        HeightPickerFragment fragment = new HeightPickerFragment();
+    public static WeightPickerFragment newInstance( NumberPicker.OnValueChangeListener listener) {
+        WeightPickerFragment fragment = new WeightPickerFragment();
         fragment.setListener(listener);
         return fragment;
     }
@@ -29,14 +28,13 @@ public class HeightPickerFragment extends DialogFragment{
         this.listener = listener;
     }
 
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         LinearLayout linearLayout = new LinearLayout(requireContext());
         final NumberPicker myNumberPicker = new NumberPicker(requireContext());
-        myNumberPicker.setMinValue(50);
-        myNumberPicker.setMaxValue(300);
+        myNumberPicker.setMinValue(15);
+        myNumberPicker.setMaxValue(500);
         myNumberPicker.setOnValueChangedListener(listener);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(50, 50, 1);
@@ -44,7 +42,7 @@ public class HeightPickerFragment extends DialogFragment{
         numPickerParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
 
         TextView cmLabel = new TextView(requireContext());
-        cmLabel.setText(R.string.heightUnit);
+        cmLabel.setText(R.string.weightUnit);
 
         linearLayout.setLayoutParams(params);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -75,7 +73,5 @@ public class HeightPickerFragment extends DialogFragment{
         // Create the AlertDialog object and return it
         return builder.create();
     }
-
-    private void saveData(){}
 
 }

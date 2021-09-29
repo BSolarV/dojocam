@@ -70,6 +70,22 @@
                 android:text="@string/login"
                 tools:targetApi="lollipop" />
 
+            <TextView
+                android:id="@+id/LoginForgottenLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textSize="14sp"
+                android:text="@string/LoginForgottenLabel" />
+            <TextView
+                android:id="@+id/LoginForgotten"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:text="@string/LoginForgotten" />
+
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="20dp" />

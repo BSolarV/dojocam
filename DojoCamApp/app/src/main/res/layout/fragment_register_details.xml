@@ -107,8 +107,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:ems="10"
-                    android:textSize="20sp"
-                    android:text="@string/RegisterDefaultDate" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -134,8 +133,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:ems="10"
-                    android:textSize="20sp"
-                    android:text="@string/DefaultNumber" />
+                    android:textSize="20sp" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -160,11 +158,11 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:ems="10"
-                    android:textSize="20sp"
-                    android:text="@string/DefaultNumber" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <Button
+                android:id="@+id/RegisterDetailSubmit"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="50dp"

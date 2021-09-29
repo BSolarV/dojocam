@@ -2,7 +2,10 @@ package com.pinneapple.dojocam_app.Login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -10,6 +13,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.pinneapple.dojocam_app.MainActivity;
 import com.pinneapple.dojocam_app.R;
 import com.pinneapple.dojocam_app.databinding.ActivityLoginBinding;
+
+import org.jetbrains.annotations.NotNull;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -42,4 +47,6 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
     }
+
+
 }
