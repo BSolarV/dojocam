@@ -1,5 +1,6 @@
 package com.pinneapple.dojocam_app;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -123,8 +124,11 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
+        Intent mainActivity = new Intent(getContext(), Ml_model.class);
+        startActivity(mainActivity);
+        getActivity().finish();
 
-        Navigation.findNavController(view).navigate(R.id.practice);
+        //Navigation.findNavController(view).navigate(R.id.practice);
     }
 
     @Override
