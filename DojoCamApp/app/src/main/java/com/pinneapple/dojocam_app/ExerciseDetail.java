@@ -1,6 +1,7 @@
 package com.pinneapple.dojocam_app;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -50,6 +53,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
     VideoView vid;
     private String videoId;
     private LoadingDialog loadingDialog = new LoadingDialog(this);
+    private ProgressBar progressBar;
 
 
     public ExerciseDetail() {
@@ -118,9 +122,36 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
         MediaController mediaController = new MediaController(getContext());
         vid.setMediaController(mediaController);
         mediaController.setAnchorView(getView());*/
+
+        //Progress Bar
+
+
+        progressBar = (ProgressBar) getView().findViewById(R.id.progressbar);
+        progressBar.bringToFront();
+        progressBar.setVisibility(View.VISIBLE);
+
+
         MediaController mediaController = new MediaController(getContext());
         vid.setMediaController(mediaController);
+        vid.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+                mp.start();
+                mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                    @Override
+                    public void onVideoSizeChanged(MediaPlayer mp, int arg1,
+                                                   int arg2) {
+                        // TODO Auto-generated method stub
+                        progressBar.setVisibility(View.GONE);
+                        //vid.setVisibility(View.VISIBLE);
+                        mp.start();
+                    }
+                });
+            }
+        });
         mediaController.setAnchorView(getView());
+        //mediaController.show();
         loadingDialog.startLoadingDialog();
     }
 
@@ -150,6 +181,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
             //String vid_path = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.braceadas_defensivas1;
             Uri uri = Uri.parse(vid_path);
             vid.setVideoURI(uri);
+            //vid.start();
             loadingDialog.dismissDialog();
 
 
