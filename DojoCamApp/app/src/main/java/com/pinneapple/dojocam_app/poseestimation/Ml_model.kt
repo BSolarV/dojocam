@@ -19,6 +19,7 @@ package com.pinneapple.dojocam_app
 import android.Manifest
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Process
@@ -136,8 +137,17 @@ class Ml_model : AppCompatActivity() {
         initSpinner()
         spnModel.setSelection(modelPos)
         swClassification.setOnCheckedChangeListener(setClassificationListener)
+
         if (!isCameraPermissionGranted()) {
             requestPermission()
+        }
+
+        //Estas son mis cositas nuevas :3
+        var btn_comeback = findViewById<ImageButton>(R.id.imageBtn)
+
+        btn_comeback.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent);
         }
     }
 
