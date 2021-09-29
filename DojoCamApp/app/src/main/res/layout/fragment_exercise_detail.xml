@@ -23,7 +23,7 @@
                 android:text="Braceadas Defensivas"
                 android:textSize="22sp" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="299dp"
                 android:orientation="vertical">
@@ -37,11 +37,12 @@
                     android:id="@+id/progressbar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:indeterminate="true"
                     android:visibility="gone" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
