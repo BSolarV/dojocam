@@ -39,6 +39,7 @@ object VisualizationUtils {
 
     // Draw line and point indicate body pose
     fun drawBodyKeypoints(input: Bitmap, person: Person): Bitmap {
+
         val paintCircle = Paint().apply {
             strokeWidth = CIRCLE_RADIUS
             color = Color.TRANSPARENT

@@ -42,6 +42,7 @@ import org.tensorflow.lite.examples.poseestimation.ml.MoveNet
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
 
+
 class Ml_model : AppCompatActivity() {
     companion object {
         private const val FRAGMENT_DIALOG = "dialog"
@@ -55,7 +56,7 @@ class Ml_model : AppCompatActivity() {
      * 1 == MoveNet Thunder model
      * 2 == PoseNet model
      **/
-    private var modelPos = 1
+    private var modelPos = 2
 
     /** Default device is GPU */
     private var device = Device.CPU
@@ -143,7 +144,7 @@ class Ml_model : AppCompatActivity() {
         }
 
         //Estas son mis cositas nuevas :3
-        var btn_comeback = findViewById<ImageButton>(R.id.imageBtn)
+        var btn_comeback = findViewById(R.id.imageBtn) as ImageButton
 
         btn_comeback.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
@@ -220,7 +221,10 @@ class Ml_model : AppCompatActivity() {
     }
 
     private fun convertPoseLabels(pair: Pair<String, Float>?): String {
-        if (pair == null) return "empty"
+        if (pair == null){
+            //Toast.makeText(this, "No te veo compare, avispate", Toast.LENGTH_SHORT).show()
+            return "empty"}
+
         return "${pair.first} (${String.format("%.2f", pair.second)})"
     }
 

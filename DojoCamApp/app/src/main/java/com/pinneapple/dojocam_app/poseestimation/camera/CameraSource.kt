@@ -16,15 +16,19 @@ import android.os.HandlerThread
 import android.util.Log
 import android.view.Surface
 import android.view.SurfaceView
+import android.widget.*
+import com.pinneapple.dojocam_app.Ml_model
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.tensorflow.lite.examples.poseestimation.VisualizationUtils
 import org.tensorflow.lite.examples.poseestimation.YuvToRgbConverter
 import org.tensorflow.lite.examples.poseestimation.data.Person
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseDetector
+import java.security.AccessController.getContext
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import android.widget.Toast.makeText as toastMakeText
 
 class CameraSource(
     private val surfaceView: SurfaceView,
@@ -36,7 +40,7 @@ class CameraSource(
         private const val PREVIEW_HEIGHT = 480
 
         /** Threshold for confidence score. */
-        private const val MIN_CONFIDENCE = .2f
+        private const val MIN_CONFIDENCE = .3f
         private const val TAG = "Camera Source"
     }
 
@@ -241,8 +245,11 @@ class CameraSource(
 
         if (person.score > MIN_CONFIDENCE) {
             outputBitmap = VisualizationUtils.drawBodyKeypoints(bitmap, person)
+        }else{
+            fun Context.toast(message: CharSequence) =
+            Toast.makeText(this, "No logro Observarte", Toast.LENGTH_LONG).show()
+            System.out.println("No logro Observarte1");
         }
-
         val holder = surfaceView.holder
         val surfaceCanvas = holder.lockCanvas()
         surfaceCanvas?.let { canvas ->
