@@ -3,6 +3,20 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable-xxxhdpi/rounded_edge.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/baseline_accessibility_new_24.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/baseline_account_circle_18.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/baseline_account_circle_24.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/baseline_leaderboard_24.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/cicle_button.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/splashscreen.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/activity_main_ml.xml" value="0.36666666666666664" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/fragment_exercise_detail.xml" value="0.36666666666666664" />
         <entry key="..\:/Desktop/2021-2/App/dojocam/dojocam/DojoCamApp/app/src/main/res/drawable-xxxhdpi/rounded_edge.xml" value="0.20729166666666668" />
         <entry key="..\:/Desktop/2021-2/App/dojocam/dojocam/DojoCamApp/app/src/main/res/layout/activity_main_ml.xml" value="0.36666666666666664" />
         <entry key="..\:/Desktop/2021-2/App/dojocam/dojocam/DojoCamApp/app/src/main/res/layout/bottom_sheet_layout.xml" value="0.36666666666666664" />
