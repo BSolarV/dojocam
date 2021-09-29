@@ -56,7 +56,7 @@ class Ml_model : AppCompatActivity() {
      * 1 == MoveNet Thunder model
      * 2 == PoseNet model
      **/
-    private var modelPos = 2
+    private var modelPos = 1
 
     /** Default device is GPU */
     private var device = Device.CPU
