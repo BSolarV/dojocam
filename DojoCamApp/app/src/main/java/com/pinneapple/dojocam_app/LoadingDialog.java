@@ -9,11 +9,11 @@ public class LoadingDialog {
     Fragment fragment;
     AlertDialog dialog;
 
-    LoadingDialog(Fragment myFragment) {
+    public LoadingDialog(Fragment myFragment) {
         fragment = myFragment;
     }
 
-    void startLoadingDialog() {
+    public void startLoadingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(fragment.getActivity());
 
         LayoutInflater inflater = fragment.getLayoutInflater();
@@ -23,7 +23,7 @@ public class LoadingDialog {
         dialog = builder.create();
         dialog.show();
     }
-    void dismissDialog() {
+    public void dismissDialog() {
         dialog.dismiss();
     }
 }

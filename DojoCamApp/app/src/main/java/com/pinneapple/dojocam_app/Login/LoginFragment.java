@@ -12,20 +12,26 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.pinneapple.dojocam_app.LoadingDialog;
 import com.pinneapple.dojocam_app.MainActivity;
 import com.pinneapple.dojocam_app.R;
 import com.pinneapple.dojocam_app.databinding.FragmentLoginBinding;
 
 public class LoginFragment extends Fragment {
 
+
     private FragmentLoginBinding binding;
+    private final LoadingDialog loadingDialog = new LoadingDialog(this);
+
     private String email;
+
 
     @Override
     public View onCreateView(
@@ -46,6 +52,7 @@ public class LoginFragment extends Fragment {
             public void onClick(View view) {
                 if( !binding.LoginEmail.getText().toString().isEmpty() &
                         !binding.LoginPassword.getText().toString().isEmpty() ) {
+                    loadingDialog.startLoadingDialog();
                     FirebaseAuth.getInstance()
                         .signInWithEmailAndPassword(
                             binding.LoginEmail.getText().toString(),
@@ -54,8 +61,13 @@ public class LoginFragment extends Fragment {
                             if( resultTask.isSuccessful() ){
                                 Intent mainActivity = new Intent(getContext(), MainActivity.class);
                                 startActivity(mainActivity);
-                                getActivity().finish();
+                                loadingDialog.dismissDialog();
+                                requireActivity().finish();
                             }
+                        })
+                    .addOnFailureListener(resultTask -> {
+                        loadingDialog.dismissDialog();
+                        Toast.makeText(requireContext(), resultTask.getMessage(), Toast.LENGTH_LONG).show();
                         });
                     }
                 }
