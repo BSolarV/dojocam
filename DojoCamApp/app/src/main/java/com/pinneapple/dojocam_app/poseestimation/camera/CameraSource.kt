@@ -1,6 +1,7 @@
 package org.tensorflow.lite.examples.poseestimation.camera
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageFormat
@@ -29,10 +30,13 @@ import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import android.widget.Toast.makeText as toastMakeText
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+
 
 class CameraSource(
     private val surfaceView: SurfaceView,
-    private val listener: CameraSourceListener? = null
+    private val listener: CameraSourceListener? = null,
 ) {
 
     companion object {
@@ -247,8 +251,8 @@ class CameraSource(
             outputBitmap = VisualizationUtils.drawBodyKeypoints(bitmap, person)
         }else{
             fun Context.toast(message: CharSequence) =
-            Toast.makeText(this, "No logro Observarte", Toast.LENGTH_LONG).show()
-            System.out.println("No logro Observarte1");
+            //Toast.makeText( activity.applicationContext, "No logro Observarte", Toast.LENGTH_LONG).show()
+            System.out.println("No logro Observarte1")
         }
         val holder = surfaceView.holder
         val surfaceCanvas = holder.lockCanvas()

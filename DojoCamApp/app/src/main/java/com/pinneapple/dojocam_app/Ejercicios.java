@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -52,6 +53,7 @@ public class Ejercicios extends Fragment implements AdapterView.OnItemClickListe
     private List<String> id_list = new ArrayList();
     private ArrayAdapter adapter;
     private LoadingDialog loadingDialog = new LoadingDialog(this);
+
 
 
 
@@ -162,11 +164,42 @@ public class Ejercicios extends Fragment implements AdapterView.OnItemClickListe
                 //Toast.makeText(getContext(), "Wena", Toast.LENGTH_LONG).show();
                 adapter.notifyDataSetChanged();
                 loadingDialog.dismissDialog();
+                //Toast.makeText(getContext(), "No te veo compare, avispate", Toast.LENGTH_SHORT).show();
+
+                if(i == 0) {
+                    // 1. Instantiate an <code><a href="/reference/android/app/AlertDialog.Builder.html">AlertDialog.Builder</a></code> with its constructor
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+// 2. Chain together various setter methods to set the dialog characteristics
+                    builder.setMessage("Tiempo de espera excedido")
+                            .setTitle("Error de Conexión");
+
+// 3. Get the <code><a href="/reference/android/app/AlertDialog.html">AlertDialog</a></code> from <code><a href="/reference/android/app/AlertDialog.Builder.html#create()">create()</a></code>
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
 
             //title.setText(command.get("nombre").toString());
             //desc.setText(command.get("descripcion").toString());
 
+
+
+        });
+        data.addOnFailureListener(command -> {
+            loadingDialog.dismissDialog();
+            //Toast.makeText(getContext(), "No te veo compare, avispateeee", Toast.LENGTH_SHORT).show();
+
+            // 1. Instantiate an <code><a href="/reference/android/app/AlertDialog.Builder.html">AlertDialog.Builder</a></code> with its constructor
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+// 2. Chain together various setter methods to set the dialog characteristics
+            builder.setMessage("Tiempo de espera excedido")
+                    .setTitle("Error de Conexión");
+
+// 3. Get the <code><a href="/reference/android/app/AlertDialog.html">AlertDialog</a></code> from <code><a href="/reference/android/app/AlertDialog.Builder.html#create()">create()</a></code>
+            AlertDialog dialog = builder.create();
+            dialog.show();
 
 
         });
