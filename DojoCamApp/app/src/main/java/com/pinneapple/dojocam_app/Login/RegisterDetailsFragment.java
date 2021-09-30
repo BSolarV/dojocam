@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.pinneapple.dojocam_app.LoadingDialog;
 import com.pinneapple.dojocam_app.MainActivity;
 //import com.pinneapple.dojocam_app.Ml_model;
 import com.pinneapple.dojocam_app.R;
@@ -56,6 +57,7 @@ public class RegisterDetailsFragment extends Fragment {
     private String mParam1;
 
     // Attributes
+    private final LoadingDialog loadingDialog = new LoadingDialog(this);
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private EditText name;
@@ -151,7 +153,9 @@ public class RegisterDetailsFragment extends Fragment {
                 birthDateValue,
                 Integer.valueOf(height.getText().toString()),
                 Integer.valueOf(weight.getText().toString()));
-        db.collection("Users").document( FirebaseAuth.getInstance().getCurrentUser().getEmail()).set(user);
+        loadingDialog.startLoadingDialog();
+        db.collection("Users").document(Objects.requireNonNull(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail())).set(user);
+        loadingDialog.dismissDialog();
     }
 
     @Override
