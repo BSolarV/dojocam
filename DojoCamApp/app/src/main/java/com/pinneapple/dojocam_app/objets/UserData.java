@@ -7,7 +7,7 @@ import java.util.List;
 public class UserData {
     private String firstName;
     private String lastName;
-    private String sex;
+    private int sex;
     private Date birthDate;
     private Integer height;
     private Integer weight;
@@ -16,7 +16,7 @@ public class UserData {
 
     public UserData(){}
 
-    public UserData(String firstName, String lastName, String sex, Date birthDate, Integer height, Integer weight) {
+    public UserData(String firstName, String lastName, int sex, Date birthDate, Integer height, Integer weight) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.sex = sex;
@@ -43,11 +43,11 @@ public class UserData {
         this.lastName = lastName;
     }
 
-    public String getSex() {
+    public int getSex() {
         return sex;
     }
 
-    public void setSex(String sex) {
+    public void setSex(int sex) {
         this.sex = sex;
     }
 

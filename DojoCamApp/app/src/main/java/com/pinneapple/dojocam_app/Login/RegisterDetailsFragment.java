@@ -147,7 +147,7 @@ public class RegisterDetailsFragment extends Fragment {
         UserData user = new UserData(
                 name.getText().toString(),
                 lastname.getText().toString(),
-                sex.getSelectedItem().toString(),
+                sex.getSelectedItemPosition(),
                 birthDateValue,
                 Integer.valueOf(height.getText().toString()),
                 Integer.valueOf(weight.getText().toString()));
