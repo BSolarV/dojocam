@@ -96,6 +96,8 @@ public class LoginFragment extends Fragment {
         LinearLayout.LayoutParams inputParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setHint(R.string.LoginEmailRequestHint);
+        input.setPadding(25,25,25,25);
+        linearLayout.setPadding(25,25,25,25);
         linearLayout.addView(input, inputParams);
         builder.setView(linearLayout);
 
@@ -122,11 +124,13 @@ public class LoginFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
 
         LinearLayout linearLayout = new LinearLayout(requireContext());
+        linearLayout.setPadding(25,25,25,25);
         linearLayout.setGravity(Gravity.CENTER);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
 
         // Set up the input
         final TextView text = new TextView(requireContext());
+        text.setPadding(25,25,25,25);
         text.setText(R.string.LoginEmailNotify);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1);

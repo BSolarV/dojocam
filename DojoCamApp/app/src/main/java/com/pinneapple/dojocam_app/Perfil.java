@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,9 +18,17 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.pinneapple.dojocam_app.Login.LoginActivity;
+import com.pinneapple.dojocam_app.databinding.FragmentLoginBinding;
+import com.pinneapple.dojocam_app.databinding.FragmentPerfilBinding;
 import com.pinneapple.dojocam_app.objets.UserData;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +36,8 @@ import org.jetbrains.annotations.NotNull;
  * create an instance of this fragment.
  */
 public class Perfil extends Fragment {
+
+    private FragmentPerfilBinding binding;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,6 +48,7 @@ public class Perfil extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private LoadingDialog loadingDialog = new LoadingDialog(this);
 
     // Attributes
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -70,6 +82,7 @@ public class Perfil extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        loadingDialog.startLoadingDialog();
     }
 
     @Override
@@ -79,15 +92,39 @@ public class Perfil extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_perfil, container, false);
+        binding = FragmentPerfilBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     void setUp(){
-        DocumentReference userReference = db.collection("Users").document( FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+        userReference.get().addOnSuccessListener(command -> {
+            UserData user = command.toObject(UserData.class);
+            assert user != null;
 
+            binding.ProfileFirstName.setText( user.getFirstName() );
+            binding.ProfileLastName.setText( user.getLastName() );
+
+            // Sex Spinner
+            // Create an ArrayAdapter using the string array and a default spinner layout
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(),
+                    R.array.sexOptions, android.R.layout.simple_spinner_item);
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            // Apply the adapter to the spinner
+            binding.ProfileSexSpinner.setAdapter(adapter);
+            binding.ProfileSexSpinner.setEnabled(false);
+            binding.ProfileSexSpinner.setSelection( user.getSex() );
+
+            DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            binding.ProfileBirthDate.setText( formatter.format( user.getBirthDate() ) );
+            binding.ProfileHeight.setText( user.getHeight().toString() );
+            binding.ProfileWeight.setText( user.getWeight().toString() );
+            loadingDialog.dismissDialog();
+        });
 
         // Logout
         Button logout = (Button) getView().findViewById(R.id.ProfileLogoutButton);

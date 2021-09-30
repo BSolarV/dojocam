@@ -24,6 +24,12 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_home_black_24dp" />
+        <TextView
+            android:id="@+id/textViewAlerta"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text=""
+            android:textSize="22sp" />
     </androidx.appcompat.widget.Toolbar>
 
 

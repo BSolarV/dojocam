@@ -253,6 +253,10 @@ class CameraSource(
             fun Context.toast(message: CharSequence) =
             //Toast.makeText( activity.applicationContext, "No logro Observarte", Toast.LENGTH_LONG).show()
             System.out.println("No logro Observarte1")
+            outputBitmap = VisualizationUtils.drawBodyKeypoints_error(bitmap, person)
+            //fun Context.toast(message: CharSequence) =
+            //Toast.makeText(this, "No logro Observarte", Toast.LENGTH_LONG).show()
+            //System.out.println("No logro Observarte1");
         }
         val holder = surfaceView.holder
         val surfaceCanvas = holder.lockCanvas()

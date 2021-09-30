@@ -67,6 +67,27 @@ object VisualizationUtils {
                 paintCircle
             )
         }
+        //System.out.println(output)
+        return output
+    }
+    fun drawBodyKeypoints_error(input: Bitmap, person: Person): Bitmap {
+
+        val paintCircle = Paint().apply {
+            strokeWidth = 700f
+            color = Color.RED
+            style = Paint.Style.FILL
+        }
+
+        val output = input.copy(Bitmap.Config.ARGB_8888,true)
+        val originalSizeCanvas = Canvas(output)
+        person.keyPoints.forEach { point ->
+            originalSizeCanvas.drawCircle(
+                400f,
+                90f,
+                50f,
+                paintCircle
+            )
+        }
         return output
     }
 }
