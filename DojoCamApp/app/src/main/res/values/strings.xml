@@ -5,6 +5,8 @@
     <string name="title_notifications">Estadísticas</string>
     <string name="title_profile">Perfil</string>
 
+    <string name="ConectionError">Ha ocurrido un error de conexión.</string>
+
     <!-- Login Strins -->
     <string name="email">Email</string>
     <string name="password">Contraseña</string>
@@ -16,6 +18,9 @@
     <string name="LoginEmailRequest">Ingrese su Email</string>
     <string name="LoginEmailRequestHint">abc@company.com</string>
     <string name="LoginEmailNotify">Se ha enviado un link a su correo para restablecer su contraseña.</string>
+    <string name="NoUser">No se han encontrado credenciales.</string>
+
+    <string name="AppClientId">127635168063-cfv1ckf3a19eihr4jn81ft28rhe7tcv0.apps.googleusercontent.com</string>
 
 
     <!-- register Strings -->

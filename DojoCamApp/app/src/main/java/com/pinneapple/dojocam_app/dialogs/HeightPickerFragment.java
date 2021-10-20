@@ -37,6 +37,7 @@ public class HeightPickerFragment extends DialogFragment{
         final NumberPicker myNumberPicker = new NumberPicker(requireContext());
         myNumberPicker.setMinValue(50);
         myNumberPicker.setMaxValue(300);
+        myNumberPicker.setValue(75);
         myNumberPicker.setOnValueChangedListener(listener);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(50, 50, 1);

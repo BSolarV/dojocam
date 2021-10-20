@@ -35,6 +35,7 @@ public class WeightPickerFragment extends DialogFragment {
         final NumberPicker myNumberPicker = new NumberPicker(requireContext());
         myNumberPicker.setMinValue(15);
         myNumberPicker.setMaxValue(500);
+        myNumberPicker.setValue(75);
         myNumberPicker.setOnValueChangedListener(listener);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(50, 50, 1);

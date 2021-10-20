@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_LoginFragment_to_RegisterFragment"
             app:destination="@id/RegisterFragment" />
+        <action
+            android:id="@+id/action_LoginFragment_to_RegisterDetailsFragment"
+            app:destination="@id/RegisterDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/RegisterFragment"

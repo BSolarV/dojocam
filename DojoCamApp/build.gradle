@@ -25,6 +25,9 @@ allprojects {
             name 'ossrh-snapshot'
             url 'http://oss.sonatype.org/content/repositories/snapshots'
         }
+        maven {
+            url 'https://maven.google.com'
+        }
     }
 }
 

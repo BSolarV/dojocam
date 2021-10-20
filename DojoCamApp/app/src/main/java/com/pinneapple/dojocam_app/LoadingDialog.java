@@ -8,12 +8,14 @@ import androidx.fragment.app.Fragment;
 public class LoadingDialog {
     Fragment fragment;
     AlertDialog dialog;
+    private boolean status = false;
 
     public LoadingDialog(Fragment myFragment) {
         fragment = myFragment;
     }
 
     public void startLoadingDialog() {
+        status = true;
         AlertDialog.Builder builder = new AlertDialog.Builder(fragment.getActivity());
 
         LayoutInflater inflater = fragment.getLayoutInflater();
@@ -24,6 +26,11 @@ public class LoadingDialog {
         dialog.show();
     }
     public void dismissDialog() {
+        status=false;
         dialog.dismiss();
+    }
+
+    public boolean getStatus(){
+        return status;
     }
 }
