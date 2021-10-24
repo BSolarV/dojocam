@@ -3,12 +3,15 @@ let frame_rate_label;
 
 var video;
 let path = "";
-let videoName = 'Barrido_Delante_A';
+let videoName = 'braceadas_defensivas1';
 let extension = ".mp4";
 let playing = false;
 
-let width = 640;	
-let height = 360;
+/*let width = 640;	
+let height =360;*/
+
+let width = 360;  
+let height= 640;
 
 let poseNet;
 let poses = [];
