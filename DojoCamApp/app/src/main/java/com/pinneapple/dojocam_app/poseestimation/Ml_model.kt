@@ -56,10 +56,10 @@ class Ml_model : AppCompatActivity() {
      * 1 == MoveNet Thunder model
      * 2 == PoseNet model
      **/
-    private var modelPos = 1
+    private var modelPos = 2
 
     /** Default device is GPU */
-    private var device = Device.CPU
+    private var device = Device.GPU
 
     private lateinit var tvScore: TextView
     private lateinit var tvFPS: TextView
@@ -112,7 +112,7 @@ class Ml_model : AppCompatActivity() {
         override fun onNothingSelected(parent: AdapterView<*>?) {
             // do nothing
         }
-    }
+    } 
 
     private var setClassificationListener =
         CompoundButton.OnCheckedChangeListener { _, isChecked ->
