@@ -129,6 +129,7 @@
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="number"
                     android:gravity="center"
                     android:ems="10"
                     android:textSize="20sp" />
@@ -154,6 +155,7 @@
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="number"
                     android:gravity="center"
                     android:ems="10"
                     android:textSize="20sp" />
