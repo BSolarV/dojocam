@@ -12,13 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.pinneapple.dojocam_app.Login.LoginActivity;
-import com.pinneapple.dojocam_app.databinding.FragmentLoginBinding;
 import com.pinneapple.dojocam_app.databinding.FragmentPerfilBinding;
 import com.pinneapple.dojocam_app.objets.UserData;
 
@@ -26,8 +31,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -83,6 +88,7 @@ public class Perfil extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         loadingDialog.startLoadingDialog();
+
     }
 
     @Override
@@ -96,6 +102,7 @@ public class Perfil extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentPerfilBinding.inflate(inflater, container, false);
+
         return binding.getRoot();
     }
 
@@ -126,6 +133,7 @@ public class Perfil extends Fragment {
             loadingDialog.dismissDialog();
         });
 
+
         // Logout
         Button logout = (Button) getView().findViewById(R.id.ProfileLogoutButton);
         logout.setOnClickListener(new View.OnClickListener() {
@@ -137,5 +145,48 @@ public class Perfil extends Fragment {
                 getActivity().finish();
             }
         });
+        Button update_inf = (Button) getView().findViewById(R.id.ProfileUpdatebutton);
+
+        update_inf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String height = binding.ProfileHeight.getText().toString();
+                String weight = binding.ProfileWeight.getText().toString();
+
+                UpdateData(height,weight);
+            }
+        });
+
+    }
+
+    private void UpdateData(String height, String weight) {
+        HashMap userDetail = new HashMap();
+        userDetail.put("weight",weight);
+        userDetail.put("height",height);
+        db.collection("users").whereEqualTo("height",height).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful() && !task.getResult().isEmpty()){
+                    DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+                    String documentId = documentSnapshot.getId();
+                    db.collection("Users").document(documentId)
+                            .update(userDetail)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    System.out.println("Hola");
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            System.out.println("nnoppooojaskjbnhd");
+                        }
+                    });
+                }
+            }
+        });
+
+
     }
 }

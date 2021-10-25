@@ -3,6 +3,10 @@ package com.pinneapple.dojocam_app.Login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,9 +20,20 @@ import com.pinneapple.dojocam_app.databinding.ActivityLoginBinding;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Date;
+
 public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
+
+    private EditText name;
+    private EditText lastname;
+    private Spinner sex;
+    private TextView birthdate;
+    private Date birthDateValue;
+    private TextView height;
+    private TextView weight;
+    private Button save;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
