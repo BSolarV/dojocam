@@ -3,15 +3,12 @@ let frame_rate_label;
 
 var video;
 let path = "";
-let videoName = 'braceadas_defensivas1';
+let videoName = 'Barrido_Delante_A';
 let extension = ".mp4";
 let playing = false;
 
-/*let width = 640;	
-let height =360;*/
-
-let width = 360;  
-let height= 640;
+let width = 640;  
+let height = 360;
 
 let poseNet;
 let poses = [];
@@ -33,7 +30,8 @@ var state = 'waiting';
 
 function setup() {
 
-  createCanvas(height, width+10);
+  var canvas = createCanvas(height, width+10);
+  canvas.center("horizontal");
   setFrameRate(frame_rate);
   frame_rate_label = select("#FrameRate");
 
@@ -43,8 +41,24 @@ function setup() {
   video.noLoop();
   video.hide();
 
-  button = select("#playButton");
-  button.mousePressed(toggleVid); 
+  buttonPlay = select("#playButton");
+  buttonPlay.mousePressed(toggleVid);
+
+  buttonSave = select("#saveButton");
+  buttonSave.elt.disabled = 1;
+  buttonSave.mousePressed(saveBrain);
+
+  buttonCheck = select("#checkButton");
+  buttonCheck.elt.disabled = 1;
+  buttonCheck.mousePressed(checkActualPose);
+
+  logChecked = select("#logChecked");
+  logChecked.elt.disabled = 1;
+  logChecked.mousePressed(showActualPose);
+
+  buttonCustomCheck = select("#customCheckButton");
+  buttonCustomCheck.elt.disabled = 1;
+  buttonCustomCheck.mousePressed(checkCustomPose);
 
   //Posenet
   poseNet = ml5.poseNet(
@@ -78,18 +92,35 @@ function setup() {
     }
   brain = ml5.neuralNetwork(options);
 
-  video.onended( trainAndSave )
+  video.onended( videoEnded );
 
+}
+
+function videoEnded(){
+
+  playing = !playing;
+  buttonPlay.html('play');
+  frameCount = 0;
+
+  // Training
+  brain.normalizeData();
+  brain.train({epochs: 100});
+  console.log("Model Trained");
+
+  logChecked.elt.disabled = 0;
+  buttonSave.elt.disabled = 0;
+  buttonCheck.elt.disabled = 0;
+  buttonCustomCheck.elt.disabled = 0;
 }
 
 // plays or pauses the video depending on current state
 function toggleVid() {
   if (playing) {
     video.pause();
-    button.html('play');
+    buttonPlay.html('play');
   } else {
     video.play();
-    button.html('pause');
+    buttonPlay.html('pause');
   }
   playing = !playing;
 }
@@ -98,22 +129,9 @@ function modelReady() {
   console.log('model ready');
 }
 
-function trainAndSave() {
-  button.html('pause');
-  playing = !playing;
-
+function saveBrain() {
   brain.saveData(videoName+"-DATA");
-
-  // Training
-  brain.normalizeData();
-  brain.train({epochs: 100}, finished);
-
-}
-
-function finished() {
-  console.log("Model Trained");
   let modelName = videoName+"-model";
-  console.log(" "+modelName);
   brain.save(modelName);
 }
 
@@ -133,7 +151,7 @@ function draw() {
 
 // A function to draw ellipses over the detected keypoints
 function drawKeypoints()  {
-	let inputs = [];
+  let inputs = [];
   // Loop through all the poses detected
   for (let i = 0; i < poses.length; i++) {
     if (poses[i].pose.score > 0.5) {
@@ -176,3 +194,75 @@ function drawSkeleton() {
   }
 }
 
+function gotResults(error, result){ 
+  console.log(result); 
+  console.log(error);
+}
+
+
+function checkActualPose() {
+  let inputs = [];
+  // Loop through all the poses detected
+  for (let i = 0; i < poses.length; i++) {
+    if (poses[i].pose.score > 0.5) {
+      // For each pose detected, loop through all the keypoints
+      for (let j = 0; j < poses[i].pose.keypoints.length; j++) {
+        // A keypoint is an object describing a body part (like rightArm or leftShoulder)
+        let keypoint = poses[i].pose.keypoints[j];
+
+        // Save for checking
+        inputs.push(keypoint.position.x);
+        inputs.push(keypoint.position.y);
+      }
+    }
+  }
+  console.log(brain);
+  console.log(inputs);
+  console.log(classifyed);
+  brain.classify(inputs, classifyed);
+}
+
+function classifyed(error, results) {
+    console.log(results);
+    console.log(error);
+    poseLabeled = select("#poseLabeled");
+    poseLabeled.elt.html = results[0].label;
+}
+
+function showActualPose() {
+  let inputs = [];
+  // Loop through all the poses detected
+  for (let i = 0; i < poses.length; i++) {
+    if (poses[i].pose.score > 0.5) {
+      // For each pose detected, loop through all the keypoints
+      for (let j = 0; j < poses[i].pose.keypoints.length; j++) {
+        // A keypoint is an object describing a body part (like rightArm or leftShoulder)
+        let keypoint = poses[i].pose.keypoints[j];
+
+        // Save for checking
+        inputs.push(keypoint.position.x);
+        inputs.push(keypoint.position.y);
+      }
+    }
+  }
+  console.log(inputs);
+}
+
+function checkCustomPose() {
+  console.log(results);
+  console.log(error);
+  if( l != null || l != [] ){
+    brain.classify(l, classifyedCustom);
+  } else {
+    console.log("");
+    console.log("Error:");
+    console.log(l);
+    console.log("");
+  }
+}
+
+function classifyedCustom(error, results) {
+    poseLabeled = select("#customPoseLabeled");
+    poseLabeled.elt.html = results[0].label;
+    console.log(results);
+}
