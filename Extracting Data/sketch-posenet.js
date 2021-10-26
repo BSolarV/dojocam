@@ -220,9 +220,6 @@ function checkActualPose() {
       }
     }
   }
-  console.log(brain);
-  console.log(inputs);
-  console.log(classifyed);
   brain.classify(inputs, classifyed);
 }
 
@@ -253,8 +250,6 @@ function showActualPose() {
 }
 
 function checkCustomPose() {
-  console.log(results);
-  console.log(error);
   if( l != null || l != [] ){
     brain.classify(l, classifyedCustom);
   } else {
@@ -266,7 +261,8 @@ function checkCustomPose() {
 }
 
 function classifyedCustom(error, results) {
+    console.log(results);
+    console.log(error);
     poseLabeled = select("#customPoseLabeled");
     poseLabeled.elt.innerText = results[0].label;
-    console.log(results);
 }
