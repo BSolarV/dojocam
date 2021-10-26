@@ -1,15 +1,17 @@
 let frame_rate = 16;
 let frame_rate_label;
-let secs_per_train = 3;
+let secs_per_train = 1;
 
 var video;
 let path = "";
-let videoName = 'Barrido_Delante_A';
-let extension = ".mp4";
+let videoName = 'Jav_B_S';
+let extension = ".mov";
 let playing = false;
 
-let width = 640;  
-let height = 360;
+/*let width = 640;  
+let height = 360;*/
+let width = 360;  
+let height = 640;
 
 let poseNet;
 let poses = [];
