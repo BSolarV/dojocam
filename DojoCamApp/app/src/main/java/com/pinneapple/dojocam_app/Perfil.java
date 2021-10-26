@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ import java.util.Objects;
  * Use the {@link Perfil#newInstance} factory method to
  * create an instance of this fragment.
  */
+
 public class Perfil extends Fragment {
 
     private FragmentPerfilBinding binding;
@@ -151,8 +153,8 @@ public class Perfil extends Fragment {
             @Override
             public void onClick(View v) {
 
-                String height = binding.ProfileHeight.getText().toString();
-                String weight = binding.ProfileWeight.getText().toString();
+                Editable height = binding.ProfileHeight.getText();
+                Editable weight = binding.ProfileWeight.getText();
 
                 UpdateData(height,weight);
             }
@@ -160,33 +162,13 @@ public class Perfil extends Fragment {
 
     }
 
-    private void UpdateData(String height, String weight) {
-        HashMap userDetail = new HashMap();
-        userDetail.put("weight",weight);
-        userDetail.put("height",height);
-        db.collection("users").whereEqualTo("height",height).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful() && !task.getResult().isEmpty()){
-                    DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-                    String documentId = documentSnapshot.getId();
-                    db.collection("Users").document(documentId)
-                            .update(userDetail)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    System.out.println("Hola");
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            System.out.println("nnoppooojaskjbnhd");
-                        }
-                    });
-                }
-            }
-        });
-
+    private void UpdateData(Editable height, Editable weight) {
+        DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+        System.out.println(height);
+        //DocumentReference userReference2 = db.collection("Users").document("bastian.vivar@sansano.usm.cl");
+        //DocumentReference docRef = db.collection("cities").document("DC");
+        userReference.update("height",Integer.parseInt(String.valueOf(height)));
+        userReference.update("weight",Integer.parseInt(String.valueOf(weight)));
 
     }
 }
