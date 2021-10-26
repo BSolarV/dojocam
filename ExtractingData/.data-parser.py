@@ -23,3 +23,5 @@ for data in jsonData["data"]:
 
 with open(f'models-data/{modeName}.json', 'w') as fp:
   json.dump(targetKeypoints, fp)
+with open(f'tflite-models/{modeName}-labels.txt', 'w') as fp:
+  fp.write( "\n".join( list( targetKeypoints.keys() ) ) )
