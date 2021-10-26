@@ -88,7 +88,7 @@ function setup() {
       inputs: 34,
       outputs: Math.ceil(video.duration()),
       task: 'classification',
-      data: true
+      debug: true
     }
   brain = ml5.neuralNetwork(options);
 
@@ -103,8 +103,9 @@ function videoEnded(){
   frameCount = 0;
 
   // Training
+  //brain.loadData('Barrido_Delante_A-DATA.json');
   brain.normalizeData();
-  brain.train({epochs: 100});
+  brain.train({epochs: 20});
   console.log("Model Trained");
 
   logChecked.elt.disabled = 0;
@@ -141,7 +142,7 @@ function draw() {
   if( playing ) {
     frameCount++;
   }
-  frame_rate_label.elt.innerText = Math.round(video.time())  + " - Frame: " + frameCount;
+  frame_rate_label.elt.innerText = Math.floor(video.time())  + " - Frame: " + frameCount;
 
   // We can call both functions to draw all keypoints and the skeletons
   drawKeypoints();
@@ -174,7 +175,7 @@ function drawKeypoints()  {
       }
     }
     if( playing ){
-      let target = [Math.round(video.time())];
+      let target = [String(Math.floor(video.time()))];
       brain.addData(inputs, target);
     }
   }
