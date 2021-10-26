@@ -29,14 +29,16 @@ class PoseClassifier(
     private val output = interpreter.getOutputTensor(0).shape()
 
     companion object {
-        private const val MODEL_FILENAME = "classifier.tflite"
-        private const val LABELS_FILENAME = "labels.txt"
+        private var MODEL_FILENAME: String = ""
+        private var LABELS_FILENAME: String = ""
         private const val CPU_NUM_THREADS = 4
 
-        fun create(context: Context): PoseClassifier {
+        fun create(context: Context, namefile: String) : PoseClassifier {
             val options = Interpreter.Options().apply {
                 setNumThreads(CPU_NUM_THREADS)
             }
+            MODEL_FILENAME = "tflite-models/$namefile.tflite"
+            LABELS_FILENAME = "tflite-models/$namefile-labels.txt"
             return PoseClassifier(
                 Interpreter(
                     FileUtil.loadMappedFile(
@@ -52,9 +54,9 @@ class PoseClassifier(
         // Preprocess the pose estimation result to a flat array
         val inputVector = FloatArray(input[1])
         person?.keyPoints?.forEachIndexed { index, keyPoint ->
-            inputVector[index * 3] = keyPoint.coordinate.y
-            inputVector[index * 3 + 1] = keyPoint.coordinate.x
-            inputVector[index * 3 + 2] = keyPoint.score
+            inputVector[index * 2] = keyPoint.coordinate.x
+            inputVector[index * 2 + 1] = keyPoint.coordinate.y
+            //inputVector[index * 3 + 2] = keyPoint.score
         }
 
         // Postprocess the model output to human readable class names
