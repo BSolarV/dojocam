@@ -3,9 +3,9 @@ let frame_rate_label;
 let secs_per_train = 1;
 
 var video;
-let path = "";
-let videoName = 'Jav_B_S';
-let extension = ".mov";
+let path = "./Videos/";
+let videoName = 'braceadas_defensivas1';
+let extension = ".mp4";
 let playing = false;
 
 /*let width = 640;  
