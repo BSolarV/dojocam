@@ -22,25 +22,41 @@
 
   </head>
   <body>
-    <div class="container" id="top">
+    <div class="container" id="top" style="text-align: center; margin-bottom: 50px;">
       <div class="row">
         <div class="col-md-3">
           <p id="FrameRate" style="display: inline-block;"></p>
         </div>
         <div class="col-md-9">
           <div class="container">
-            <div class="col-md-4">
-              <div class="row"><button id="playButton" style="display: inline-block; margin: 10px;">Play</button></div>
-              <div class="row"><button id="saveButton" style="display: inline-block; margin: 10px;">Save</button></div>
+            <div class="row">
+              <div class="col-md-4">
+                <button id="playButton" style="display: inline-block; margin: 10px;">Play</button>
+              </div> 
+              <div class="col-md-4">
+                <button id="checkButton" style="display: inline-block; margin: 10px;">Check</button>
+              </div>  
+              <div class="col-md-4">
+                <button id="customCheckButton" style="display: inline-block; margin: 10px;">Custom Check</button>
+              </div> 
+            </div>   
+            <div class="row">
+              <div class="col-md-4">
+                <button id="saveButton" style="display: inline-block; margin: 10px;">Save</button>
+              </div>
+              <div class="col-md-4">
+                <p style="margin-bottom: 0px; margin-right: 50px; margin-left: 50px;" id="poseLabeled"></p>
+              </div>
+              <div class="col-md-4">
+                <div class="row"><p style="margin-bottom: 0px; margin-right: 50px; margin-left: 50px;" id="customPoseLabeled"></p></div>
+              </div>
             </div>
-            <div class="col-md-4">
-              <div class="row"><button id="checkButton" style="display: inline-block; margin: 10px;">Check</button></div>
-              <div class="row"><text id="poseLabeled"></text></div>
-              <div class="row"><button id="logChecked" style="display: inline-block; margin: 10px;">Show Check</button></div>
-            </div>
-            <div class="col-md-4">
-              <div class="row"><button id="customCheckButton" style="display: inline-block; margin: 10px;">Custom Check</button></div>
-              <div class="row"><text id="customPoseLabeled"></text></div>
+            <div class="row">
+              <div class="col-md-4"></div>
+              <div class="col-md-4">
+                <button id="logChecked" style="display: inline-block; margin: 10px;">Show Check</button>
+              </div>
+              <div class="col-md-4"></div>
             </div>
           </div>
         </div>

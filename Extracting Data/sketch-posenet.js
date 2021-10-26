@@ -1,5 +1,6 @@
 let frame_rate = 16;
 let frame_rate_label;
+let secs_per_train = 3;
 
 var video;
 let path = "";
@@ -88,7 +89,7 @@ function setup() {
       inputs: 34,
       outputs: Math.ceil(video.duration()),
       task: 'classification',
-      debug: true
+      data: true
     }
   brain = ml5.neuralNetwork(options);
 
@@ -175,7 +176,7 @@ function drawKeypoints()  {
       }
     }
     if( playing ){
-      let target = [String(Math.floor(video.time()))];
+      let target = [String(Math.floor(video.time()/secs_per_train)*secs_per_train)];
       brain.addData(inputs, target);
     }
   }
@@ -227,7 +228,7 @@ function classifyed(error, results) {
     console.log(results);
     console.log(error);
     poseLabeled = select("#poseLabeled");
-    poseLabeled.elt.html = results[0].label;
+    poseLabeled.elt.innerText = results[0].label;
 }
 
 function showActualPose() {
@@ -264,6 +265,6 @@ function checkCustomPose() {
 
 function classifyedCustom(error, results) {
     poseLabeled = select("#customPoseLabeled");
-    poseLabeled.elt.html = results[0].label;
+    poseLabeled.elt.innerText = results[0].label;
     console.log(results);
 }
