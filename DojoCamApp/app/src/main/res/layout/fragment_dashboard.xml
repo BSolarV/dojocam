@@ -17,7 +17,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="66dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
@@ -25,6 +25,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginVertical="10dp"
                     android:gravity="center"
                     android:text="Recomendado"
                     android:textSize="22sp" />
@@ -33,7 +34,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="259dp"
-                android:background="@android:color/white"
+                android:background="@color/second_bg"
                 android:elevation="10dp"
                 android:orientation="horizontal"
                 android:padding="10dp">
@@ -92,7 +93,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="355dp"
-                android:background="@android:color/white"
+                android:background="@color/second_bg"
                 android:elevation="10dp"
                 android:orientation="horizontal"
                 android:padding="10dp">
