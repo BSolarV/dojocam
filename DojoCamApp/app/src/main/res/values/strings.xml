@@ -98,8 +98,8 @@
 
 
     //Nuevos2.0
-    <string name="dif_principiante">Básico</string>
-    <string name="dif_medio">Medio</string>
+    <string name="dif_principiante">Principiante</string>
+    <string name="dif_medio">Intermedio</string>
     <string name="dif_avanzado">Avanzado</string>
     <string name="dif_start">Practicar</string>
     <string name="dificultades">Dificultades</string>
