@@ -1,12 +1,8 @@
 package org.tensorflow.lite.examples.poseestimation.camera
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.ImageFormat
-import android.graphics.Matrix
-import android.graphics.Rect
+import android.graphics.*
 import android.hardware.camera2.CameraCaptureSession
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraDevice
@@ -17,21 +13,16 @@ import android.os.HandlerThread
 import android.util.Log
 import android.view.Surface
 import android.view.SurfaceView
-import android.widget.*
-import com.pinneapple.dojocam_app.Ml_model
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.tensorflow.lite.examples.poseestimation.VisualizationUtils
 import org.tensorflow.lite.examples.poseestimation.YuvToRgbConverter
 import org.tensorflow.lite.examples.poseestimation.data.Person
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseDetector
-import java.security.AccessController.getContext
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import android.widget.Toast.makeText as toastMakeText
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import kotlin.math.pow
 
 
 class CameraSource(
@@ -44,7 +35,7 @@ class CameraSource(
         private const val PREVIEW_HEIGHT = 480
 
         /** Threshold for confidence score. */
-        private const val MIN_CONFIDENCE = .3f
+        private const val MIN_CONFIDENCE = .6f
         private const val TAG = "Camera Source"
     }
 
@@ -100,11 +91,15 @@ class CameraSource(
                 // Create rotated version for portrait display
                 val rotateMatrix = Matrix()
                 rotateMatrix.postRotate(270.0f)
+                val cx = PREVIEW_WIDTH / 2f
+                val cy = PREVIEW_HEIGHT / 2f
+                rotateMatrix.postScale(-1f, 1f, cx, cy);
 
                 val rotatedBitmap = Bitmap.createBitmap(
                     imageBitmap, 0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT,
                     rotateMatrix, false
                 )
+
                 processImage(rotatedBitmap)
                 image.close()
             }
@@ -222,6 +217,7 @@ class CameraSource(
 
     // process image
     private fun processImage(bitmap: Bitmap) {
+        var outputBitmap = bitmap
         var person: Person? = null
         var classificationResult: List<Pair<String, Float>>? = null
 
@@ -230,6 +226,7 @@ class CameraSource(
                 person = it
                 classifier?.run {
                     classificationResult = classify(person)
+                    outputBitmap = drawExpectedBody(bitmap)
                 }
             }
         }
@@ -240,23 +237,27 @@ class CameraSource(
         }
         listener?.onDetectedInfo(person?.score, classificationResult)
         person?.let {
-            visualize(it, bitmap)
+            visualize(it, outputBitmap)
         }
     }
 
     private fun visualize(person: Person, bitmap: Bitmap) {
-        var outputBitmap = bitmap
+        val outputBitmap: Bitmap
 
         if (person.score > MIN_CONFIDENCE) {
             outputBitmap = VisualizationUtils.drawBodyKeypoints(bitmap, person)
         }else{
-            fun Context.toast(message: CharSequence) =
-            //Toast.makeText( activity.applicationContext, "No logro Observarte", Toast.LENGTH_LONG).show()
-            System.out.println("No logro Observarte1")
-            outputBitmap = VisualizationUtils.drawBodyKeypoints_error(bitmap, person)
-            //fun Context.toast(message: CharSequence) =
-            //Toast.makeText(this, "No logro Observarte", Toast.LENGTH_LONG).show()
-            //System.out.println("No logro Observarte1");
+            val leftEye = person.keyPoints[1].coordinate
+            val rightEye = person.keyPoints[2].coordinate
+            val eyedist = ( (leftEye.x-rightEye.x).toDouble().pow(2) + (leftEye.y-rightEye.y).toDouble().pow(2) ).toDouble().pow(0.5)
+
+            outputBitmap =
+                if( person.keyPoints[1].score > 0.3f && eyedist > 0.05f ){
+                    VisualizationUtils.drawBodyKeypointsError(bitmap, "Estas muy cerca de la cámara")
+                }else {
+                    VisualizationUtils.drawBodyKeypointsError(bitmap, "No te encuentro, prueba más ilumincación")
+                }
+
         }
         val holder = surfaceView.holder
         val surfaceCanvas = holder.lockCanvas()

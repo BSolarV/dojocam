@@ -17,9 +17,18 @@ limitations under the License.
 package org.tensorflow.lite.examples.poseestimation.ml
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.PointF
+import android.util.Log
 import org.tensorflow.lite.Interpreter
+import org.tensorflow.lite.examples.poseestimation.VisualizationUtils
 import org.tensorflow.lite.examples.poseestimation.data.Person
 import org.tensorflow.lite.support.common.FileUtil
+import org.tensorflow.lite.examples.poseestimation.data.BodyPart
+import org.tensorflow.lite.examples.poseestimation.data.KeyPoint
+import java.lang.Exception
+import kotlin.math.floor
+
 
 class PoseClassifier(
     private val interpreter: Interpreter,
@@ -31,7 +40,10 @@ class PoseClassifier(
     companion object {
         private var MODEL_FILENAME: String = ""
         private var LABELS_FILENAME: String = ""
+        private var EXPECTED_POSE_FILENAME: String = ""
         private const val CPU_NUM_THREADS = 4
+
+        var expectedBodies = HashMap<String, Person>()
 
         fun create(context: Context, namefile: String) : PoseClassifier {
             val options = Interpreter.Options().apply {
@@ -39,6 +51,30 @@ class PoseClassifier(
             }
             MODEL_FILENAME = "tflite-models/$namefile.tflite"
             LABELS_FILENAME = "tflite-models/$namefile-labels.txt"
+            EXPECTED_POSE_FILENAME = "models-data/$namefile.csv"
+
+            try {
+                val bufferReader = context.assets.open(EXPECTED_POSE_FILENAME).bufferedReader()
+                while (bufferReader.ready()) {
+                    val line: String = bufferReader.readLine()
+                    val parts = line.split(",").toTypedArray()
+                    val target = parts[0]
+                    val keyPoints = mutableListOf<KeyPoint>()
+                    var i = 0;
+                    while ( i < 34 ){
+                        val keyPoint = KeyPoint( BodyPart.fromInt(floor(((i/2).toDouble())).toInt()), PointF(parts[i+1].toFloat(),parts[i+2].toFloat()), 1f )
+                        keyPoints.add(keyPoint)
+                        i+=2
+                    }
+                    val person = Person(keyPoints, 1f)
+                    expectedBodies[target] = person
+                }
+                bufferReader.close()
+                Log.i("INFO", "\n\n\n\n\n\n"+expectedBodies.toString()+"\n\n\n\n\n\n")
+            } catch (e: Exception) {
+                e.message?.let { Log.i("Error", it) }
+            }
+
             return PoseClassifier(
                 Interpreter(
                     FileUtil.loadMappedFile(
@@ -47,6 +83,9 @@ class PoseClassifier(
                 ),
                 FileUtil.loadLabels(context, LABELS_FILENAME)
             )
+        }
+        fun getExpectedBody(target: String) : Person? {
+            return expectedBodies[target]
         }
     }
 
@@ -72,4 +111,16 @@ class PoseClassifier(
     fun close() {
         interpreter.close()
     }
+
+    fun drawExpectedBody(bitmap: Bitmap): Bitmap {
+        var outputBitmap = bitmap
+        getExpectedBody("0")?.let {
+            outputBitmap = VisualizationUtils.drawBodyKeypoints(
+                bitmap,
+                it
+            )
+        }
+        return outputBitmap
+    }
+
 }

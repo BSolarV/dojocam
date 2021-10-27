@@ -21,7 +21,7 @@ for data in jsonData["data"]:
 		targetKeypoints[target][i] = (targetKeypoints[target][i]*targetCounter[target] + keypoints[i][1] ) / (targetCounter[target]+1)
 
 
-with open(f'models-data/{modeName}.json', 'w') as fp:
-  json.dump(targetKeypoints, fp)
+with open(f'models-data/{modeName}.csv', 'w') as fp:
+  fp.write("\n".join( [ f"{target},"+",".join(list(map(str,values))) for target,values in list(targetKeypoints.items()) ] ))
 with open(f'tflite-models/{modeName}-labels.txt', 'w') as fp:
   fp.write( "\n".join( list( targetKeypoints.keys() ) ) )
