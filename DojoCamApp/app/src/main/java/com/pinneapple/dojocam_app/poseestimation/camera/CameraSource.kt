@@ -227,7 +227,7 @@ class CameraSource(
                 person = it
                 classifier?.run {
                     classificationResult = classify(person)
-                    outputBitmap = drawExpectedBody(bitmap)
+                    outputBitmap = drawExpectedBody(bitmap, it)
                 }
             }
         }
