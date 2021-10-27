@@ -96,7 +96,7 @@ object VisualizationUtils {
             offset,  // left
             offset,  // top
             originalSizeCanvas.width - offset,  // right
-            size+offset // bottom
+            size+2*offset // bottom
         )
         val cornersRadius = 5f
         originalSizeCanvas.drawRoundRect(
@@ -108,7 +108,7 @@ object VisualizationUtils {
         originalSizeCanvas.drawText(
             msg,
             originalSizeCanvas.width /2f,
-            size/2+offset,
+            size+offset,
             textPaint
         )
         return output

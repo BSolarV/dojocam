@@ -13,6 +13,7 @@ import android.os.HandlerThread
 import android.util.Log
 import android.view.Surface
 import android.view.SurfaceView
+import com.pinneapple.dojocam_app.R
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.tensorflow.lite.examples.poseestimation.VisualizationUtils
 import org.tensorflow.lite.examples.poseestimation.YuvToRgbConverter
@@ -251,11 +252,12 @@ class CameraSource(
             val rightEye = person.keyPoints[2].coordinate
             val eyedist = ( (leftEye.x-rightEye.x).toDouble().pow(2) + (leftEye.y-rightEye.y).toDouble().pow(2) ).toDouble().pow(0.5)
 
+            val context = surfaceView.context
             outputBitmap =
                 if( person.keyPoints[1].score > 0.3f && eyedist > 0.05f ){
-                    VisualizationUtils.drawBodyKeypointsError(bitmap, "Estas muy cerca de la cámara")
+                    VisualizationUtils.drawBodyKeypointsError(bitmap, context.getString(R.string.close_to_camera))
                 }else {
-                    VisualizationUtils.drawBodyKeypointsError(bitmap, "No te encuentro, prueba más ilumincación")
+                    VisualizationUtils.drawBodyKeypointsError(bitmap, context.getString(R.string.body_not_found))
                 }
 
         }

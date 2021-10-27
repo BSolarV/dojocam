@@ -79,6 +79,8 @@
     <string name="tfe_pe_tv_fps">Fps: %d</string>
     <string name="tfe_pe_tv_device">Device: </string>
     <string name="tfe_pe_tv_classification_value">- %s</string>
+    <string name="close_to_camera">Estas muy cerca de la cámara</string>
+    <string name="body_not_found">No te encuentro, prueba más ilumincación</string>
 
 
 

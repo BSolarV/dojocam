@@ -70,7 +70,6 @@ class PoseClassifier(
                     expectedBodies[target] = person
                 }
                 bufferReader.close()
-                Log.i("INFO", "\n\n\n\n\n\n"+expectedBodies.toString()+"\n\n\n\n\n\n")
             } catch (e: Exception) {
                 e.message?.let { Log.i("Error", it) }
             }
