@@ -1,12 +1,13 @@
 //package com.pinneapple.dojocam_app
 package org.tensorflow.lite.examples.poseestimation
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import org.tensorflow.lite.examples.poseestimation.data.BodyPart
 import org.tensorflow.lite.examples.poseestimation.data.Person
+import android.graphics.RectF
+
+
+
 
 object VisualizationUtils {
     /** Radius of circle used to draw keypoints.  */
@@ -70,24 +71,46 @@ object VisualizationUtils {
         //System.out.println(output)
         return output
     }
-    fun drawBodyKeypoints_error(input: Bitmap, person: Person): Bitmap {
+    fun drawBodyKeypointsError(input: Bitmap, msg: String): Bitmap {
 
-        val paintCircle = Paint().apply {
-            strokeWidth = 700f
-            color = Color.RED
+        val size = 20f
+        val offset = 8f
+
+        val bgPaint = Paint().apply {
+            color = Color.rgb(178,178,178)
             style = Paint.Style.FILL
         }
 
-        val output = input.copy(Bitmap.Config.ARGB_8888,true)
-        val originalSizeCanvas = Canvas(output)
-        person.keyPoints.forEach { point ->
-            originalSizeCanvas.drawCircle(
-                400f,
-                90f,
-                50f,
-                paintCircle
-            )
+        val textPaint = Paint().apply {
+            strokeWidth = 700f
+            color = Color.rgb(82, 0, 129)
+            style = Paint.Style.FILL
+            textSize = size
+            textAlign = Paint.Align.CENTER
         }
+
+        val output = input.copy(Bitmap.Config.ARGB_8888,true)
+
+        val originalSizeCanvas = Canvas(output)
+        val rectF = RectF(
+            offset,  // left
+            offset,  // top
+            originalSizeCanvas.width - offset,  // right
+            size+2*offset // bottom
+        )
+        val cornersRadius = 5f
+        originalSizeCanvas.drawRoundRect(
+            rectF,
+            cornersRadius,
+            cornersRadius,
+            bgPaint
+        )
+        originalSizeCanvas.drawText(
+            msg,
+            originalSizeCanvas.width /2f,
+            size+offset,
+            textPaint
+        )
         return output
     }
 }

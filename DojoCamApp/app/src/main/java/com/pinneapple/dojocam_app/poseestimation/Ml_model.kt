@@ -56,10 +56,13 @@ class Ml_model : AppCompatActivity() {
      * 1 == MoveNet Thunder model
      * 2 == PoseNet model
      **/
-    private var modelPos = 1
+    private var modelPos = 2
 
     /** Default device is GPU */
-    private var device = Device.CPU
+    private var device = Device.GPU
+
+    //windu
+    private lateinit var namefile: String
 
     private lateinit var tvScore: TextView
     private lateinit var tvFPS: TextView
@@ -112,7 +115,7 @@ class Ml_model : AppCompatActivity() {
         override fun onNothingSelected(parent: AdapterView<*>?) {
             // do nothing
         }
-    }
+    } 
 
     private var setClassificationListener =
         CompoundButton.OnCheckedChangeListener { _, isChecked ->
@@ -124,6 +127,12 @@ class Ml_model : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_ml)
+
+        //windu
+        val b = intent.extras
+        namefile = b!!.getString("namefile").toString()
+
+
         // keep screen on while app is running
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         tvScore = findViewById(R.id.tvScore)
@@ -229,7 +238,7 @@ class Ml_model : AppCompatActivity() {
     }
 
     private fun isPoseClassifier() {
-        cameraSource?.setClassifier(if (isClassifyPose) PoseClassifier.create(this) else null)
+        cameraSource?.setClassifier(if (isClassifyPose) PoseClassifier.create(this, namefile) else null)
     }
 
     // Init spinner that user can choose model and device they want.

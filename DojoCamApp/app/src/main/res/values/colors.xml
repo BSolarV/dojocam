@@ -10,10 +10,10 @@
 
     <color name="danger">#d74338</color>
 
-    <color name="dark_bg">#334257</color>
-    <color name="light_bg">#EEEEEE</color>
-    <color name="colorSecondary">#FBA060</color>
-    <color name="colorSecondaryVariant">#F3C5A5</color>
+    <color name="main_bg">#EEEEEE</color>
+    <color name="second_bg">#D0D9E5</color>
+    <color name="colorSecondary">#FFB078</color>
+    <color name="colorSecondaryVariant">#FFCBA8</color>
     <color name="colorPrimary">#8674AA</color>
     <color name="colorPrimaryVariant">#CDA5F3</color>
 </resources>
