@@ -2,7 +2,10 @@ package com.pinneapple.dojocam_app;
 
 import static android.app.Activity.RESULT_OK;
 
+//import static io.grpc.Context.LazyStorage.storage;
+
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -34,13 +37,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.OnProgressListener;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.pinneapple.dojocam_app.Login.LoginActivity;
 import com.pinneapple.dojocam_app.databinding.FragmentPerfilBinding;
 import com.pinneapple.dojocam_app.objets.UserData;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -59,6 +67,7 @@ public class Perfil extends Fragment {
 
     ImageView imageViewProfilePicture;
 
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -72,6 +81,9 @@ public class Perfil extends Fragment {
 
     // Attributes
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    StorageReference sref = FirebaseStorage.getInstance().getReference();
+
 
     public Perfil() {
         // Required empty public constructor
@@ -127,6 +139,11 @@ public class Perfil extends Fragment {
             UserData user = command.toObject(UserData.class);
             assert user != null;
 
+            
+
+            //imageViewProfilePicture.setImageURI(selectedImageUri);
+
+
             binding.ProfileFirstName.setText( user.getFirstName() );
             binding.ProfileLastName.setText( user.getLastName() );
 
@@ -147,8 +164,6 @@ public class Perfil extends Fragment {
             binding.ProfileWeight.setText( user.getWeight().toString() );
             loadingDialog.dismissDialog();
         });
-
-
         // Logout
         Button logout = (Button) getView().findViewById(R.id.ProfileLogoutButton);
         logout.setOnClickListener(new View.OnClickListener() {
@@ -160,8 +175,8 @@ public class Perfil extends Fragment {
                 getActivity().finish();
             }
         });
-        Button update_inf = (Button) getView().findViewById(R.id.ProfileUpdatebutton);
 
+        Button update_inf = (Button) getView().findViewById(R.id.ProfileUpdatebutton);
         update_inf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,7 +188,6 @@ public class Perfil extends Fragment {
             }
         });
         imageViewProfilePicture = getView().findViewById(R.id.ProfileImage);
-
         imageViewProfilePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -181,7 +195,6 @@ public class Perfil extends Fragment {
             }
         });
     }
-
     private void UpdateData(Editable height, Editable weight) {
         DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
         System.out.println(height);
@@ -189,9 +202,7 @@ public class Perfil extends Fragment {
 //DocumentReference docRef = db.collection("cities").document("DC");
         userReference.update("height",Integer.parseInt(String.valueOf(height)));
         userReference.update("weight",Integer.parseInt(String.valueOf(weight)));
-
     }
-
 
     private void chooseProfilePicture() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -225,14 +236,12 @@ public class Perfil extends Fragment {
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(pickPhoto, 1);
     }
-
     private void takePictureFromCamera(){
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if(takePicture.resolveActivity(getActivity().getPackageManager()) != null){
             startActivityForResult(takePicture, 2);
         }
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -242,6 +251,7 @@ public class Perfil extends Fragment {
                 if(resultCode == RESULT_OK){
                     Uri selectedImageUri = data.getData();
                     imageViewProfilePicture.setImageURI(selectedImageUri);
+                    uploadImage(selectedImageUri);
                 }
                 break;
             case 2:
@@ -249,11 +259,94 @@ public class Perfil extends Fragment {
                     Bundle bundle = data.getExtras();
                     Bitmap bitmapImage = (Bitmap) bundle.get("data");
                     imageViewProfilePicture.setImageBitmap(bitmapImage);
+
+                    //DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+                    //userReference.update("F_perfil",bitmapImage);
+
+                    uploadFile(bitmapImage);
                 }
                 break;
         }
     }
+    private void uploadFile(Bitmap bitmap) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://dojocam-app.appspot.com");
+        StorageReference ImagesRef = storageRef.child("images/" + Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()) + ".jpg");
 
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+        byte[] data = baos.toByteArray();
+        UploadTask uploadTask = ImagesRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Toast.makeText(getActivity(), "No se logro actaulizar", Toast.LENGTH_SHORT).show();
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast
+                        .makeText(getActivity(),
+                                "Actualizado",
+                                Toast.LENGTH_SHORT)
+                        .show();
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                //Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                //sendMsg("" + downloadUrl, 2);
+                //Log.d("downloadUrl-->", "" + downloadUrl);
+            }
+        });
+    }
+    private void uploadImage(Uri selectedImageUri)
+    {
+        if (selectedImageUri != null) {
+
+            // Code for showing progressDialog while uploading
+            ProgressDialog progressDialog
+                    = new ProgressDialog(getActivity());
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+
+            // Defining the child of storageReference
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReferenceFromUrl("gs://dojocam-app.appspot.com");
+
+            // adding listeners on upload
+            // or failure of image
+            StorageReference ImagesRef = storageRef.child("images/" + Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()) + ".jpg");
+            ImagesRef.putFile(selectedImageUri)
+                    .addOnSuccessListener(
+                            new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(
+                                        UploadTask.TaskSnapshot taskSnapshot)
+                                {
+                                    // Image uploaded successfully
+                                    // Dismiss dialog
+                                    progressDialog.dismiss();
+                                    Toast
+                                            .makeText(getActivity(),
+                                                    "Actualizado",
+                                                    Toast.LENGTH_SHORT)
+                                            .show();
+                                }
+                            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e)
+                        {
+                            // Error, Image not uploaded
+                            progressDialog.dismiss();
+                            Toast
+                                    .makeText(getActivity(),
+                                            "Failed " + e.getMessage(),
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    });
+        }
+    }
     private boolean checkAndRequestPermissions(){
         if(Build.VERSION.SDK_INT >= 23){
             int cameraPermission = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA);
@@ -264,7 +357,6 @@ public class Perfil extends Fragment {
         }
         return true;
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
