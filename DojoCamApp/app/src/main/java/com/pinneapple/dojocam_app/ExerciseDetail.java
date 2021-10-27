@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -107,10 +108,8 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
 
         videoId = getArguments().getString("videoId");
 
-
         title = (TextView) getView().findViewById(R.id.excersiceTitle);
         desc = (TextView)  getView().findViewById(R.id.textView10);
-
 
         Button pri = (Button) getView().findViewById(R.id.button);
         pri.setOnClickListener((View.OnClickListener) this);
@@ -123,9 +122,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
         MediaController mediaController = new MediaController(getContext());
         vid.setMediaController(mediaController);
         mediaController.setAnchorView(getView());*/
-
         //Progress Bar
-
 
         progressBar = (ProgressBar) getView().findViewById(R.id.progressbar);
         progressBar.bringToFront();
@@ -158,10 +155,15 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        Intent mainActivity = new Intent(getContext(), Ml_model.class);
+        /*Intent mainActivity = new Intent(getContext(), Ml_model.class);
         startActivity(mainActivity);
-        getActivity().finish();
+        getActivity().finish();*/ // DESCOMENTAR MAS TARDE
 
+
+        DocumentReference data = db.collection("ejercicios").document(videoId);
+        Intent videoPip = new Intent(getContext(),PipActivity.class);
+        videoPip.putExtra("videoUrl","https://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4");
+        startActivity(videoPip);
         //Navigation.findNavController(view).navigate(R.id.practice);
     }
 
