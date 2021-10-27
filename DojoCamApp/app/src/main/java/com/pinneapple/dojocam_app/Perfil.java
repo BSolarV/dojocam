@@ -1,18 +1,29 @@
 package com.pinneapple.dojocam_app;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,6 +56,8 @@ import java.util.Objects;
 public class Perfil extends Fragment {
 
     private FragmentPerfilBinding binding;
+
+    ImageView imageViewProfilePicture;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -159,16 +172,107 @@ public class Perfil extends Fragment {
                 UpdateData(height,weight);
             }
         });
+        imageViewProfilePicture = getView().findViewById(R.id.ProfileImage);
 
+        imageViewProfilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chooseProfilePicture();
+            }
+        });
     }
 
     private void UpdateData(Editable height, Editable weight) {
         DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
         System.out.println(height);
-        //DocumentReference userReference2 = db.collection("Users").document("bastian.vivar@sansano.usm.cl");
-        //DocumentReference docRef = db.collection("cities").document("DC");
+//DocumentReference userReference2 = db.collection("Users").document("bastian.vivar@sansano.usm.cl");
+//DocumentReference docRef = db.collection("cities").document("DC");
         userReference.update("height",Integer.parseInt(String.valueOf(height)));
         userReference.update("weight",Integer.parseInt(String.valueOf(weight)));
 
     }
+
+
+    private void chooseProfilePicture() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alert_dalog_perfil, null);
+        builder.setCancelable(false);
+        builder.setView(dialogView);
+
+        ImageView imageViewADPPCamera = dialogView.findViewById(R.id.imageViewADPPCamera);
+        ImageView imageViewADPPGallery = dialogView.findViewById(R.id.imageViewADPPGallery);
+
+        final AlertDialog alertDialogProfilePicture = builder.create();
+        alertDialogProfilePicture.show();
+
+        imageViewADPPGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takePictureFromGallery();
+                alertDialogProfilePicture.dismiss();
+            }
+        });
+        imageViewADPPCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takePictureFromCamera();
+                alertDialogProfilePicture.dismiss();
+            }
+        });
+    }
+    private void takePictureFromGallery(){
+        Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(pickPhoto, 1);
+    }
+
+    private void takePictureFromCamera(){
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if(takePicture.resolveActivity(getActivity().getPackageManager()) != null){
+            startActivityForResult(takePicture, 2);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode)
+        {
+            case 1:
+                if(resultCode == RESULT_OK){
+                    Uri selectedImageUri = data.getData();
+                    imageViewProfilePicture.setImageURI(selectedImageUri);
+                }
+                break;
+            case 2:
+                if(resultCode == RESULT_OK){
+                    Bundle bundle = data.getExtras();
+                    Bitmap bitmapImage = (Bitmap) bundle.get("data");
+                    imageViewProfilePicture.setImageBitmap(bitmapImage);
+                }
+                break;
+        }
+    }
+
+    private boolean checkAndRequestPermissions(){
+        if(Build.VERSION.SDK_INT >= 23){
+            int cameraPermission = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA);
+            if(cameraPermission == PackageManager.PERMISSION_DENIED){
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 20);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 20 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            takePictureFromCamera();
+        }
+        else
+            Toast.makeText(getActivity(), "Permission not Granted", Toast.LENGTH_SHORT).show();
+    }
+
 }
