@@ -50,6 +50,7 @@ public class PipActivity extends AppCompatActivity {
                 pictureInPictureMode();
             }
         });
+
     }
 
     private void setVideoView(Intent intent) {
@@ -61,11 +62,14 @@ public class PipActivity extends AppCompatActivity {
         videoView.setMediaController(mediaController);
         videoView.setVideoURI(videoUri);
 
+
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 Log.d(Tag,"onprepared video prepared, playing ....");
+                mp.setLooping(true);
                 mp.start();
+                pictureInPictureMode();
             }
         });
     }
