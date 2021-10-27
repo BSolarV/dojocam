@@ -116,22 +116,23 @@ public class PipActivity extends AppCompatActivity {
                 });
             }
         };
-        timer.schedule(task, 0, 1000);
+        timer.schedule(task, 0, 1);
     }
 
-    private int duration = 0;
-
-    private void setDuration(){
-        duration = videoView.getDuration();
+    private void continue_video(){
+        videoView.start();
     }
 
     private void updateUI(){
         int current = videoView.getCurrentPosition();
+
+        //Log.d(Tag,"Tiempo: "+current+"");
         if ( current  >= vid_dur) {
             timer.cancel();
         }
         if( current % (vid_dur/5) == 0 && current != 0 ) {
             videoView.pause();
+            Toast.makeText(getApplicationContext(),""+current+"" ,Toast.LENGTH_SHORT).show();
         }
     }
 
