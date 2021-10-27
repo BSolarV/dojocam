@@ -28,7 +28,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:text="Día"
+                    android:text="@string/dia"
                     android:layout_gravity="center_horizontal"
                     android:textAlignment="center" />
 
@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:text="Semana"
+                    android:text="@string/semana"
                     android:layout_gravity="center_horizontal"
                     android:textAlignment="center" />
 
@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:text="Mes"
+                    android:text="@string/mes"
                     android:layout_gravity="center_horizontal"
                     android:textAlignment="center" />
 
@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:text="Año"
+                    android:text="@string/anio"
                     android:layout_gravity="center_horizontal"
                     android:textAlignment="center" />
 
@@ -89,7 +89,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:text="Tiempo de Ejecicio"
+                            android:text="@string/tiempo_ejercicio"
                             android:textAlignment="center" />
 
                         <TextView
@@ -120,7 +120,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:text="% de tiempo Activo"
+                            android:text="@string/porcen_tiempo_act"
                             android:textAlignment="center" />
 
                         <TextView
@@ -154,7 +154,7 @@
                             android:textAlignment="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Calorias" />
+                            android:text="@string/calorias" />
 
                         <TextView
                             android:id="@+id/textView9"
@@ -173,7 +173,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="Postura" />
+                android:text="@string/postura" />
 
             <ImageView
                 android:id="@+id/imageView4"
@@ -188,7 +188,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="Puntuación" />
+                android:text="@string/puntuacion" />
 
             <ImageView
                 android:id="@+id/imageView5"

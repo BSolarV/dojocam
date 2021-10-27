@@ -53,6 +53,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
     TextView title ,desc;
     VideoView vid;
     private String videoId;
+    private String namefile;
     private LoadingDialog loadingDialog = new LoadingDialog(this);
     private ProgressBar progressBar;
 
@@ -158,9 +159,12 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putString("namefile", namefile);
         Intent mainActivity = new Intent(getContext(), Ml_model.class);
+        mainActivity.putExtras(bundle);
         startActivity(mainActivity);
-        getActivity().finish();
+        //getActivity().finish();
 
         //Navigation.findNavController(view).navigate(R.id.practice);
     }
@@ -182,6 +186,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
             //String vid_path = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.braceadas_defensivas1;
             Uri uri = Uri.parse(vid_path);
             vid.setVideoURI(uri);
+            namefile = command.get("id").toString();
             //vid.start();
             loadingDialog.dismissDialog();
 

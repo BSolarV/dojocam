@@ -79,6 +79,8 @@
     <string name="tfe_pe_tv_fps">Fps: %d</string>
     <string name="tfe_pe_tv_device">Device: </string>
     <string name="tfe_pe_tv_classification_value">- %s</string>
+    <string name="close_to_camera">Estas muy cerca de la cámara</string>
+    <string name="body_not_found">No te encuentro, prueba más ilumincación</string>
 
 
 
@@ -100,8 +102,41 @@
     <string name="dif_medio">Medio</string>
     <string name="dif_avanzado">Avanzado</string>
     <string name="dif_start">Practicar</string>
-    <string name="dif_recomendado">Practicar</string>
+    <string name="dificultades">Dificultades</string>
     <string name="ejercicios">Ejercicios</string>
+    <string name="dif_recomendado">Recomendado</string>
+    <string name="dia">Dia</string>
+    <string name="mes">Mes</string>
+    <string name="semana">Semana</string>
+    <string name="anio">Año</string>
+    <string name="calorias">Calorias</string>
+    <string name="porcen_tiempo_act">% de tiempo Activo</string>
+    <string name="tiempo_ejercicio">Tiempo de Ejecicio</string>
+    <string name="postura">Postura</string>
+    <string name="puntuacion">Puntuación</string>
+
+
+
+    // prefil
+    <string name="sexo">Sexo:</string>
+    <string name="nacimiento">Nacimiento:</string>
+    <string name="altura">Altura:</string>
+    <string name="peso">Peso:</string>
+    <string name="btn_actualizar">Actualizar:</string>
+    <string name="btn_cerrar">Cerrar Sesión:</string>
+
+    //dashboard
+    <string name="nombre_recomendado">Patada Abdomen</string>
+    <string name="pregunta">¿Qué quieres hacer hoy?</string>
+    <string name="tecnica">Técnica</string>
+    <string name="fisico">Físico</string>
+    <string name="nombre_tecnica">Braceadas Defensivas</string>
+
+
+    //ex_de
+    <string name="str_descripcion">Descripción</string>
+    <string name="descripcion_tecnica">Alternar golpes de brazos, hacia el frente y luego hacia los costados con la intención de bloquear golpes entrantes.</string>
+    <string name="btn_start">Empezar</string>
 
 
 </resources>

@@ -21,13 +21,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="59dp"
                 android:gravity="center"
-                android:text="Dificultades"
+                android:text="@string/dificultades"
                 android:textSize="22sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:background="@android:color/white"
+                android:background="@color/second_bg"
                 android:elevation="10dp"
                 android:orientation="horizontal"
                 android:padding="10dp">
@@ -52,7 +52,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="Principiante"
+                        android:text="@string/dif_principiante"
                         android:textSize="24sp" />
                 </RelativeLayout>
             </LinearLayout>
@@ -67,7 +67,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:background="@android:color/white"
+                android:background="@color/second_bg"
                 android:elevation="10dp"
                 android:orientation="horizontal"
                 android:padding="10dp">
@@ -92,7 +92,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="Intermedio"
+                        android:text="@string/dif_medio"
                         android:textSize="24sp" />
                 </RelativeLayout>
             </LinearLayout>
@@ -105,7 +105,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:background="@android:color/white"
+                android:background="@color/second_bg"
                 android:elevation="10dp"
                 android:orientation="horizontal"
                 android:padding="10dp">
@@ -130,7 +130,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="Avanzado"
+                        android:text="@string/dif_avanzado"
                         android:textSize="24sp" />
                 </RelativeLayout>
             </LinearLayout>

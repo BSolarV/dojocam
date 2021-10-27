@@ -7,18 +7,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.pinneapple.dojocam_app.Login.LoginActivity;
-import com.pinneapple.dojocam_app.databinding.FragmentLoginBinding;
 import com.pinneapple.dojocam_app.databinding.FragmentPerfilBinding;
 import com.pinneapple.dojocam_app.objets.UserData;
 
@@ -26,8 +32,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -35,6 +41,7 @@ import java.util.Objects;
  * Use the {@link Perfil#newInstance} factory method to
  * create an instance of this fragment.
  */
+
 public class Perfil extends Fragment {
 
     private FragmentPerfilBinding binding;
@@ -83,6 +90,7 @@ public class Perfil extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         loadingDialog.startLoadingDialog();
+
     }
 
     @Override
@@ -96,6 +104,7 @@ public class Perfil extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentPerfilBinding.inflate(inflater, container, false);
+
         return binding.getRoot();
     }
 
@@ -126,6 +135,7 @@ public class Perfil extends Fragment {
             loadingDialog.dismissDialog();
         });
 
+
         // Logout
         Button logout = (Button) getView().findViewById(R.id.ProfileLogoutButton);
         logout.setOnClickListener(new View.OnClickListener() {
@@ -137,5 +147,28 @@ public class Perfil extends Fragment {
                 getActivity().finish();
             }
         });
+        Button update_inf = (Button) getView().findViewById(R.id.ProfileUpdatebutton);
+
+        update_inf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Editable height = binding.ProfileHeight.getText();
+                Editable weight = binding.ProfileWeight.getText();
+
+                UpdateData(height,weight);
+            }
+        });
+
+    }
+
+    private void UpdateData(Editable height, Editable weight) {
+        DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+        System.out.println(height);
+        //DocumentReference userReference2 = db.collection("Users").document("bastian.vivar@sansano.usm.cl");
+        //DocumentReference docRef = db.collection("cities").document("DC");
+        userReference.update("height",Integer.parseInt(String.valueOf(height)));
+        userReference.update("weight",Integer.parseInt(String.valueOf(weight)));
+
     }
 }
