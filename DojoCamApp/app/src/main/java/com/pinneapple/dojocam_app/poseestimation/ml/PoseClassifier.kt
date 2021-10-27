@@ -114,7 +114,8 @@ class PoseClassifier(
     fun drawExpectedBody(bitmap: Bitmap, person: Person): Bitmap {
         var outputBitmap = bitmap
         getExpectedBody("0")?.let {
-            outputBitmap = VisualizationUtils.drawBodyKeypoints(
+            it.repositionFromPerson(person)
+            outputBitmap = VisualizationUtils.drawExpectedBodyKeypoints(
                 bitmap,
                 it
             )
