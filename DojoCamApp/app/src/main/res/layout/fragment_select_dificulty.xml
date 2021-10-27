@@ -21,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="59dp"
                 android:gravity="center"
-                android:text="Dificultades"
+                android:text="@string/dificultades"
                 android:textSize="22sp" />
 
             <LinearLayout
@@ -52,7 +52,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="Principiante"
+                        android:text="@string/dif_principiante"
                         android:textSize="24sp" />
                 </RelativeLayout>
             </LinearLayout>
@@ -92,7 +92,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="Intermedio"
+                        android:text="@string/dif_medio"
                         android:textSize="24sp" />
                 </RelativeLayout>
             </LinearLayout>
@@ -130,7 +130,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="Avanzado"
+                        android:text="@string/dif_avanzado"
                         android:textSize="24sp" />
                 </RelativeLayout>
             </LinearLayout>

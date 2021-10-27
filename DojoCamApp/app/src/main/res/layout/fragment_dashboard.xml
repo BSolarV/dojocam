@@ -27,7 +27,7 @@
                     android:layout_weight="1"
                     android:layout_marginVertical="10dp"
                     android:gravity="center"
-                    android:text="Recomendado"
+                    android:text="@string/dif_recomendado"
                     android:textSize="22sp" />
             </LinearLayout>
 
@@ -64,7 +64,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="95dp"
                             android:gravity="center"
-                            android:text="Patada Abdomen"
+                            android:text="@string/nombre_recomendado"
                             android:textSize="22sp" />
 
                         <TextView
@@ -79,7 +79,7 @@
                             android:id="@+id/button2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Practicar" />
+                            android:text="@string/dif_start" />
                     </LinearLayout>
 
                 </RelativeLayout>
@@ -111,7 +111,7 @@
                         android:layout_height="129dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="¿Qué quieres hacer hoy?"
+                        android:text="@string/pregunta"
                         android:textSize="22sp" />
 
                     <LinearLayout
@@ -134,7 +134,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
-                                    android:text="Técnica" />
+                                    android:text="@string/tecnica" />
 
                                 <ImageView
                                     android:id="@+id/imageView7"
@@ -159,7 +159,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
-                                    android:text="Físico" />
+                                    android:text="@string/fisico" />
 
                                 <ImageView
                                     android:id="@+id/imageView8"
