@@ -98,7 +98,7 @@
 
 
     //Nuevos2.0
-    <string name="dif_principiante">Principiante</string>
+    <string name="dif_principiante">Básico</string>
     <string name="dif_medio">Medio</string>
     <string name="dif_avanzado">Avanzado</string>
     <string name="dif_start">Practicar</string>
@@ -130,12 +130,12 @@
     <string name="pregunta">¿Qué quieres hacer hoy?</string>
     <string name="tecnica">Técnica</string>
     <string name="fisico">Físico</string>
-    <string name="nombre_tecnica">Braceadas Defensivas</string>
 
 
     //ex_de
+    <string name="nombre_tecnica">Ejercicio</string>
     <string name="str_descripcion">Descripción</string>
-    <string name="descripcion_tecnica">Alternar golpes de brazos, hacia el frente y luego hacia los costados con la intención de bloquear golpes entrantes.</string>
+    <string name="descripcion_tecnica"></string>
     <string name="btn_start">Empezar</string>
 
 
