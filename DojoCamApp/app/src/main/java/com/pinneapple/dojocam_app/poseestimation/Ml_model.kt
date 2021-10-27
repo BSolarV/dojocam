@@ -135,7 +135,7 @@ class Ml_model : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_ml)
 
-        init = false
+
         //windu
         val b = intent.extras
         namefile = b!!.getString("namefile").toString()
@@ -201,7 +201,7 @@ class Ml_model : AppCompatActivity() {
         if (init){
             PipActivity.pip.finish()
         }
-        init = true
+        //init = true
 
     }
 

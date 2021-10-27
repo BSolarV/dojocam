@@ -20,11 +20,16 @@ import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class PipActivity extends AppCompatActivity {
  
     private Uri videoUri;
     private static final String Tag = "PIP_TAG";
     public static Activity pip;
+
+    private int vid_dur;
 
     private VideoView videoView;
     private ImageButton piptn;
@@ -78,8 +83,9 @@ public class PipActivity extends AppCompatActivity {
                 mp.setLooping(true);
                 mp.start();
                 pictureInPictureMode();
-                int dur = videoView.getDuration();
-                Toast.makeText(getApplicationContext(),""+dur+"" ,Toast.LENGTH_SHORT).show();
+                vid_dur = videoView.getDuration();
+                Toast.makeText(getApplicationContext(),""+vid_dur+"" ,Toast.LENGTH_SHORT).show();
+                timerCounter();
 
             }
         });
@@ -94,6 +100,38 @@ public class PipActivity extends AppCompatActivity {
         }
         else {
             Log.d(Tag,"pictureAndPictureMode: Doesn't support PIP");
+        }
+    }
+    private Timer timer;
+    private void timerCounter(){
+        timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateUI();
+                    }
+                });
+            }
+        };
+        timer.schedule(task, 0, 1000);
+    }
+
+    private int duration = 0;
+
+    private void setDuration(){
+        duration = videoView.getDuration();
+    }
+
+    private void updateUI(){
+        int current = videoView.getCurrentPosition();
+        if ( current  >= vid_dur) {
+            timer.cancel();
+        }
+        if( current % (vid_dur/5) == 0 && current != 0 ) {
+            videoView.pause();
         }
     }
 
