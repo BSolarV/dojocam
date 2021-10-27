@@ -26,7 +26,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Recomendado"
+                    android:text="@string/dif_recomendado"
                     android:textSize="22sp" />
             </LinearLayout>
 
@@ -78,7 +78,7 @@
                             android:id="@+id/button2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Practicar" />
+                            android:text="@string/dif_start" />
                     </LinearLayout>
 
                 </RelativeLayout>
