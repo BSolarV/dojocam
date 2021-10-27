@@ -65,6 +65,11 @@ class Ml_model : AppCompatActivity() {
     //windu
     private lateinit var namefile: String
     private lateinit var vid_path: String
+    private lateinit var videoPip: Intent
+    private var init: Boolean = false
+
+
+
 
     private lateinit var tvScore: TextView
     private lateinit var tvFPS: TextView
@@ -130,18 +135,21 @@ class Ml_model : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_ml)
 
+        init = false
         //windu
         val b = intent.extras
         namefile = b!!.getString("namefile").toString()
         vid_path = b!!.getString("vid_path").toString()
         //kuro
 
-        val videoPip = Intent(this, PipActivity::class.java)
+        videoPip = Intent(this, PipActivity::class.java)
         videoPip.putExtra(
             "videoUrl",
             vid_path
         )
         startActivity(videoPip)
+
+
 
 
         // keep screen on while app is running
@@ -179,6 +187,7 @@ class Ml_model : AppCompatActivity() {
 
     override fun onResume() {
         cameraSource?.resume()
+
         super.onResume()
     }
 
@@ -186,6 +195,14 @@ class Ml_model : AppCompatActivity() {
         cameraSource?.close()
         cameraSource = null
         super.onPause()
+    }
+    override fun onStop() {
+        super.onStop()
+        if (init){
+            PipActivity.pip.finish()
+        }
+        init = true
+
     }
 
     // check if permission is granted or not.

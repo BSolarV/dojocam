@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.PictureInPictureParams;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -16,12 +17,14 @@ import android.util.Rational;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.MediaController;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 public class PipActivity extends AppCompatActivity {
  
     private Uri videoUri;
     private static final String Tag = "PIP_TAG";
+    public static Activity pip;
 
     private VideoView videoView;
     private ImageButton piptn;
@@ -34,6 +37,8 @@ public class PipActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pip);
 
         actionBar = getSupportActionBar();
+
+        pip = this;
 
         videoView = findViewById(R.id.videoView);
         piptn = findViewById(R.id.piptn);
@@ -63,6 +68,9 @@ public class PipActivity extends AppCompatActivity {
         videoView.setVideoURI(videoUri);
 
 
+
+
+
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
@@ -70,6 +78,9 @@ public class PipActivity extends AppCompatActivity {
                 mp.setLooping(true);
                 mp.start();
                 pictureInPictureMode();
+                int dur = videoView.getDuration();
+                Toast.makeText(getApplicationContext(),""+dur+"" ,Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -132,4 +143,6 @@ public class PipActivity extends AppCompatActivity {
             videoView.stopPlayback();
         }
     }
+
+
 }
