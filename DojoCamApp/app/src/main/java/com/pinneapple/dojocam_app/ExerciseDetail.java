@@ -55,6 +55,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
     VideoView vid;
     private String videoId;
     private String namefile;
+    private String vid_path;
     private LoadingDialog loadingDialog = new LoadingDialog(this);
     private ProgressBar progressBar;
 
@@ -158,15 +159,13 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         Bundle bundle = new Bundle();
         bundle.putString("namefile", namefile);
+        bundle.putString("vid_path", vid_path);
         Intent mainActivity = new Intent(getContext(), Ml_model.class);
         mainActivity.putExtras(bundle);
         startActivity(mainActivity);
         //getActivity().finish();
 
-        DocumentReference data = db.collection("ejercicios").document(videoId);
-        Intent videoPip = new Intent(getContext(),PipActivity.class);
-        videoPip.putExtra("videoUrl","https://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4");
-        startActivity(videoPip);
+
         //Navigation.findNavController(view).navigate(R.id.practice);
     }
 
@@ -183,7 +182,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
             title.setText(command.get("nombre").toString());
             desc.setText(command.get("descripcion").toString());
             //vid.setText(command.get("authorEmail").toString());
-            String vid_path = command.get("vid_path").toString();
+            vid_path = command.get("vid_path").toString();
             //String vid_path = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.braceadas_defensivas1;
             Uri uri = Uri.parse(vid_path);
             vid.setVideoURI(uri);
