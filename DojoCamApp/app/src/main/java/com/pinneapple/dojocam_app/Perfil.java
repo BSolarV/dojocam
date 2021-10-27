@@ -139,14 +139,11 @@ public class Perfil extends Fragment {
             UserData user = command.toObject(UserData.class);
             assert user != null;
 
-            
 
             //imageViewProfilePicture.setImageURI(selectedImageUri);
 
-
             binding.ProfileFirstName.setText( user.getFirstName() );
-            binding.ProfileLastName.setText( user.getLastName() );
-
+            binding.ProfileLastName.setText( user.getLastName());
             // Sex Spinner
             // Create an ArrayAdapter using the string array and a default spinner layout
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(),
@@ -183,8 +180,10 @@ public class Perfil extends Fragment {
 
                 Editable height = binding.ProfileHeight.getText();
                 Editable weight = binding.ProfileWeight.getText();
+                Editable firstName = binding.ProfileFirstName.getText();
+                Editable lastName = binding.ProfileLastName.getText();
 
-                UpdateData(height,weight);
+                UpdateData(height,weight,firstName,lastName);
             }
         });
         imageViewProfilePicture = getView().findViewById(R.id.ProfileImage);
@@ -195,13 +194,13 @@ public class Perfil extends Fragment {
             }
         });
     }
-    private void UpdateData(Editable height, Editable weight) {
+    private void UpdateData(Editable height, Editable weight, Editable firstName, Editable lastName) {
         DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
-        System.out.println(height);
-//DocumentReference userReference2 = db.collection("Users").document("bastian.vivar@sansano.usm.cl");
-//DocumentReference docRef = db.collection("cities").document("DC");
+
         userReference.update("height",Integer.parseInt(String.valueOf(height)));
         userReference.update("weight",Integer.parseInt(String.valueOf(weight)));
+        userReference.update("firstName",(String.valueOf(firstName)));
+        userReference.update("lastName",(String.valueOf(lastName)));
     }
 
     private void chooseProfilePicture() {
@@ -274,7 +273,7 @@ public class Perfil extends Fragment {
         StorageReference ImagesRef = storageRef.child("images/" + Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()) + ".jpg");
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, baos);
         byte[] data = baos.toByteArray();
         UploadTask uploadTask = ImagesRef.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {
