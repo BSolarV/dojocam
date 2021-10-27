@@ -23,9 +23,10 @@
                 android:layout_gravity="center"
                 android:layout_width="180dp"
                 android:layout_height="180dp"
+                android:background="@color/black"
                 tools:src="@tools:sample/avatars"
                 android:contentDescription="@string/imagenRegister" />
-
+<!--
             <ImageView
                 android:id="@+id/ProfileImagePen"
                 android:layout_width="50dp"
@@ -37,7 +38,7 @@
                 android:src="@android:drawable/ic_menu_edit"
                 android:contentDescription="@string/imagenRegister"
                 android:layout_marginEnd="-65dp" />
-
+!-->
             <TextView
                 android:id="@+id/ProfileFirstName"
                 android:layout_width="match_parent"

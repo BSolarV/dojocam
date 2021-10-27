@@ -33,6 +33,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.firestore.DocumentReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
@@ -63,6 +64,7 @@ class Ml_model : AppCompatActivity() {
 
     //windu
     private lateinit var namefile: String
+    private lateinit var vid_path: String
 
     private lateinit var tvScore: TextView
     private lateinit var tvFPS: TextView
@@ -131,6 +133,15 @@ class Ml_model : AppCompatActivity() {
         //windu
         val b = intent.extras
         namefile = b!!.getString("namefile").toString()
+        vid_path = b!!.getString("vid_path").toString()
+        //kuro
+
+        val videoPip = Intent(this, PipActivity::class.java)
+        videoPip.putExtra(
+            "videoUrl",
+            vid_path
+        )
+        startActivity(videoPip)
 
 
         // keep screen on while app is running
