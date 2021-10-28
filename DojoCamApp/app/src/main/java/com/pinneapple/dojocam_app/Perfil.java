@@ -1,14 +1,17 @@
 package com.pinneapple.dojocam_app;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
 
 //import static io.grpc.Context.LazyStorage.storage;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,8 +22,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,11 +39,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.OnProgressListener;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -48,7 +56,13 @@ import com.pinneapple.dojocam_app.objets.UserData;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -67,6 +81,9 @@ public class Perfil extends Fragment {
 
     ImageView imageViewProfilePicture;
 
+    private String imageId;
+    private String image_path;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -83,6 +100,7 @@ public class Perfil extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     StorageReference sref = FirebaseStorage.getInstance().getReference();
+    StorageReference mStorageReference;
 
 
     public Perfil() {
@@ -115,32 +133,50 @@ public class Perfil extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         loadingDialog.startLoadingDialog();
-
     }
 
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+        if (SDK_INT > 8)
+        {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                    .permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            //your codes here
+
+        }
         setUp();
     }
-
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentPerfilBinding.inflate(inflater, container, false);
-
         return binding.getRoot();
     }
 
     void setUp(){
         DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+        //Uri downloadURI = sref.child(Objects.requireNonNull("images/"+FirebaseAuth.getInstance().getCurrentUser().getEmail())+".jpg").getDownloadUrl().getResult();
+
+        //imageViewProfilePicture.setImageURI(downloadURI);
+        sref.child("images/" + Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail())+ ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                System.out.println(uri);
+                Bitmap bm = getImageBitmap(uri.toString());
+                imageViewProfilePicture.setImageBitmap(bm);
+            }
+        });
+
+
         userReference.get().addOnSuccessListener(command -> {
             UserData user = command.toObject(UserData.class);
             assert user != null;
 
 
-            //imageViewProfilePicture.setImageURI(selectedImageUri);
 
             binding.ProfileFirstName.setText( user.getFirstName() );
             binding.ProfileLastName.setText( user.getLastName());
@@ -194,6 +230,22 @@ public class Perfil extends Fragment {
             }
         });
     }
+    private Bitmap getImageBitmap(String url) {
+        Bitmap bm = null;
+        try {
+            URL aURL = new URL(url);
+            URLConnection conn = aURL.openConnection();
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(is);
+            bm = BitmapFactory.decodeStream(bis);
+            bis.close();
+            is.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Error getting bitmap", e);
+        }
+        return bm;
+    }
     private void UpdateData(Editable height, Editable weight, Editable firstName, Editable lastName) {
         DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
 
@@ -212,6 +264,7 @@ public class Perfil extends Fragment {
 
         ImageView imageViewADPPCamera = dialogView.findViewById(R.id.imageViewADPPCamera);
         ImageView imageViewADPPGallery = dialogView.findViewById(R.id.imageViewADPPGallery);
+        ImageView background = dialogView.findViewById(R.id.notification_background);
 
         final AlertDialog alertDialogProfilePicture = builder.create();
         alertDialogProfilePicture.show();
@@ -227,6 +280,13 @@ public class Perfil extends Fragment {
             @Override
             public void onClick(View view) {
                 takePictureFromCamera();
+                alertDialogProfilePicture.dismiss();
+            }
+        });
+        background.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //SetBackground();
+                // here I want to dismiss it after SetBackground() method
                 alertDialogProfilePicture.dismiss();
             }
         });
@@ -258,10 +318,6 @@ public class Perfil extends Fragment {
                     Bundle bundle = data.getExtras();
                     Bitmap bitmapImage = (Bitmap) bundle.get("data");
                     imageViewProfilePicture.setImageBitmap(bitmapImage);
-
-                    //DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
-                    //userReference.update("F_perfil",bitmapImage);
-
                     uploadFile(bitmapImage);
                 }
                 break;
@@ -290,10 +346,6 @@ public class Perfil extends Fragment {
                                 "Actualizado",
                                 Toast.LENGTH_SHORT)
                         .show();
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                //Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                //sendMsg("" + downloadUrl, 2);
-                //Log.d("downloadUrl-->", "" + downloadUrl);
             }
         });
     }
@@ -311,8 +363,6 @@ public class Perfil extends Fragment {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReferenceFromUrl("gs://dojocam-app.appspot.com");
 
-            // adding listeners on upload
-            // or failure of image
             StorageReference ImagesRef = storageRef.child("images/" + Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()) + ".jpg");
             ImagesRef.putFile(selectedImageUri)
                     .addOnSuccessListener(
