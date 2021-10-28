@@ -42,6 +42,7 @@ import org.tensorflow.lite.examples.poseestimation.ml.ModelType
 import org.tensorflow.lite.examples.poseestimation.ml.MoveNet
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
+import java.util.*
 
 
 class Ml_model : AppCompatActivity() {
@@ -351,6 +352,28 @@ class Ml_model : AppCompatActivity() {
                 )
             }
         }
+    }
+
+    private var timer: Timer? = null
+    private fun timerCounter() {
+        timer = Timer()
+        val task: TimerTask = object : TimerTask() {
+            override fun run() {
+                runOnUiThread { updateUI() }
+            }
+        }
+        timer!!.schedule(task, 0, 500)
+    }
+    fun updateUI() {
+        //val current: Int = videoView.getCurrentPosition()
+
+        //Log.d(Tag,"Tiempo: "+current+"");
+
+        if ( cameraSource?.checkPose(0.toString()) == true ) {
+            timer!!.cancel()
+            Toast.makeText(applicationContext,"Lo Hicimos" ,Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     /**
