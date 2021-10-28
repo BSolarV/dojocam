@@ -17,13 +17,12 @@ package com.pinneapple.dojocam_app
 //package org.tensorflow.lite.examples.poseestimation
 
 import android.Manifest
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.*
-import android.util.Log
+import android.os.Bundle
+import android.os.Process
 import android.view.SurfaceView
 import android.view.View
 import android.view.WindowManager
@@ -35,7 +34,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.firestore.DocumentReference
-import com.pinneapple.dojocam_app.objets.DataHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
@@ -44,12 +42,6 @@ import org.tensorflow.lite.examples.poseestimation.ml.ModelType
 import org.tensorflow.lite.examples.poseestimation.ml.MoveNet
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
-import java.lang.ref.WeakReference
-import java.util.*
-import android.widget.Toast
-
-
-
 
 
 class Ml_model : AppCompatActivity() {
@@ -76,9 +68,8 @@ class Ml_model : AppCompatActivity() {
     private lateinit var videoPip: Intent
     private var init: Boolean = false
 
-    //private var pipActivity: PipActivity
 
-    //private var dataHoder: DataHolder = DataHolder()
+
 
     private lateinit var tvScore: TextView
     private lateinit var tvFPS: TextView
@@ -142,8 +133,8 @@ class Ml_model : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main_ml)
+
 
         //windu
         val b = intent.extras
@@ -151,16 +142,15 @@ class Ml_model : AppCompatActivity() {
         vid_path = b!!.getString("vid_path").toString()
         //kuro
 
-        val pipActivity = PipActivity();
         videoPip = Intent(this, PipActivity::class.java)
         videoPip.putExtra(
             "videoUrl",
             vid_path
         )
         startActivity(videoPip)
-        timerCounter2()
 
-        //DataHolder.getInstance().save(someId, someObject);
+
+
 
         // keep screen on while app is running
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -189,77 +179,15 @@ class Ml_model : AppCompatActivity() {
             startActivity(intent);
         }
     }
-    private var timer2: Timer? = null
-    private var timer: Timer? = null
-
-    private fun timerCounter2() {
-        timer2 = Timer()
-        val task: TimerTask = object : TimerTask() {
-            override fun run() {
-                runOnUiThread { isVideoStarted() }
-            }
-        }
-        timer2!!.schedule(task, 0, 1000)
-    }
-
-    private fun isVideoStarted(){
-        if (PipActivity.getInstance() != null){
-            if(PipActivity.getInstance().onPlay){
-                timer2!!.cancel()
-                timerCounter()
-            }
-        }
-    }
-
-
-    private fun timerCounter() {
-        timer = Timer()
-        val task: TimerTask = object : TimerTask() {
-            override fun run() {
-                runOnUiThread { updateUI() }
-            }
-        }
-        timer!!.schedule(task, 0, 1)
-    }
-
-    private var onPause:Boolean = false
-    fun updateUI() {
-        val current: Int = PipActivity.getInstance().videoTime
-
-        //Log.d(Tag,"Tiempo: "+current+"");
-        if (current >= PipActivity.getInstance().videoDuration) {
-            timer!!.cancel()
-        }
-        /*if (current % (PipActivity.getInstance().videoDuration / 5) == 0 && current != 0) {
-            PipActivity.getInstance().pauseVideo()
-            //Toast.makeText(applicationContext, "" + current + "", Toast.LENGTH_SHORT).show()
-        }*/
-        if (!onPause && current != null && PipActivity.getInstance().videoDuration != null) {
-            if ( current % (PipActivity.getInstance().videoDuration / 5) == 0 && current != 0) {
-                onPause = true
-                PipActivity.getInstance().pauseVideo()
-            }
-        }else if( onPause ) {
-            var r = cameraSource?.checkPose(current.toString())
-            Log.i("THREAD ML", "*********R: "+r+"*************")
-            if( r == true ){
-                onPause = false
-                PipActivity.getInstance().continueVideo()
-            }
-
-        }
-    }
-
-
 
     override fun onStart() {
         super.onStart()
-        openCamera()
+
     }
 
     override fun onResume() {
+        openCamera()
         cameraSource?.resume()
-
         super.onResume()
     }
 
@@ -268,14 +196,14 @@ class Ml_model : AppCompatActivity() {
         cameraSource = null
         super.onPause()
     }
-    override fun onStop() {
+    /*override fun onStop() {
         super.onStop()
-        /*if (init){
+        if (init){
             PipActivity.pip.finish()
-        }*/
+        }
         //init = true
 
-    }
+    }*/
 
     // check if permission is granted or not.
     private fun isCameraPermissionGranted(): Boolean {
@@ -425,11 +353,6 @@ class Ml_model : AppCompatActivity() {
         }
     }
 
-    fun checkPose(current: Int): Boolean {
-        return if( cameraSource == null ) false
-        else cameraSource!!.checkPose( current.toString() )
-    }
-
     /**
      * Shows an error message dialog.
      */
@@ -454,5 +377,4 @@ class Ml_model : AppCompatActivity() {
             }
         }
     }
-
 }

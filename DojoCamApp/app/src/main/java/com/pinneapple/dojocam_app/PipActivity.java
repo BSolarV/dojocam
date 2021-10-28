@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.PictureInPictureParams;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
@@ -28,10 +27,9 @@ public class PipActivity extends AppCompatActivity {
  
     private Uri videoUri;
     private static final String Tag = "PIP_TAG";
-    private static PipActivity pip;
+    public static Activity pip;
 
     private int vid_dur;
-    private boolean started = false;
 
     private VideoView videoView;
     private ImageButton piptn;
@@ -46,7 +44,6 @@ public class PipActivity extends AppCompatActivity {
         actionBar = getSupportActionBar();
 
         pip = this;
-
 
         videoView = findViewById(R.id.videoView);
         piptn = findViewById(R.id.piptn);
@@ -63,6 +60,7 @@ public class PipActivity extends AppCompatActivity {
                 pictureInPictureMode();
             }
         });
+
     }
 
     private void setVideoView(Intent intent) {
@@ -76,22 +74,26 @@ public class PipActivity extends AppCompatActivity {
 
 
 
+
+
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
+                Log.d(Tag,"onprepared video prepared, playing ....");
                 mp.setLooping(true);
                 mp.start();
                 pictureInPictureMode();
                 vid_dur = videoView.getDuration();
+                //Toast.makeText(getApplicationContext(),""+vid_dur+"" ,Toast.LENGTH_SHORT).show();
                 //timerCounter();
 
-                started = true;
             }
         });
     }
 
     private void pictureInPictureMode(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            Log.d(Tag,"pictureAndPictureMode: supports PIP");
             Rational aspectRation = new Rational(videoView.getWidth(),videoView.getHeight());
             pictureInPictureParams.setAspectRatio(aspectRation).build();
             enterPictureInPictureMode(pictureInPictureParams.build());
@@ -100,7 +102,6 @@ public class PipActivity extends AppCompatActivity {
             Log.d(Tag,"pictureAndPictureMode: Doesn't support PIP");
         }
     }
-
     /*private Timer timer;
     private void timerCounter(){
         timer = new Timer();
@@ -118,34 +119,37 @@ public class PipActivity extends AppCompatActivity {
         timer.schedule(task, 0, 1);
     }
 
-    private Boolean onPause = false;
+    public void continue_video(){
+        videoView.start();
+    }
+
+    public int getVideoTime(){
+        return videoView.getCurrentPosition();
+    }
+
+    public int getVid_dur(){
+        return vid_dur;
+    }
 
     public void updateUI(){
-
         int current = videoView.getCurrentPosition();
 
+        //Log.d(Tag,"Tiempo: "+current+"");
         if ( current  >= vid_dur) {
             timer.cancel();
         }
-        if( !onPause && current != 0 && current % (vid_dur/5) <= 1) {
-            onPause = true;
+        if( current % (vid_dur/5) == 0 && current != 0 ) {
             videoView.pause();
-
-            if( Ml_model != null && ml_model.checkPose(current) ) {
-                continueVideo();
-                onPause = false;
-            } else {
-                onPause = false;
-            }
+            Toast.makeText(getApplicationContext(),""+current+"" ,Toast.LENGTH_SHORT).show();
         }
     }*/
-
 
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
             if(!isInPictureInPictureMode()){
+                Log.d(Tag,"onUserLeaveHint: Was not in PIP");
                 pictureInPictureMode();
             }
             else{
@@ -160,10 +164,12 @@ public class PipActivity extends AppCompatActivity {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             if(isInPictureInPictureMode()){
+                Log.d(Tag,"onPictureAndPictureModeChanged: entered Pip");
                 piptn.setVisibility(View.GONE);
                 /*actionBar.hide();*/
             }
             else{
+                Log.d(Tag,"onPictureAndPictureModeChanged: exited Pip");
                 piptn.setVisibility(View.VISIBLE);
                 /*actionBar.show();*/
             }
@@ -173,6 +179,7 @@ public class PipActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        Log.d(Tag,"onNewIntent: play new video");
         setVideoView(intent);
     }
 
@@ -184,30 +191,5 @@ public class PipActivity extends AppCompatActivity {
         }
     }
 
-    public void pauseVideo(){
-        videoView.pause();
-    }
 
-    public void continueVideo(){
-        videoView.start();
-    }
-
-    public Integer getVideoDuration() {
-        return videoView.getDuration();
-    }
-
-    public Integer getVideoTime() {
-        return videoView.getCurrentPosition();
-    }
-
-    public boolean getOnPlay(){ return started;}
-
-    public static PipActivity getInstance(){
-        if (pip != null) {
-            return pip;
-        }
-        else{
-            return null;
-        }
-    }
 }

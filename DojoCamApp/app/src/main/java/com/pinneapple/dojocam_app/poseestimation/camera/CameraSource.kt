@@ -51,6 +51,9 @@ class CameraSource(
     private var frameProcessedInOneSecondInterval = 0
     private var framesPerSecond = 0
 
+    private var person: Person? = null
+    private lateinit var outputBitmap:Bitmap
+
     /** Detects, characterizes, and connects to a CameraDevice (used for all camera operations) */
     private val cameraManager: CameraManager by lazy {
         val context = surfaceView.context
@@ -221,8 +224,8 @@ class CameraSource(
 
     // process image
     private fun processImage(bitmap: Bitmap) {
-        var outputBitmap = bitmap
-        var person: Person? = null
+        outputBitmap = bitmap
+
         var classificationResult: List<Pair<String, Float>>? = null
 
         synchronized(lock) {
@@ -314,9 +317,14 @@ class CameraSource(
     }
 
     fun checkPose( target: String ): Boolean {
-        Log.i( "INFO", "\n\n\n\n\n\n\n\n\n\n\nEsperando 2000 milis\n\n\n\n\n\n\n\n\n\n\n\n\n" )
-        Thread.sleep(2000);
-        return true;
+        var difference : Int = 9999
+        classifier?.run {
+            difference = PoseClassifier.getExpectedBody(target)?.let { person?.getDiference(it) }
+                ?:9999
+        }
+        //outputBitmap = VisualizationUtils.drawBodyKeypointsError(outputBitmap, "Difference: "+difference+"")
+        Log.i(TAG, "checkPose: Difference:" + difference+"")
+        return difference < 500;
     }
 
 }

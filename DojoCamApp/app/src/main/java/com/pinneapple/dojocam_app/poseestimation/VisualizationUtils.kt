@@ -79,9 +79,19 @@ object VisualizationUtils {
             color = Color.CYAN
             style = Paint.Style.FILL
         }
+        val paintLine = Paint().apply {
+            strokeWidth = 2f
+            color = Color.BLUE
+            style = Paint.Style.FILL
+        }
 
         val output = input.copy(Bitmap.Config.ARGB_8888,true)
         val originalSizeCanvas = Canvas(output)
+        bodyJoints.forEach {
+            val pointA = person.keyPoints[it.first.position].coordinate
+            val pointB = person.keyPoints[it.second.position].coordinate
+            originalSizeCanvas.drawLine(pointA.x, pointA.y, pointB.x, pointB.y, paintLine)
+        }
 
         person.keyPoints.forEach { point ->
             originalSizeCanvas.drawCircle(
