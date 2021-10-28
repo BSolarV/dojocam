@@ -79,9 +79,19 @@ object VisualizationUtils {
             color = Color.CYAN
             style = Paint.Style.FILL
         }
+        val paintLine = Paint().apply {
+            strokeWidth = 2f
+            color = Color.BLUE
+            style = Paint.Style.FILL
+        }
 
         val output = input.copy(Bitmap.Config.ARGB_8888,true)
         val originalSizeCanvas = Canvas(output)
+        bodyJoints.forEach {
+            val pointA = person.keyPoints[it.first.position].coordinate
+            val pointB = person.keyPoints[it.second.position].coordinate
+            originalSizeCanvas.drawLine(pointA.x, pointA.y, pointB.x, pointB.y, paintLine)
+        }
 
         person.keyPoints.forEach { point ->
             originalSizeCanvas.drawCircle(
@@ -132,6 +142,58 @@ object VisualizationUtils {
             msg,
             originalSizeCanvas.width /2f,
             size+offset,
+            textPaint
+        )
+        return output
+    }
+
+    fun drawFeedback(input: Bitmap, status: Int): Bitmap {
+
+        val size = 20f
+        val offset = 8f
+
+        val feedbackColor: Int
+        val text: String
+        if( status == 1 ){
+            feedbackColor = Color.GREEN
+            text = "✓"
+        }else if( status == 2 ){
+            feedbackColor = Color.BLUE
+            text = "-"
+        }else{
+            feedbackColor = Color.RED
+            text = "✖"
+        }
+
+        val paintCircle = Paint().apply {
+            strokeWidth = 10f
+            color = feedbackColor
+            style = Paint.Style.FILL
+        }
+
+        val textPaint = Paint().apply {
+            strokeWidth = 700f
+            color = Color.WHITE
+            style = Paint.Style.FILL
+            textSize = size
+            textAlign = Paint.Align.CENTER
+        }
+
+        val output = input.copy(Bitmap.Config.ARGB_8888,true)
+
+        val originalSizeCanvas = Canvas(output)
+
+        originalSizeCanvas.drawCircle(
+            originalSizeCanvas.width - size/2f - offset,
+            size/2f + offset,
+            size,
+            paintCircle
+        )
+
+        originalSizeCanvas.drawText(
+            text,
+            originalSizeCanvas.width - size/2f - offset,
+            size/2f + offset,
             textPaint
         )
         return output

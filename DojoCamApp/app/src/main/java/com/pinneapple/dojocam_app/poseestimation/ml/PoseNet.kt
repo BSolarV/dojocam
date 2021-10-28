@@ -82,36 +82,21 @@ class PoseNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
     override fun estimateSinglePose(bitmap: Bitmap): Person {
         val estimationStartTimeNanos = SystemClock.elapsedRealtimeNanos()
         val inputArray = arrayOf(processInputImage(bitmap).tensorBuffer.buffer)
-        Log.i(
-            TAG,
-            String.format(
-                "Scaling to [-1,1] took %.2f ms",
-                (SystemClock.elapsedRealtimeNanos() - estimationStartTimeNanos) / 1_000_000f
-            )
-        )
+
 
         val outputMap = initOutputMap(interpreter)
 
         val inferenceStartTimeNanos = SystemClock.elapsedRealtimeNanos()
         interpreter.runForMultipleInputsOutputs(inputArray, outputMap)
         lastInferenceTimeNanos = SystemClock.elapsedRealtimeNanos() - inferenceStartTimeNanos
-        Log.i(
-            TAG,
-            String.format("Interpreter took %.2f ms", 1.0f * lastInferenceTimeNanos / 1_000_000)
-        )
+
 
         val heatmaps = outputMap[0] as Array<Array<Array<FloatArray>>>
         val offsets = outputMap[1] as Array<Array<Array<FloatArray>>>
 
         val postProcessingStartTimeNanos = SystemClock.elapsedRealtimeNanos()
         val person = postProcessModelOuputs(heatmaps, offsets)
-        Log.i(
-            TAG,
-            String.format(
-                "Postprocessing took %.2f ms",
-                (SystemClock.elapsedRealtimeNanos() - postProcessingStartTimeNanos) / 1_000_000f
-            )
-        )
+
 
         return person
     }

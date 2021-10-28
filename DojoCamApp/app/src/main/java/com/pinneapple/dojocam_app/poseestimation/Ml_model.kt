@@ -21,8 +21,8 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.*
-import android.util.Log
+import android.os.Bundle
+import android.os.Process
 import android.view.SurfaceView
 import android.view.View
 import android.view.WindowManager
@@ -41,7 +41,6 @@ import org.tensorflow.lite.examples.poseestimation.ml.ModelType
 import org.tensorflow.lite.examples.poseestimation.ml.MoveNet
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
-import kotlinx.coroutines.GlobalScope
 
 
 class Ml_model : AppCompatActivity() {
@@ -68,9 +67,8 @@ class Ml_model : AppCompatActivity() {
     private lateinit var videoPip: Intent
     private var init: Boolean = false
 
-    //private var pipActivity: PipActivity
 
-    //private var dataHoder: DataHolder = DataHolder()
+
 
     private lateinit var tvScore: TextView
     private lateinit var tvFPS: TextView
@@ -134,8 +132,8 @@ class Ml_model : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main_ml)
+
 
         //windu
         val b = intent.extras
@@ -143,16 +141,15 @@ class Ml_model : AppCompatActivity() {
         vid_path = b!!.getString("vid_path").toString()
         //kuro
 
-        val pipActivity = PipActivity();
         videoPip = Intent(this, PipActivity::class.java)
         videoPip.putExtra(
             "videoUrl",
             vid_path
         )
         startActivity(videoPip)
-        timerCounter2()
 
-        //DataHolder.getInstance().save(someId, someObject);
+
+
 
         // keep screen on while app is running
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -182,81 +179,14 @@ class Ml_model : AppCompatActivity() {
         }
     }
 
-    private fun timerCounter2() {
-        GlobalScope.launch(Dispatchers.Default) {
-            val job = launch {
-                while ( true ){
-                    if( PipActivity.getInstance() != null && PipActivity.getInstance().onPlay ){
-                        break
-                    }
-                }
-            }
-            job.join()
-            timerCounter()
-        }
-    }
-
-    var videoDuration: Int? = null
-    private fun timerCounter() {
-        GlobalScope.launch(Dispatchers.Default) {
-            val job = launch {
-                while( videoDuration == null )
-                    videoDuration = PipActivity.getInstance().videoDuration
-                }
-            job.join()
-            val job2 = launch {
-                updateUI()
-            }
-            job.join()
-        }
-    }
-
-    private var onPause:Boolean = false
-    private fun updateUI() {
-        if( videoDuration == null ){
-            videoDuration = PipActivity.getInstance().videoDuration
-            updateUI();
-        }
-
-        val current: Int? = PipActivity.getInstance().videoTime
-        if( current == null ) updateUI();
-        if (current >= videoDuration!!) {
-            return
-        }
-        if (!onPause ) {
-            if ( current % (videoDuration?.div(5)!!) == 0 && current != 0) {
-                onPause = true
-                PipActivity.getInstance().pauseVideo()
-                updateUI();
-            }else{
-                updateUI()
-            }
-
-        }else if( onPause ) {
-            GlobalScope.launch(Dispatchers.Default) {
-                var r = false
-                val job = launch { r = cameraSource?.checkPose(current.toString()) == true }
-                job.join()
-                Log.i("THREAD ML", "*********R: "+r+"*************")
-                if( r == true ){
-                    onPause = false
-                    PipActivity.getInstance().continueVideo()
-                }
-                updateUI();
-            }
-        }
-    }
-
-
-
     override fun onStart() {
         super.onStart()
-        openCamera()
+
     }
 
     override fun onResume() {
         openCamera()
-
+        cameraSource?.resume()
         super.onResume()
     }
 
@@ -265,14 +195,14 @@ class Ml_model : AppCompatActivity() {
         cameraSource = null
         super.onPause()
     }
-    override fun onStop() {
+    /*override fun onStop() {
         super.onStop()
-        /*if (init){
+        if (init){
             PipActivity.pip.finish()
-        }*/
+        }
         //init = true
 
-    }
+    }*/
 
     // check if permission is granted or not.
     private fun isCameraPermissionGranted(): Boolean {
@@ -446,5 +376,4 @@ class Ml_model : AppCompatActivity() {
             }
         }
     }
-
 }

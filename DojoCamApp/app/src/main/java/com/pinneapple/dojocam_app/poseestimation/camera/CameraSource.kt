@@ -51,6 +51,9 @@ class CameraSource(
     private var frameProcessedInOneSecondInterval = 0
     private var framesPerSecond = 0
 
+    private var person: Person? = null
+    private lateinit var outputBitmap:Bitmap
+
     /** Detects, characterizes, and connects to a CameraDevice (used for all camera operations) */
     private val cameraManager: CameraManager by lazy {
         val context = surfaceView.context
@@ -73,8 +76,8 @@ class CameraSource(
     private var imageReaderHandler: Handler? = null
     private var cameraId: String = ""
 
-    /** Timer Checker for training process **/
-    private lateinit var timer: Timer
+    /** feedback for training process **/
+    private var feedbackPose: Int = 0
 
     suspend fun initCamera() {
         camera = openCamera(cameraManager, cameraId)
@@ -221,8 +224,8 @@ class CameraSource(
 
     // process image
     private fun processImage(bitmap: Bitmap) {
-        var outputBitmap = bitmap
-        var person: Person? = null
+        outputBitmap = bitmap
+
         var classificationResult: List<Pair<String, Float>>? = null
 
         synchronized(lock) {
@@ -246,7 +249,7 @@ class CameraSource(
     }
 
     private fun visualize(person: Person, bitmap: Bitmap) {
-        val outputBitmap: Bitmap
+        var outputBitmap: Bitmap
 
         if (person.score > MIN_CONFIDENCE) {
             outputBitmap = VisualizationUtils.drawBodyKeypoints(bitmap, person)
@@ -262,7 +265,9 @@ class CameraSource(
                 }else {
                     VisualizationUtils.drawBodyKeypointsError(bitmap, context.getString(R.string.body_not_found))
                 }
-
+        }
+        if( feedbackPose != 0 ) {
+            outputBitmap = VisualizationUtils.drawFeedback(outputBitmap, feedbackPose)
         }
         val holder = surfaceView.holder
         val surfaceCanvas = holder.lockCanvas()
@@ -313,10 +318,32 @@ class CameraSource(
         fun onDetectedInfo(personScore: Float?, poseLabels: List<Pair<String, Float>>?)
     }
 
-    suspend fun checkPose( target: String ): Boolean {
-        Log.i( "INFO", "\n\n\n\n\n\n\n\n\n\n\nEsperando 2000 milis\n\n\n\n\n\n\n\n\n\n\n\n\n" )
-        Thread.sleep(2000);
-        return true;
+    fun enableFeedbackPose() {
+        feedbackPose = 3
     }
 
+    fun disableFeedbackPose() {
+        feedbackPose = 0
+    }
+
+    fun checkPose( target: String ): Boolean {
+        if( feedbackPose == 0 ) {
+            var difference : Int = 99999999
+            classifier?.run {
+                difference = PoseClassifier.getExpectedBody(target)?.let { person?.getDiference(it) }
+                    ?:99999999
+            }
+            if( difference < 5000 ) {
+                feedbackPose = 1
+            } else if( difference < 10000 ) {
+                feedbackPose = 2
+            } else {
+                feedbackPose = 3
+            }
+            //outputBitmap = VisualizationUtils.drawBodyKeypointsError(outputBitmap, "Difference: "+difference+"")
+            Log.i(TAG, "checkPose: Difference:" + difference+"")
+            return difference < 500;
+        }
+        return false
+    }
 }
