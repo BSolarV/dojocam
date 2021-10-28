@@ -97,12 +97,14 @@ public class PipActivity extends AppCompatActivity {
             Rational aspectRation = new Rational(videoView.getWidth(),videoView.getHeight());
             pictureInPictureParams.setAspectRatio(aspectRation).build();
             enterPictureInPictureMode(pictureInPictureParams.build());
+            //pause_video();
+
         }
         else {
             Log.d(Tag,"pictureAndPictureMode: Doesn't support PIP");
         }
     }
-    /*private Timer timer;
+    private Timer timer;
     private void timerCounter(){
         timer = new Timer();
         TimerTask task = new TimerTask() {
@@ -122,6 +124,9 @@ public class PipActivity extends AppCompatActivity {
     public void continue_video(){
         videoView.start();
     }
+    public void pause_video(){
+        videoView.pause();
+    }
 
     public int getVideoTime(){
         return videoView.getCurrentPosition();
@@ -140,9 +145,9 @@ public class PipActivity extends AppCompatActivity {
         }
         if( current % (vid_dur/5) == 0 && current != 0 ) {
             videoView.pause();
-            Toast.makeText(getApplicationContext(),""+current+"" ,Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(),""+current+"" ,Toast.LENGTH_SHORT).show();
         }
-    }*/
+    }
 
     @Override
     protected void onUserLeaveHint() {
