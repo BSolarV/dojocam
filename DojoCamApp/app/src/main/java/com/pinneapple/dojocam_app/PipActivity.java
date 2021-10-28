@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.PictureInPictureParams;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
@@ -27,9 +28,10 @@ public class PipActivity extends AppCompatActivity {
  
     private Uri videoUri;
     private static final String Tag = "PIP_TAG";
-    public static Activity pip;
+    private static PipActivity pip;
 
     private int vid_dur;
+    private boolean started = false;
 
     private VideoView videoView;
     private ImageButton piptn;
@@ -44,6 +46,7 @@ public class PipActivity extends AppCompatActivity {
         actionBar = getSupportActionBar();
 
         pip = this;
+
 
         videoView = findViewById(R.id.videoView);
         piptn = findViewById(R.id.piptn);
@@ -71,6 +74,8 @@ public class PipActivity extends AppCompatActivity {
         videoView.setMediaController(mediaController);
         videoView.setVideoURI(videoUri);
 
+
+
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
@@ -78,7 +83,9 @@ public class PipActivity extends AppCompatActivity {
                 mp.start();
                 pictureInPictureMode();
                 vid_dur = videoView.getDuration();
-                timerCounter();
+                //timerCounter();
+
+                started = true;
             }
         });
     }
@@ -94,7 +101,7 @@ public class PipActivity extends AppCompatActivity {
         }
     }
 
-    private Timer timer;
+    /*private Timer timer;
     private void timerCounter(){
         timer = new Timer();
         TimerTask task = new TimerTask() {
@@ -113,7 +120,7 @@ public class PipActivity extends AppCompatActivity {
 
     private Boolean onPause = false;
 
-    private void updateUI(){
+    public void updateUI(){
 
         int current = videoView.getCurrentPosition();
 
@@ -131,7 +138,7 @@ public class PipActivity extends AppCompatActivity {
                 onPause = false;
             }
         }
-    }
+    }*/
 
 
     @Override
@@ -193,4 +200,14 @@ public class PipActivity extends AppCompatActivity {
         return videoView.getCurrentPosition();
     }
 
+    public boolean getOnPlay(){ return started;}
+
+    public static PipActivity getInstance(){
+        if (pip != null) {
+            return pip;
+        }
+        else{
+            return null;
+        }
+    }
 }

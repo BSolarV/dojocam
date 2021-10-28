@@ -23,6 +23,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.*
+import android.util.Log
 import android.view.SurfaceView
 import android.view.View
 import android.view.WindowManager
@@ -45,6 +46,10 @@ import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
 import java.lang.ref.WeakReference
 import java.util.*
+import android.widget.Toast
+
+
+
 
 
 class Ml_model : AppCompatActivity() {
@@ -71,7 +76,7 @@ class Ml_model : AppCompatActivity() {
     private lateinit var videoPip: Intent
     private var init: Boolean = false
 
-    private var parcelable
+    //private var pipActivity: PipActivity
 
     //private var dataHoder: DataHolder = DataHolder()
 
@@ -147,14 +152,15 @@ class Ml_model : AppCompatActivity() {
         //kuro
 
         val pipActivity = PipActivity();
-        videoPip = Intent(this, pipActivity)
+        videoPip = Intent(this, PipActivity::class.java)
         videoPip.putExtra(
             "videoUrl",
             vid_path
         )
         startActivity(videoPip)
+        timerCounter2()
 
-        DataHolder.getInstance().save(someId, someObject);
+        //DataHolder.getInstance().save(someId, someObject);
 
         // keep screen on while app is running
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -183,6 +189,68 @@ class Ml_model : AppCompatActivity() {
             startActivity(intent);
         }
     }
+    private var timer2: Timer? = null
+    private var timer: Timer? = null
+
+    private fun timerCounter2() {
+        timer2 = Timer()
+        val task: TimerTask = object : TimerTask() {
+            override fun run() {
+                runOnUiThread { isVideoStarted() }
+            }
+        }
+        timer2!!.schedule(task, 0, 1000)
+    }
+
+    private fun isVideoStarted(){
+        if (PipActivity.getInstance() != null){
+            if(PipActivity.getInstance().onPlay){
+                timer2!!.cancel()
+                timerCounter()
+            }
+        }
+    }
+
+
+    private fun timerCounter() {
+        timer = Timer()
+        val task: TimerTask = object : TimerTask() {
+            override fun run() {
+                runOnUiThread { updateUI() }
+            }
+        }
+        timer!!.schedule(task, 0, 1)
+    }
+
+    private var onPause:Boolean = false
+    fun updateUI() {
+        val current: Int = PipActivity.getInstance().videoTime
+
+        //Log.d(Tag,"Tiempo: "+current+"");
+        if (current >= PipActivity.getInstance().videoDuration) {
+            timer!!.cancel()
+        }
+        /*if (current % (PipActivity.getInstance().videoDuration / 5) == 0 && current != 0) {
+            PipActivity.getInstance().pauseVideo()
+            //Toast.makeText(applicationContext, "" + current + "", Toast.LENGTH_SHORT).show()
+        }*/
+        if (!onPause && current != null && PipActivity.getInstance().videoDuration != null) {
+            if ( current % (PipActivity.getInstance().videoDuration / 5) == 0 && current != 0) {
+                onPause = true
+                PipActivity.getInstance().pauseVideo()
+            }
+        }else if( onPause ) {
+            var r = cameraSource?.checkPose(current.toString())
+            Log.i("THREAD ML", "*********R: "+r+"*************")
+            if( r == true ){
+                onPause = false
+                PipActivity.getInstance().continueVideo()
+            }
+
+        }
+    }
+
+
 
     override fun onStart() {
         super.onStart()
@@ -202,9 +270,9 @@ class Ml_model : AppCompatActivity() {
     }
     override fun onStop() {
         super.onStop()
-        if (init){
+        /*if (init){
             PipActivity.pip.finish()
-        }
+        }*/
         //init = true
 
     }
