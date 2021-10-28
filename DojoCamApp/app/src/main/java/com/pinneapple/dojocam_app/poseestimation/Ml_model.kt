@@ -17,7 +17,6 @@ package com.pinneapple.dojocam_app
 //package org.tensorflow.lite.examples.poseestimation
 
 import android.Manifest
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
@@ -34,8 +33,6 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
-import com.google.firebase.firestore.DocumentReference
-import com.pinneapple.dojocam_app.objets.DataHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
@@ -44,12 +41,7 @@ import org.tensorflow.lite.examples.poseestimation.ml.ModelType
 import org.tensorflow.lite.examples.poseestimation.ml.MoveNet
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
-import java.lang.ref.WeakReference
-import java.util.*
-import android.widget.Toast
-
-
-
+import kotlinx.coroutines.GlobalScope
 
 
 class Ml_model : AppCompatActivity() {
@@ -189,64 +181,69 @@ class Ml_model : AppCompatActivity() {
             startActivity(intent);
         }
     }
-    private var timer2: Timer? = null
-    private var timer: Timer? = null
 
     private fun timerCounter2() {
-        timer2 = Timer()
-        val task: TimerTask = object : TimerTask() {
-            override fun run() {
-                runOnUiThread { isVideoStarted() }
+        GlobalScope.launch(Dispatchers.Default) {
+            val job = launch {
+                while ( true ){
+                    if( PipActivity.getInstance() != null && PipActivity.getInstance().onPlay ){
+                        break
+                    }
+                }
             }
-        }
-        timer2!!.schedule(task, 0, 1000)
-    }
-
-    private fun isVideoStarted(){
-        if (PipActivity.getInstance() != null){
-            if(PipActivity.getInstance().onPlay){
-                timer2!!.cancel()
-                timerCounter()
-            }
+            job.join()
+            timerCounter()
         }
     }
 
-
+    var videoDuration: Int? = null
     private fun timerCounter() {
-        timer = Timer()
-        val task: TimerTask = object : TimerTask() {
-            override fun run() {
-                runOnUiThread { updateUI() }
+        GlobalScope.launch(Dispatchers.Default) {
+            val job = launch {
+                while( videoDuration == null )
+                    videoDuration = PipActivity.getInstance().videoDuration
+                }
+            job.join()
+            val job2 = launch {
+                updateUI()
             }
+            job.join()
         }
-        timer!!.schedule(task, 0, 1)
     }
 
     private var onPause:Boolean = false
-    fun updateUI() {
-        val current: Int = PipActivity.getInstance().videoTime
-
-        //Log.d(Tag,"Tiempo: "+current+"");
-        if (current >= PipActivity.getInstance().videoDuration) {
-            timer!!.cancel()
+    private fun updateUI() {
+        if( videoDuration == null ){
+            videoDuration = PipActivity.getInstance().videoDuration
+            updateUI();
         }
-        /*if (current % (PipActivity.getInstance().videoDuration / 5) == 0 && current != 0) {
-            PipActivity.getInstance().pauseVideo()
-            //Toast.makeText(applicationContext, "" + current + "", Toast.LENGTH_SHORT).show()
-        }*/
-        if (!onPause && current != null && PipActivity.getInstance().videoDuration != null) {
-            if ( current % (PipActivity.getInstance().videoDuration / 5) == 0 && current != 0) {
+
+        val current: Int? = PipActivity.getInstance().videoTime
+        if( current == null ) updateUI();
+        if (current >= videoDuration!!) {
+            return
+        }
+        if (!onPause ) {
+            if ( current % (videoDuration?.div(5)!!) == 0 && current != 0) {
                 onPause = true
                 PipActivity.getInstance().pauseVideo()
-            }
-        }else if( onPause ) {
-            var r = cameraSource?.checkPose(current.toString())
-            Log.i("THREAD ML", "*********R: "+r+"*************")
-            if( r == true ){
-                onPause = false
-                PipActivity.getInstance().continueVideo()
+                updateUI();
+            }else{
+                updateUI()
             }
 
+        }else if( onPause ) {
+            GlobalScope.launch(Dispatchers.Default) {
+                var r = false
+                val job = launch { r = cameraSource?.checkPose(current.toString()) == true }
+                job.join()
+                Log.i("THREAD ML", "*********R: "+r+"*************")
+                if( r == true ){
+                    onPause = false
+                    PipActivity.getInstance().continueVideo()
+                }
+                updateUI();
+            }
         }
     }
 
@@ -258,7 +255,7 @@ class Ml_model : AppCompatActivity() {
     }
 
     override fun onResume() {
-        cameraSource?.resume()
+        openCamera()
 
         super.onResume()
     }
@@ -423,11 +420,6 @@ class Ml_model : AppCompatActivity() {
                 )
             }
         }
-    }
-
-    fun checkPose(current: Int): Boolean {
-        return if( cameraSource == null ) false
-        else cameraSource!!.checkPose( current.toString() )
     }
 
     /**

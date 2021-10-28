@@ -313,7 +313,7 @@ class CameraSource(
         fun onDetectedInfo(personScore: Float?, poseLabels: List<Pair<String, Float>>?)
     }
 
-    fun checkPose( target: String ): Boolean {
+    suspend fun checkPose( target: String ): Boolean {
         Log.i( "INFO", "\n\n\n\n\n\n\n\n\n\n\nEsperando 2000 milis\n\n\n\n\n\n\n\n\n\n\n\n\n" )
         Thread.sleep(2000);
         return true;
