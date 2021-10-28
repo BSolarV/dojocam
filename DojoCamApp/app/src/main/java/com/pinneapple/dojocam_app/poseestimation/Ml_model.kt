@@ -17,12 +17,12 @@ package com.pinneapple.dojocam_app
 //package org.tensorflow.lite.examples.poseestimation
 
 import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Bundle
-import android.os.Process
+import android.os.*
 import android.view.SurfaceView
 import android.view.View
 import android.view.WindowManager
@@ -34,6 +34,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.firestore.DocumentReference
+import com.pinneapple.dojocam_app.objets.DataHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
@@ -42,6 +43,7 @@ import org.tensorflow.lite.examples.poseestimation.ml.ModelType
 import org.tensorflow.lite.examples.poseestimation.ml.MoveNet
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
+import java.lang.ref.WeakReference
 import java.util.*
 
 
@@ -69,10 +71,9 @@ class Ml_model : AppCompatActivity() {
     private lateinit var videoPip: Intent
     private var init: Boolean = false
 
-    // Training process
-    private var timer: Timer? = null
-    private val pipActivity = PipActivity()
+    private var parcelable
 
+    //private var dataHoder: DataHolder = DataHolder()
 
     private lateinit var tvScore: TextView
     private lateinit var tvFPS: TextView
@@ -136,8 +137,8 @@ class Ml_model : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_ml)
 
+        setContentView(R.layout.activity_main_ml)
 
         //windu
         val b = intent.extras
@@ -145,12 +146,15 @@ class Ml_model : AppCompatActivity() {
         vid_path = b!!.getString("vid_path").toString()
         //kuro
 
-        videoPip = Intent(this, PipActivity::class.java)
+        val pipActivity = PipActivity();
+        videoPip = Intent(this, pipActivity)
         videoPip.putExtra(
             "videoUrl",
             vid_path
         )
         startActivity(videoPip)
+
+        DataHolder.getInstance().save(someId, someObject);
 
         // keep screen on while app is running
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -353,28 +357,9 @@ class Ml_model : AppCompatActivity() {
         }
     }
 
-    fun initTimer() {
-        timer = Timer()
-        val task: TimerTask = object : TimerTask() {
-            override fun run() {
-                runOnUiThread { checkTimer() }
-            }
-        }
-        timer!!.schedule(task, 0, 1)
-    }
-
-    private var onPause = false;
-
-    private fun checkTimer() {
-        val videoDuration = pipActivity.videoDuration
-        val current: Int = pipActivity.videoTime
-
-        if (current >= videoDuration) {
-            timer?.cancel()
-        }
-        if (!onPause && current % (videoDuration / 5) <= 2 && current != 0) {
-            pipActivity.pauseVideo()
-        }
+    fun checkPose(current: Int): Boolean {
+        return if( cameraSource == null ) false
+        else cameraSource!!.checkPose( current.toString() )
     }
 
     /**
@@ -401,4 +386,5 @@ class Ml_model : AppCompatActivity() {
             }
         }
     }
+
 }

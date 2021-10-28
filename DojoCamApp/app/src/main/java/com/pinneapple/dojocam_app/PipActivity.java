@@ -36,8 +36,6 @@ public class PipActivity extends AppCompatActivity {
     private ActionBar actionBar;
     private PictureInPictureParams.Builder pictureInPictureParams;
 
-    private Ml_model ml_model = new Ml_model();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +78,6 @@ public class PipActivity extends AppCompatActivity {
                 mp.start();
                 pictureInPictureMode();
                 vid_dur = videoView.getDuration();
-                //ml_model.initTimer();
                 timerCounter();
             }
         });
@@ -114,15 +111,25 @@ public class PipActivity extends AppCompatActivity {
         timer.schedule(task, 0, 1);
     }
 
+    private Boolean onPause = false;
+
     private void updateUI(){
+
         int current = videoView.getCurrentPosition();
 
-        //Log.d(Tag,"Tiempo: "+current+"");
         if ( current  >= vid_dur) {
             timer.cancel();
         }
-        if( current % (vid_dur/5) == 0 && current != 0 ) {
+        if( !onPause && current != 0 && current % (vid_dur/5) <= 1) {
+            onPause = true;
             videoView.pause();
+
+            if( Ml_model != null && ml_model.checkPose(current) ) {
+                continueVideo();
+                onPause = false;
+            } else {
+                onPause = false;
+            }
         }
     }
 
