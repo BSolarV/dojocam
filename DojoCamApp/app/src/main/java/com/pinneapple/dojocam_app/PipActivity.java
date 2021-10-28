@@ -36,6 +36,8 @@ public class PipActivity extends AppCompatActivity {
     private ActionBar actionBar;
     private PictureInPictureParams.Builder pictureInPictureParams;
 
+    private Ml_model ml_model = new Ml_model();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +62,6 @@ public class PipActivity extends AppCompatActivity {
                 pictureInPictureMode();
             }
         });
-
     }
 
     private void setVideoView(Intent intent) {
@@ -72,28 +73,21 @@ public class PipActivity extends AppCompatActivity {
         videoView.setMediaController(mediaController);
         videoView.setVideoURI(videoUri);
 
-
-
-
-
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-                Log.d(Tag,"onprepared video prepared, playing ....");
                 mp.setLooping(true);
                 mp.start();
                 pictureInPictureMode();
                 vid_dur = videoView.getDuration();
-                Toast.makeText(getApplicationContext(),""+vid_dur+"" ,Toast.LENGTH_SHORT).show();
+                //ml_model.initTimer();
                 timerCounter();
-
             }
         });
     }
 
     private void pictureInPictureMode(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            Log.d(Tag,"pictureAndPictureMode: supports PIP");
             Rational aspectRation = new Rational(videoView.getWidth(),videoView.getHeight());
             pictureInPictureParams.setAspectRatio(aspectRation).build();
             enterPictureInPictureMode(pictureInPictureParams.build());
@@ -102,6 +96,7 @@ public class PipActivity extends AppCompatActivity {
             Log.d(Tag,"pictureAndPictureMode: Doesn't support PIP");
         }
     }
+
     private Timer timer;
     private void timerCounter(){
         timer = new Timer();
@@ -119,10 +114,6 @@ public class PipActivity extends AppCompatActivity {
         timer.schedule(task, 0, 1);
     }
 
-    private void continue_video(){
-        videoView.start();
-    }
-
     private void updateUI(){
         int current = videoView.getCurrentPosition();
 
@@ -132,16 +123,15 @@ public class PipActivity extends AppCompatActivity {
         }
         if( current % (vid_dur/5) == 0 && current != 0 ) {
             videoView.pause();
-            Toast.makeText(getApplicationContext(),""+current+"" ,Toast.LENGTH_SHORT).show();
         }
     }
+
 
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
             if(!isInPictureInPictureMode()){
-                Log.d(Tag,"onUserLeaveHint: Was not in PIP");
                 pictureInPictureMode();
             }
             else{
@@ -156,12 +146,10 @@ public class PipActivity extends AppCompatActivity {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             if(isInPictureInPictureMode()){
-                Log.d(Tag,"onPictureAndPictureModeChanged: entered Pip");
                 piptn.setVisibility(View.GONE);
                 /*actionBar.hide();*/
             }
             else{
-                Log.d(Tag,"onPictureAndPictureModeChanged: exited Pip");
                 piptn.setVisibility(View.VISIBLE);
                 /*actionBar.show();*/
             }
@@ -171,7 +159,6 @@ public class PipActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.d(Tag,"onNewIntent: play new video");
         setVideoView(intent);
     }
 
@@ -183,5 +170,20 @@ public class PipActivity extends AppCompatActivity {
         }
     }
 
+    public void pauseVideo(){
+        videoView.pause();
+    }
+
+    public void continueVideo(){
+        videoView.start();
+    }
+
+    public Integer getVideoDuration() {
+        return videoView.getDuration();
+    }
+
+    public Integer getVideoTime() {
+        return videoView.getCurrentPosition();
+    }
 
 }

@@ -42,6 +42,7 @@ import org.tensorflow.lite.examples.poseestimation.ml.ModelType
 import org.tensorflow.lite.examples.poseestimation.ml.MoveNet
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
+import java.util.*
 
 
 class Ml_model : AppCompatActivity() {
@@ -68,7 +69,9 @@ class Ml_model : AppCompatActivity() {
     private lateinit var videoPip: Intent
     private var init: Boolean = false
 
-
+    // Training process
+    private var timer: Timer? = null
+    private val pipActivity = PipActivity()
 
 
     private lateinit var tvScore: TextView
@@ -148,9 +151,6 @@ class Ml_model : AppCompatActivity() {
             vid_path
         )
         startActivity(videoPip)
-
-
-
 
         // keep screen on while app is running
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -350,6 +350,30 @@ class Ml_model : AppCompatActivity() {
                     Manifest.permission.CAMERA
                 )
             }
+        }
+    }
+
+    fun initTimer() {
+        timer = Timer()
+        val task: TimerTask = object : TimerTask() {
+            override fun run() {
+                runOnUiThread { checkTimer() }
+            }
+        }
+        timer!!.schedule(task, 0, 1)
+    }
+
+    private var onPause = false;
+
+    private fun checkTimer() {
+        val videoDuration = pipActivity.videoDuration
+        val current: Int = pipActivity.videoTime
+
+        if (current >= videoDuration) {
+            timer?.cancel()
+        }
+        if (!onPause && current % (videoDuration / 5) <= 2 && current != 0) {
+            pipActivity.pauseVideo()
         }
     }
 

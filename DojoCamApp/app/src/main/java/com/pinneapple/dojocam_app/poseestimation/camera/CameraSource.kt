@@ -73,6 +73,9 @@ class CameraSource(
     private var imageReaderHandler: Handler? = null
     private var cameraId: String = ""
 
+    /** Timer Checker for training process **/
+    private lateinit var timer: Timer
+
     suspend fun initCamera() {
         camera = openCamera(cameraManager, cameraId)
         imageReader =
@@ -309,4 +312,9 @@ class CameraSource(
 
         fun onDetectedInfo(personScore: Float?, poseLabels: List<Pair<String, Float>>?)
     }
+
+    fun checkPose( target: String ): Boolean {
+        return true;
+    }
+
 }
