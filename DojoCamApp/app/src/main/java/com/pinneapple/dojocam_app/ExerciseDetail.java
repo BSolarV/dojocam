@@ -182,8 +182,8 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
             title.setText(command.get("nombre").toString());
             desc.setText(command.get("descripcion").toString());
             //vid.setText(command.get("authorEmail").toString());
-            //vid_path = command.get("vid_path").toString();
-            vid_path = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.braceadas_defensivas1;
+            vid_path = command.get("vid_path").toString();
+            // vid_path = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.braceadas_defensivas1;
             Uri uri = Uri.parse(vid_path);
             vid.setVideoURI(uri);
             namefile = command.get("id").toString();

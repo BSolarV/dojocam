@@ -13,6 +13,7 @@ import android.os.HandlerThread
 import android.util.Log
 import android.view.Surface
 import android.view.SurfaceView
+import android.widget.Toast
 import com.pinneapple.dojocam_app.R
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.tensorflow.lite.examples.poseestimation.VisualizationUtils
@@ -318,6 +319,10 @@ class CameraSource(
         fun onDetectedInfo(personScore: Float?, poseLabels: List<Pair<String, Float>>?)
     }
 
+    fun getFeedbackStatus(): Boolean {
+        return feedbackPose != 0
+    }
+
     fun enableFeedbackPose() {
         feedbackPose = 3
     }
@@ -327,23 +332,22 @@ class CameraSource(
     }
 
     fun checkPose( target: String ): Boolean {
-        if( feedbackPose == 0 ) {
-            var difference : Int = 99999999
-            classifier?.run {
-                difference = PoseClassifier.getExpectedBody(target)?.let { person?.getDiference(it) }
-                    ?:99999999
-            }
-            if( difference < 5000 ) {
-                feedbackPose = 1
-            } else if( difference < 10000 ) {
-                feedbackPose = 2
-            } else {
-                feedbackPose = 3
-            }
-            //outputBitmap = VisualizationUtils.drawBodyKeypointsError(outputBitmap, "Difference: "+difference+"")
-            Log.i(TAG, "checkPose: Difference:" + difference+"")
-            return difference < 500;
+        var difference : Int = 99999999
+        classifier?.run {
+            difference = PoseClassifier.getExpectedBody(target)?.let { person?.getDiference(it) }
+                ?:99999999
         }
-        return false
+        if( difference < 100 ) {
+            feedbackPose = 1
+            Toast.makeText(surfaceView.context, "Aproved!", Toast.LENGTH_SHORT ).show()
+        } else if( difference < 300 ) {
+            feedbackPose = 2
+        } else {
+            feedbackPose = 3
+        }
+        //outputBitmap = VisualizationUtils.drawBodyKeypointsError(outputBitmap, "Difference: "+difference+"")
+        Log.wtf(TAG, "checkPose: Difference:" + difference+"")
+        return difference < 100;
+
     }
 }

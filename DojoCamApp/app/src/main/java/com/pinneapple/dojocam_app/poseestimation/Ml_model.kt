@@ -34,6 +34,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
 import org.tensorflow.lite.examples.poseestimation.data.Device
@@ -149,7 +151,7 @@ class Ml_model : AppCompatActivity() {
         )
         startActivity(videoPip)
 
-
+        timerCounter()
 
 
         // keep screen on while app is running
@@ -363,16 +365,19 @@ class Ml_model : AppCompatActivity() {
         }
         timer!!.schedule(task, 0, 500)
     }
+
+    private var isChecking: Boolean = false
     fun updateUI() {
-        //val current: Int = videoView.getCurrentPosition()
-
-        //Log.d(Tag,"Tiempo: "+current+"");
-
-        if ( cameraSource?.checkPose(0.toString()) == true ) {
-            timer!!.cancel()
-            Toast.makeText(applicationContext,"Lo Hicimos" ,Toast.LENGTH_SHORT).show();
+        if( cameraSource?.getFeedbackStatus() != true ){
+            cameraSource?.enableFeedbackPose()
         }
 
+        //val current: Int = videoView.getCurrentPosition()
+        //Log.d(Tag,"Tiempo: "+current+"");
+        var result = cameraSource?.checkPose(0.toString())
+        if ( result == true ) {
+            timer!!.cancel()
+        }
     }
 
     /**

@@ -193,7 +193,7 @@ object VisualizationUtils {
         originalSizeCanvas.drawText(
             text,
             originalSizeCanvas.width - size/2f - offset,
-            size/2f + offset,
+            size/2f + offset + offset,
             textPaint
         )
         return output
