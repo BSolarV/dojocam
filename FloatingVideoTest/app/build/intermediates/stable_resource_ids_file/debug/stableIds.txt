@@ -1,0 +1,11 @@
+tk.eatheat.floatingexample:string/app_name = 0x7f040000
+tk.eatheat.floatingexample:style/AppTheme = 0x7f050001
+tk.eatheat.floatingexample:string/start = 0x7f040001
+tk.eatheat.floatingexample:id/button2 = 0x7f020001
+tk.eatheat.floatingexample:string/stop = 0x7f040002
+tk.eatheat.floatingexample:layout/main = 0x7f030000
+tk.eatheat.floatingexample:style/AppBaseTheme = 0x7f050000
+tk.eatheat.floatingexample:id/button1 = 0x7f020000
+tk.eatheat.floatingexample:raw/braceadas_defensivas1 = 0x7f060000
+tk.eatheat.floatingexample:drawable/ic_launcher = 0x7f010001
+tk.eatheat.floatingexample:drawable/floating = 0x7f010000

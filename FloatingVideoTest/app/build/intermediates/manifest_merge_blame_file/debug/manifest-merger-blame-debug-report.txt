@@ -1,0 +1,58 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="tk.eatheat.floatingexample"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+7-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:6:5-8:41
+8        android:minSdkVersion="10"
+8-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:7:9-35
+9        android:targetSdkVersion="18" />
+9-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:8:9-38
+10
+11    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+11-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:10:5-78
+11-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:10:22-75
+12
+13    <application
+13-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:12:5-31:19
+14        android:allowBackup="true"
+14-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:13:9-35
+15        android:debuggable="true"
+16        android:icon="@drawable/ic_launcher"
+16-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:14:9-45
+17        android:label="@string/app_name"
+17-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:15:9-41
+18        android:testOnly="true"
+19        android:theme="@style/AppTheme" >
+19-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:16:9-40
+20        <activity
+20-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:18:9-27:20
+21            android:name="tk.eatheat.floatingexample.MainActivity"
+21-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:19:13-67
+22            android:label="@string/app_name"
+22-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:20:13-45
+23            android:screenOrientation="portrait" >
+23-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:21:13-49
+24            <intent-filter>
+24-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:22:13-26:29
+25                <action android:name="android.intent.action.MAIN" />
+25-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:23:17-69
+25-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:23:25-66
+26
+27                <category android:name="android.intent.category.LAUNCHER" />
+27-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:25:17-77
+27-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:25:27-74
+28            </intent-filter>
+29        </activity>
+30
+31        <service
+31-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:28:9-30:39
+32            android:name="tk.eatheat.floatingexample.FlyBitch"
+32-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:29:13-63
+33            android:exported="true" />
+33-->C:\PinneApple\aaaaaa\app\src\main\AndroidManifest.xml:30:13-36
+34    </application>
+35
+36</manifest>

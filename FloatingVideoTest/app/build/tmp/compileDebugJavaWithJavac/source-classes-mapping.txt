@@ -1,0 +1,10 @@
+tk/eatheat/floatingexample/BuildConfig.java
+ tk.eatheat.floatingexample.BuildConfig
+tk/eatheat/floatingexample/FlyBitch.java
+ tk.eatheat.floatingexample.FlyBitch
+ tk.eatheat.floatingexample.FlyBitch$1
+ tk.eatheat.floatingexample.FlyBitch$2
+tk/eatheat/floatingexample/MainActivity.java
+ tk.eatheat.floatingexample.MainActivity
+ tk.eatheat.floatingexample.MainActivity$1
+ tk.eatheat.floatingexample.MainActivity$2
