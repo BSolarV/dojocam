@@ -416,4 +416,5 @@ public class Perfil extends Fragment {
             Toast.makeText(getActivity(), "Permission not Granted", Toast.LENGTH_SHORT).show();
     }
 
+
 }

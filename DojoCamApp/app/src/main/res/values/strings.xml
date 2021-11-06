@@ -6,6 +6,7 @@
     <string name="title_profile">Perfil</string>
 
     <string name="ConectionError">Ha ocurrido un error de conexión.</string>
+    <string name="preference_file_key">VIDEO_STORAGE</string>
 
     <!-- Login Strins -->
     <string name="email">Email</string>

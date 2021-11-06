@@ -1,17 +1,18 @@
 package com.pinneapple.dojocam_app;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -19,20 +20,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.io.File;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,23 +41,21 @@ import java.util.List;
  */
 public class ExerciseDetail extends Fragment implements View.OnClickListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private SharedPreferences sharedPreferences;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    TextView title ,desc;
-    VideoView vid;
+    private FirebaseStorage storage;
+
+    private LoadingDialog loadingDialog = new LoadingDialog(this);
+    private ProgressBar progressBar;
+
+    private TextView title ,desc;
+    private VideoView vid;
+
     private String videoId;
     private String namefile;
     private String vid_path;
-    private LoadingDialog loadingDialog = new LoadingDialog(this);
-    private ProgressBar progressBar;
+
 
 
     public ExerciseDetail() {
@@ -76,8 +74,6 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
     public static ExerciseDetail newInstance(String param1, String param2) {
         ExerciseDetail fragment = new ExerciseDetail();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -85,15 +81,12 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-        /*videoView = (VideoView) getActivity().findViewById(R.id.videoView);  //casting to VideoView is not Strictly required above API level 26
-        String videoPath = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.braceadas_defensivas1;
-        Uri uri = Uri.parse(videoPath);
-        videoView.setVideoURI(uri); //set the path of the video that we need to use in our VideoView
-        videoView.start();  //start() method of the VideoView class will start the video to play*/
+
+        sharedPreferences = requireContext().getSharedPreferences(
+                requireContext().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        storage = FirebaseStorage.getInstance();
+
     }
 
     @Override
@@ -109,7 +102,6 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         videoId = getArguments().getString("videoId");
-
         title = (TextView) getView().findViewById(R.id.excersiceTitle);
         desc = (TextView)  getView().findViewById(R.id.textView10);
 
@@ -157,14 +149,16 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        Bundle bundle = new Bundle();
-        bundle.putString("namefile", namefile);
-        bundle.putString("vid_path", vid_path);
-        Intent mainActivity = new Intent(getContext(), Ml_model.class);
-        mainActivity.putExtras(bundle);
-        startActivity(mainActivity);
-        //getActivity().finish();
+        if( vid_path != null ){
+            Bundle bundle = new Bundle();
+            bundle.putString("namefile", namefile);
+            bundle.putString("vid_path", vid_path);
+            Intent mainActivity = new Intent(getContext(), Ml_model.class);
+            mainActivity.putExtras(bundle);
+            startActivity(mainActivity);
+        }
 
+        //getActivity().finish();
 
         //Navigation.findNavController(view).navigate(R.id.practice);
     }
@@ -182,11 +176,12 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
             title.setText(command.get("nombre").toString());
             desc.setText(command.get("descripcion").toString());
             //vid.setText(command.get("authorEmail").toString());
-            vid_path = command.get("vid_path").toString();
-            // vid_path = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.braceadas_defensivas1;
-            Uri uri = Uri.parse(vid_path);
-            vid.setVideoURI(uri);
             namefile = command.get("id").toString();
+
+            setVideoPath(requireContext(), namefile);
+
+            // vid_path = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.braceadas_defensivas1;
+
             //vid.start();
             loadingDialog.dismissDialog();
 
@@ -206,7 +201,63 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
             AlertDialog dialog = builder.create();
             dialog.show();
 
-
         });
     }
+
+    public void setVideoPath(Context context, String videoId ) {
+        if( sharedPreferences.contains(videoId) ){
+
+            vid_path = sharedPreferences.getString(videoId, null);
+            Uri uri = Uri.parse( vid_path );
+            vid.setVideoURI(uri);
+
+        }else{
+            downloadFile(context, videoId);
+        }
+    }
+    private void downloadFile(Context context, String videoId) {
+        try {
+            String rootDir = context.getCacheDir()
+                    + File.separator + "Videos";
+            File rootFile = new File(rootDir);
+            if(!rootFile.exists()) {
+                rootFile.mkdirs();
+            }
+
+            StorageReference reference = storage.getReference();
+            StorageReference fileReference = reference.child("Videos/"+videoId+".mp4");
+
+            final File localFile = new File(rootFile,videoId+".mp4");
+
+            fileReference.getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Log.wtf("FIREBASE!", ";local tem file created  created " + localFile.toString());
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString(videoId, localFile.getPath());
+                            editor.commit();
+
+                            vid_path = localFile.getPath();
+                            Uri uri = Uri.parse( vid_path );
+                            vid.setVideoURI(uri);
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Log.wtf("FIREBASE!", ";local tem file not created  created " + exception.toString());
+                            getFragmentManager().popBackStack();
+                        }
+                    });
+
+
+
+        } catch (Exception e) {
+            Log.wtf("Error....", e.toString());
+            getFragmentManager().popBackStack();
+        }
+    }
+
 }

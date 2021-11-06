@@ -23,6 +23,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Process
+import android.provider.Settings
 import android.view.SurfaceView
 import android.view.View
 import android.view.WindowManager
@@ -33,6 +34,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import com.pinneapple.dojocam_app.poseestimation.FloatingVideo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -69,8 +71,6 @@ class Ml_model : AppCompatActivity() {
     private lateinit var vid_path: String
     private lateinit var videoPip: Intent
     private var init: Boolean = false
-
-
 
 
     private lateinit var tvScore: TextView
@@ -142,14 +142,19 @@ class Ml_model : AppCompatActivity() {
         val b = intent.extras
         namefile = b!!.getString("namefile").toString()
         vid_path = b!!.getString("vid_path").toString()
-        //kuro
 
-        videoPip = Intent(this, PipActivity::class.java)
+        //kuro
+        videoPip = Intent(this, FloatingVideo::class.java)
         videoPip.putExtra(
             "videoUrl",
             vid_path
         )
-        startActivity(videoPip)
+        //startActivity(videoPip)
+        if( !Settings.canDrawOverlays(this) ){
+            val myIntent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+            startActivity(myIntent)
+            finish()
+        }
 
         timerCounter()
 
@@ -190,12 +195,28 @@ class Ml_model : AppCompatActivity() {
     override fun onResume() {
         openCamera()
         cameraSource?.resume()
+
+        videoPip = Intent(this, FloatingVideo::class.java)
+
+        videoPip.putExtra(
+            "videoUrl",
+            vid_path
+        )
+        startService( videoPip )
+
         super.onResume()
     }
 
     override fun onPause() {
         cameraSource?.close()
         cameraSource = null
+
+        videoPip = Intent(this, FloatingVideo::class.java)
+        videoPip.putExtra(
+            "videoUrl",
+            vid_path
+        )
+        stopService( videoPip )
         super.onPause()
     }
     /*override fun onStop() {

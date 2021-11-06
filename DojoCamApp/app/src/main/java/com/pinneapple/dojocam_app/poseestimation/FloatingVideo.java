@@ -1,6 +1,4 @@
-package tk.eatheat.floatingexample;
-
-import tk.eatheat.floatingexample.R;
+package com.pinneapple.dojocam_app.poseestimation;
 
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
@@ -10,7 +8,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,20 +22,25 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-public class FlyBitch extends Service {
+import androidx.annotation.RequiresApi;
 
+import com.pinneapple.dojocam_app.R;
+
+public class FloatingVideo extends Service {
 
 	private WindowManager windowManager;
 	private FrameLayout videoContainer;
 	private VideoView chatHead;
+	private String vid_path;
 	private int windowWidth;
 	private int windowHeigth;
 
-	private int MARGIN = 50;
+	private final int MARGIN = 50;
 
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
+		vid_path = intent.getStringExtra("videoUrl");
 		return null;
 	}
 
@@ -57,12 +64,20 @@ public class FlyBitch extends Service {
 
 		chatHead.start();
 
+		int LAYOUT_FLAG;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+		} else {
+			LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+		}
+
 		final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
 				WindowManager.LayoutParams.WRAP_CONTENT,
 				WindowManager.LayoutParams.WRAP_CONTENT,
-				WindowManager.LayoutParams.TYPE_PHONE,
+				WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
 				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
 				PixelFormat.TRANSLUCENT);
+
 
 		params.gravity = 51;
 		params.x = 0;
@@ -195,10 +210,6 @@ public class FlyBitch extends Service {
 
 		translator.setDuration(100);
 		translator.start();
-	}
-
-	private void setNewHeight(){
-
 	}
 
 }

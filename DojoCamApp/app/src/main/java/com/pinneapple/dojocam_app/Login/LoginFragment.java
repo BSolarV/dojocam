@@ -62,24 +62,18 @@ public class LoginFragment extends Fragment {
 
         binding = FragmentLoginBinding.inflate(inflater, container, false);
 
-
         oneTapClient = Identity.getSignInClient(requireActivity());
         signInRequest = BeginSignInRequest.builder()
-                .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
-                        .setSupported(true)
-                        .build())
                 .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                         .setSupported(true)
                         // Your server's client ID, not your Android client ID.
                         .setServerClientId(getString(R.string.AppClientId))
                         // Only show accounts previously used to sign in.
-                        .setFilterByAuthorizedAccounts(true)
+                        .setFilterByAuthorizedAccounts(false)
                         .build())
                 // Automatically sign in when exactly one credential is retrieved.
-                .setAutoSelectEnabled(true)
+                //.setAutoSelectEnabled(true)
                 .build();
-
-
 
         return binding.getRoot();
     }
@@ -132,16 +126,13 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 oneTapClient.beginSignIn(signInRequest)
-                        .addOnSuccessListener(requireActivity(), new OnSuccessListener<BeginSignInResult>() {
-                            @Override
-                            public void onSuccess(BeginSignInResult result) {
-                                try {
-                                    startIntentSenderForResult(
-                                            result.getPendingIntent().getIntentSender(), REQ_ONE_TAP,
-                                            null, 0, 0, 0, null);
-                                } catch (IntentSender.SendIntentException e) {
-                                    Toast.makeText(requireContext(), "Couldn't start One Tap UI: " + e.getLocalizedMessage(), Toast.LENGTH_LONG);
-                                }
+                        .addOnSuccessListener(requireActivity(), result -> {
+                            try {
+                                startIntentSenderForResult(
+                                        result.getPendingIntent().getIntentSender(), REQ_ONE_TAP,
+                                        null, 0, 0, 0, null);
+                            } catch (IntentSender.SendIntentException e) {
+                                Toast.makeText(requireContext(), "Couldn't start One Tap UI: " + e.getLocalizedMessage(), Toast.LENGTH_LONG);
                             }
                         })
                         .addOnFailureListener(requireActivity(), new OnFailureListener() {
@@ -256,6 +247,7 @@ public class LoginFragment extends Fragment {
                                         } else {
                                             // If sign in fails, display a message to the user.
                                             Toast.makeText(requireContext(), task.getException().getMessage(), Toast.LENGTH_LONG);
+                                            showOneTapUI = false;
                                         }
                                     }
                                 });
@@ -273,6 +265,10 @@ public class LoginFragment extends Fragment {
                                         startActivity(mainActivity);
                                         loadingDialog.dismissDialog();
                                         requireActivity().finish();
+                                    }else{
+                                        // If sign in fails, display a message to the user.
+                                        Toast.makeText(requireContext(), resultTask.getException().getMessage(), Toast.LENGTH_LONG);
+                                        showOneTapUI = false;
                                     }
                                 })
                                 .addOnFailureListener(resultTask -> {
@@ -284,10 +280,15 @@ public class LoginFragment extends Fragment {
                                                     NavHostFragment.findNavController(LoginFragment.this)
                                                             .navigate(R.id.action_LoginFragment_to_RegisterDetailsFragment);
                                                     loadingDialog.dismissDialog();
+                                                }else{
+                                                    // If sign in fails, display a message to the user.
+                                                    Toast.makeText(requireContext(), resultTaskRegister.getException().getMessage(), Toast.LENGTH_LONG);
+                                                    showOneTapUI = false;
                                                 }
                                             })
                                             .addOnFailureListener(resultTaskRegister -> {
                                                 loadingDialog.dismissDialog();
+                                                showOneTapUI = false;
                                                 Toast.makeText(requireContext(), resultTaskRegister.getMessage(), Toast.LENGTH_LONG).show();
                                             });
                                 });

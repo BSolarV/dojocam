@@ -10,18 +10,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cf71b717-660a-4061-ab66-b6c8f3bfb040" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/aaaaaa.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DojoCamApp/app/src/main/res/raw/braceadas_defensivas1.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/raw/braceadas_defensivas1.mp4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../DojoCamApp/app/src/main/java/com/pinneapple/dojocam_app/poseestimation/container/VideoContainer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DojoCamApp/app/src/main/java/com/pinneapple/dojocam_app/poseestimation/Ml_model.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../DojoCamApp/app/src/main/java/com/pinneapple/dojocam_app/poseestimation/Ml_model.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.0.2/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.0.2/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../PoseNet-Python/posenet-python" beforeDir="false" afterPath="$PROJECT_DIR$/../PoseNet-Python/posenet-python" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -83,8 +77,8 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
-      <module name="aaaaaa.app" />
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
+      <module name="FloatingVideoTest.app" />
       <option name="DEPLOY" value="true" />
       <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
       <option name="DEPLOY_AS_INSTANT" value="false" />
@@ -163,5 +157,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
