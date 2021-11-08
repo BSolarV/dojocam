@@ -46,6 +46,10 @@ import org.tensorflow.lite.examples.poseestimation.ml.MoveNet
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
 import java.util.*
+import android.content.IntentFilter
+
+
+
 
 
 class Ml_model : AppCompatActivity() {
@@ -71,6 +75,9 @@ class Ml_model : AppCompatActivity() {
     private lateinit var vid_path: String
     private lateinit var videoPip: Intent
     private var init: Boolean = false
+
+    //receiver
+    private var serviceUpdateReceiver: ServiceUpdateReceiver? = null
 
 
     private lateinit var tvScore: TextView
@@ -204,6 +211,10 @@ class Ml_model : AppCompatActivity() {
         )
         startService( videoPip )
 
+        if (serviceUpdateReceiver == null) serviceUpdateReceiver = ServiceUpdateReceiver()
+        val intentFilter = IntentFilter("RefreshTask.REFRESH_DATA_INTENT")
+        registerReceiver(serviceUpdateReceiver, intentFilter)
+
         super.onResume()
     }
 
@@ -217,6 +228,7 @@ class Ml_model : AppCompatActivity() {
             vid_path
         )
         stopService( videoPip )
+        if (serviceUpdateReceiver != null) unregisterReceiver(serviceUpdateReceiver);
         super.onPause()
     }
     /*override fun onStop() {

@@ -41,6 +41,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:127635168063:android:0e4209be666e025312518a",
+        "android_client_info": {
+          "package_name": "com.pinneapple.dojocam_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "127635168063-gngr5s4tfio35rlmi0ec44vgea1kes9n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3rfmMyVrplbFiDYOBVayHNow0vCOOJ1U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "127635168063-gngr5s4tfio35rlmi0ec44vgea1kes9n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

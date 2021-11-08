@@ -64,6 +64,8 @@ public class FloatingVideo extends Service {
 
 		chatHead.start();
 
+		sendBroadcast(new Intent("RefreshTask.REFRESH_DATA_INTENT"));
+
 		int LAYOUT_FLAG;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
