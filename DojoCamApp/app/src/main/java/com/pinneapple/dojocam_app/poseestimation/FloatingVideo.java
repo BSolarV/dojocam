@@ -10,6 +10,7 @@ import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
@@ -25,6 +26,7 @@ import android.widget.VideoView;
 import androidx.annotation.RequiresApi;
 
 import com.pinneapple.dojocam_app.R;
+import com.pinneapple.dojocam_app.objets.LocalBinder;
 
 public class FloatingVideo extends Service {
 
@@ -37,30 +39,36 @@ public class FloatingVideo extends Service {
 
 	private final int MARGIN = 50;
 
-	@Override
-	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
-		vid_path = intent.getStringExtra("videoUrl");
-		return null;
-	}
+	Callbacks activity;
+	private long startTime = 0;
+	private long millis = 0;
+	private final IBinder mBinder = new LocalBinder<>(this);
+	Handler handler = new Handler();
+	Runnable serviceRunnable = new Runnable() {
+		@Override
+		public void run() {
+			millis = System.currentTimeMillis() - startTime;
+			activity.updateClient(millis); //Update Activity (client) by the implementd callback
+			handler.postDelayed(this, 1000);
+		}
+	};
 
-	@SuppressLint("ClickableViewAccessibility")
 	@Override
-	public void onCreate() {
-		super.onCreate();
+	public int onStartCommand(Intent intent, int flags, int startId) {
 
 		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-		videoContainer = new FrameLayout(this);
-		videoContainer.setBackgroundColor(Color.rgb(0, 86, 88));
+		//videoContainer = new FrameLayout(this);
+		//videoContainer.setBackgroundColor(Color.rgb(0, 86, 88));
 
+		vid_path = intent.getStringExtra("videoUrl");
 		chatHead = new VideoView(this);
-
-		videoContainer.addView(chatHead);
-
-		String vid_path = "android.resource://" + getPackageName() + "/" + R.raw.braceadas_defensivas1;
 		Uri uri = Uri.parse(vid_path);
 		chatHead.setVideoURI(uri);
+
+		//videoContainer.addView(chatHead);
+
+		//String vid_path = "android.resource://" + getPackageName() + "/" + R.raw.braceadas_defensivas1
 
 		chatHead.start();
 
@@ -83,13 +91,13 @@ public class FloatingVideo extends Service {
 		params.x = 0;
 		params.y = 100;
 
-		windowManager.addView(videoContainer, params);
+		windowManager.addView(chatHead, params);
 
 		windowWidth = windowManager.getDefaultDisplay().getWidth();
 		windowHeigth = windowManager.getDefaultDisplay().getHeight();
 
 		try {
-			videoContainer.setOnTouchListener(new View.OnTouchListener() {
+			chatHead.setOnTouchListener(new View.OnTouchListener() {
 				private WindowManager.LayoutParams paramsF = params;
 
 				private boolean resize = false;
@@ -174,7 +182,7 @@ public class FloatingVideo extends Service {
 							}
 							windowManager.updateViewLayout(videoContainer, paramsF);
 							break;
-						}
+					}
 
 					return false;
 				}
@@ -182,6 +190,22 @@ public class FloatingVideo extends Service {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+
+		return START_NOT_STICKY;
+	}
+
+	@Override
+	public IBinder onBind(Intent intent) {
+		// TODO Auto-generated method stub
+
+		return mBinder;
+	}
+
+
+	@SuppressLint("ClickableViewAccessibility")
+	@Override
+	public void onCreate() {
+		super.onCreate();
 
 	}
 
@@ -210,6 +234,10 @@ public class FloatingVideo extends Service {
 
 		translator.setDuration(100);
 		translator.start();
+	}
+
+	public interface Callbacks{
+		public void updateClient(long data);
 	}
 
 }

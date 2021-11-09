@@ -48,7 +48,7 @@ import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
 import java.util.*
 
 
-class Ml_model : AppCompatActivity() {
+class Ml_model : AppCompatActivity(){
     companion object {
         private const val FRAGMENT_DIALOG = "dialog"
     }
