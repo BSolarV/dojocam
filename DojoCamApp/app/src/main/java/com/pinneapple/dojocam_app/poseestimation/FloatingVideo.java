@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import android.widget.VideoView;
 import androidx.annotation.RequiresApi;
 
 import com.pinneapple.dojocam_app.R;
+import com.pinneapple.dojocam_app.ServiceUpdateReceiver;
 
 public class FloatingVideo extends Service {
 
@@ -34,6 +36,8 @@ public class FloatingVideo extends Service {
 	private String vid_path;
 	private int windowWidth;
 	private int windowHeigth;
+
+	private ServiceUpdateReceiver serviceUpdateReceiver;
 
 	private final int MARGIN = 50;
 
@@ -64,7 +68,16 @@ public class FloatingVideo extends Service {
 
 		chatHead.start();
 
-		sendBroadcast(new Intent("RefreshTask.REFRESH_DATA_INTENT"));
+		//sendBroadcast(new Intent("RefreshTask.REFRESH_DATA_INTENT"));
+
+
+		//Service listener
+		if (serviceUpdateReceiver == null) serviceUpdateReceiver = new ServiceUpdateReceiver();
+		IntentFilter intentFilter = new IntentFilter("RefreshTask.REFRESH_DATA_INTENT");
+		registerReceiver(serviceUpdateReceiver, intentFilter);
+
+		
+
 
 		int LAYOUT_FLAG;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -76,7 +89,7 @@ public class FloatingVideo extends Service {
 		final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
 				WindowManager.LayoutParams.WRAP_CONTENT,
 				WindowManager.LayoutParams.WRAP_CONTENT,
-				WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+				LAYOUT_FLAG,
 				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
 				PixelFormat.TRANSLUCENT);
 
@@ -187,10 +200,17 @@ public class FloatingVideo extends Service {
 
 	}
 
+
+
+
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		if (chatHead != null) windowManager.removeView(chatHead);
+
+		//Service listener
+		if (serviceUpdateReceiver != null) unregisterReceiver(serviceUpdateReceiver);
 	}
 
 	public void animate(final View v, int startX, int endX, int startY, int endY) {

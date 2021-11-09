@@ -165,6 +165,9 @@ class Ml_model : AppCompatActivity() {
 
         timerCounter()
 
+        //Mandar broadcast
+        sendBroadcast(Intent("RefreshTask.REFRESH_DATA_INTENT"))
+
 
         // keep screen on while app is running
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -192,6 +195,7 @@ class Ml_model : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent);
         }
+
     }
 
     override fun onStart() {
@@ -211,9 +215,11 @@ class Ml_model : AppCompatActivity() {
         )
         startService( videoPip )
 
-        if (serviceUpdateReceiver == null) serviceUpdateReceiver = ServiceUpdateReceiver()
+
+        //Service listener
+        /*if (serviceUpdateReceiver == null) serviceUpdateReceiver = ServiceUpdateReceiver()
         val intentFilter = IntentFilter("RefreshTask.REFRESH_DATA_INTENT")
-        registerReceiver(serviceUpdateReceiver, intentFilter)
+        registerReceiver(serviceUpdateReceiver, intentFilter)*/
 
         super.onResume()
     }
@@ -228,7 +234,9 @@ class Ml_model : AppCompatActivity() {
             vid_path
         )
         stopService( videoPip )
-        if (serviceUpdateReceiver != null) unregisterReceiver(serviceUpdateReceiver);
+
+        //Service listener
+        /*if (serviceUpdateReceiver != null) unregisterReceiver(serviceUpdateReceiver);*/
         super.onPause()
     }
     /*override fun onStop() {
@@ -396,11 +404,13 @@ class Ml_model : AppCompatActivity() {
                 runOnUiThread { updateUI() }
             }
         }
+
         timer!!.schedule(task, 0, 500)
     }
 
     private var isChecking: Boolean = false
     fun updateUI() {
+
         if( cameraSource?.getFeedbackStatus() != true ){
             cameraSource?.enableFeedbackPose()
         }
