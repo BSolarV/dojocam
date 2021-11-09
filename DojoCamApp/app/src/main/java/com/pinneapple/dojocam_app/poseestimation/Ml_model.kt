@@ -415,11 +415,12 @@ class Ml_model : AppCompatActivity(){
             }
         }
 
-        timer!!.schedule(task, 0, 500)
+        timer!!.schedule(task, 0, 1000)
     }
 
     private var isChecking: Boolean = false
     fun updateUI() {
+        sendBroadcast(Intent("RefreshTask.PAUSE_VIDEO"))
 
         if( cameraSource?.getFeedbackStatus() != true ){
             cameraSource?.enableFeedbackPose()
@@ -429,8 +430,13 @@ class Ml_model : AppCompatActivity(){
         //Log.d(Tag,"Tiempo: "+current+"");
         var result = cameraSource?.checkPose(0.toString())
         if ( result == true ) {
-            timer!!.cancel()
+            sendBroadcast(Intent("RefreshTask.START_VIDEO"))
         }
+        //Teminar con el timer
+        /*
+        if (current == videoDuration) {
+            timer!!.cancel()
+        }*/
     }
 
     /**
