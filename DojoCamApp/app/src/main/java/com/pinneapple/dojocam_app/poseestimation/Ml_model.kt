@@ -88,6 +88,9 @@ class Ml_model : AppCompatActivity(){
     private lateinit var tvClassificationValue2: TextView
     private lateinit var tvClassificationValue3: TextView
     private lateinit var swClassification: SwitchCompat
+    private lateinit var mlPlayButton: Button
+    private lateinit var mlPauseButton: Button
+
     private var cameraSource: CameraSource? = null
     private var isClassifyPose = false
     private val requestPermissionLauncher =
@@ -166,6 +169,7 @@ class Ml_model : AppCompatActivity(){
         timerCounter()
 
 
+
         // keep screen on while app is running
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         tvScore = findViewById(R.id.tvScore)
@@ -192,6 +196,16 @@ class Ml_model : AppCompatActivity(){
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent);
         }
+
+        mlPlayButton = findViewById(R.id.MLPlayButton)
+        mlPlayButton.setOnClickListener {
+            sendBroadcast(Intent("RefreshTask.START_VIDEO"))
+        }
+        mlPauseButton = findViewById(R.id.MLPauseButton)
+        mlPauseButton.setOnClickListener {
+            sendBroadcast(Intent("RefreshTask.PAUSE_VIDEO"))
+        }
+
     }
 
     override fun onStart() {
@@ -211,9 +225,11 @@ class Ml_model : AppCompatActivity(){
         )
         startService( videoPip )
 
-        if (serviceUpdateReceiver == null) serviceUpdateReceiver = ServiceUpdateReceiver()
+
+        //Service listener
+        /*if (serviceUpdateReceiver == null) serviceUpdateReceiver = ServiceUpdateReceiver()
         val intentFilter = IntentFilter("RefreshTask.REFRESH_DATA_INTENT")
-        registerReceiver(serviceUpdateReceiver, intentFilter)
+        registerReceiver(serviceUpdateReceiver, intentFilter)*/
 
         super.onResume()
     }
@@ -228,7 +244,9 @@ class Ml_model : AppCompatActivity(){
             vid_path
         )
         stopService( videoPip )
-        if (serviceUpdateReceiver != null) unregisterReceiver(serviceUpdateReceiver);
+
+        //Service listener
+        /*if (serviceUpdateReceiver != null) unregisterReceiver(serviceUpdateReceiver);*/
         super.onPause()
     }
     /*override fun onStop() {
@@ -396,11 +414,13 @@ class Ml_model : AppCompatActivity(){
                 runOnUiThread { updateUI() }
             }
         }
+
         timer!!.schedule(task, 0, 500)
     }
 
     private var isChecking: Boolean = false
     fun updateUI() {
+
         if( cameraSource?.getFeedbackStatus() != true ){
             cameraSource?.enableFeedbackPose()
         }

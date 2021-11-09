@@ -4,7 +4,10 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.net.Uri;
@@ -26,32 +29,19 @@ import android.widget.VideoView;
 import androidx.annotation.RequiresApi;
 
 import com.pinneapple.dojocam_app.R;
-import com.pinneapple.dojocam_app.objets.LocalBinder;
 
 public class FloatingVideo extends Service {
 
 	private WindowManager windowManager;
 	private FrameLayout videoContainer;
 	private VideoView chatHead;
-	private String vid_path;
 	private int windowWidth;
 	private int windowHeigth;
 
+	private ServiceUpdateReceiver serviceUpdateReceiver;
+
 	private final int MARGIN = 50;
 
-	Callbacks activity;
-	private long startTime = 0;
-	private long millis = 0;
-	private final IBinder mBinder = new LocalBinder<>(this);
-	Handler handler = new Handler();
-	Runnable serviceRunnable = new Runnable() {
-		@Override
-		public void run() {
-			millis = System.currentTimeMillis() - startTime;
-			activity.updateClient(millis); //Update Activity (client) by the implementd callback
-			handler.postDelayed(this, 1000);
-		}
-	};
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -61,7 +51,7 @@ public class FloatingVideo extends Service {
 		//videoContainer = new FrameLayout(this);
 		//videoContainer.setBackgroundColor(Color.rgb(0, 86, 88));
 
-		vid_path = intent.getStringExtra("videoUrl");
+		String vid_path = intent.getStringExtra("videoUrl");
 		chatHead = new VideoView(this);
 		Uri uri = Uri.parse(vid_path);
 		chatHead.setVideoURI(uri);
@@ -72,7 +62,18 @@ public class FloatingVideo extends Service {
 
 		chatHead.start();
 
-		sendBroadcast(new Intent("RefreshTask.REFRESH_DATA_INTENT"));
+		//sendBroadcast(new Intent("RefreshTask.REFRESH_DATA_INTENT"));
+
+
+		//Service listener
+		if (serviceUpdateReceiver == null) serviceUpdateReceiver = new ServiceUpdateReceiver();
+
+		IntentFilter intentFilterStart = new IntentFilter("RefreshTask.START_VIDEO");
+		IntentFilter intentFilterStop = new IntentFilter("RefreshTask.PAUSE_VIDEO");
+
+		registerReceiver(serviceUpdateReceiver, intentFilterStart);
+		registerReceiver(serviceUpdateReceiver, intentFilterStop);
+
 
 		int LAYOUT_FLAG;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -84,7 +85,7 @@ public class FloatingVideo extends Service {
 		final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
 				WindowManager.LayoutParams.WRAP_CONTENT,
 				WindowManager.LayoutParams.WRAP_CONTENT,
-				WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+				LAYOUT_FLAG,
 				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
 				PixelFormat.TRANSLUCENT);
 
@@ -146,22 +147,22 @@ public class FloatingVideo extends Service {
 							} else {
 								if( event.getRawX() > (float)windowWidth/2 ){
 									if( event.getRawY() > (float)windowHeigth/2 ){
-										finalX = windowWidth - videoContainer.getWidth() - offset;
-										finalY = windowHeigth - videoContainer.getHeight() - offset;
+										finalX = windowWidth - chatHead.getWidth() - offset;
+										finalY = windowHeigth - chatHead.getHeight() - offset;
 									} else {
-										finalX = windowWidth - videoContainer.getWidth() - offset;
+										finalX = windowWidth - chatHead.getWidth() - offset;
 										finalY = offset;
 									}
 								} else {
 									if( event.getRawY() > (float)windowHeigth/2 ){
 										finalX = offset;
-										finalY = windowHeigth - videoContainer.getHeight() - offset;
+										finalY = windowHeigth - chatHead.getHeight() - offset;
 									} else {
 										finalX = offset;
 										finalY = offset;
 									}
 								}
-								animate(videoContainer, paramsF.x, finalX, paramsF.y, finalY);
+								animate(chatHead, paramsF.x, finalX, paramsF.y, finalY);
 							}
 							break;
 
@@ -182,7 +183,7 @@ public class FloatingVideo extends Service {
 								paramsF.x = initialX + (int) (event.getRawX() - initialTouchX);
 								paramsF.y = initialY + (int) (event.getRawY() - initialTouchY);
 							}
-							windowManager.updateViewLayout(videoContainer, paramsF);
+							windowManager.updateViewLayout(chatHead, paramsF);
 							break;
 					}
 
@@ -199,8 +200,7 @@ public class FloatingVideo extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
-
-		return mBinder;
+		return null;
 	}
 
 
@@ -215,6 +215,9 @@ public class FloatingVideo extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 		if (chatHead != null) windowManager.removeView(chatHead);
+
+		//Service listener
+		if (serviceUpdateReceiver != null) unregisterReceiver(serviceUpdateReceiver);
 	}
 
 	public void animate(final View v, int startX, int endX, int startY, int endY) {
@@ -238,8 +241,34 @@ public class FloatingVideo extends Service {
 		translator.start();
 	}
 
-	public interface Callbacks{
-		public void updateClient(long data);
+
+
+	private void startVideo(){
+		chatHead.start();
+	}
+
+
+	private void resumeVideo(){
+		chatHead.resume();
+	}
+
+	private void pauseVideo(){
+		chatHead.pause();
+	}
+
+
+	private class ServiceUpdateReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			switch (intent.getAction()) {
+				case "RefreshTask.START_VIDEO":
+					startVideo();
+					break;
+				case "RefreshTask.PAUSE_VIDEO":
+					pauseVideo();
+					break;
+			}
+		}
 	}
 
 }
