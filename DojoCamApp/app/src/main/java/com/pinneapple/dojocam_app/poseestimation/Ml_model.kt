@@ -19,7 +19,8 @@ package com.pinneapple.dojocam_app
 import android.Manifest
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Intent
+import android.app.Service
+import android.content.*
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Process
@@ -46,7 +47,20 @@ import org.tensorflow.lite.examples.poseestimation.ml.MoveNet
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
 import java.util.*
-import android.content.IntentFilter
+
+import com.pinneapple.dojocam_app.objets.LocalBinder
+
+import android.os.IBinder
+
+import android.os.Binder
+import kotlin.properties.Delegates
+import android.view.MotionEvent
+import android.content.ComponentName
+
+import android.content.ServiceConnection
+
+
+
 
 
 
@@ -208,9 +222,42 @@ class Ml_model : AppCompatActivity(){
 
     }
 
+    //service android app
+    private lateinit var mService:FloatingVideo
+    private var mBound = false
+
+    /******************************************************************
+     *
+     * Defines callbacks for service binding, passed to bindService()
+     *
+     * **************************************************************  */
+    private val mConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(
+            className: ComponentName,
+            service: IBinder
+        ) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            //val binder = service as LocalBinder<*>
+            val binder: FloatingVideo.LocalBinder = service as FloatingVideo.LocalBinder
+            mService = binder.service
+            mBound = true
+
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            mBound = false
+
+
+        }
+    }
+
+
     override fun onStart() {
         super.onStart()
 
+        // Bind to LocalService
+        val intent = Intent(this, FloatingVideo::class.java)
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
     }
 
     override fun onResume() {
@@ -249,14 +296,53 @@ class Ml_model : AppCompatActivity(){
         /*if (serviceUpdateReceiver != null) unregisterReceiver(serviceUpdateReceiver);*/
         super.onPause()
     }
-    /*override fun onStop() {
+    override fun onStop() {
         super.onStop()
-        if (init){
-            PipActivity.pip.finish()
+        // Unbind from the service
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
         }
-        //init = true
+    }
 
-    }*/
+
+    //Media Controller binder
+
+    private var first = true
+    private lateinit var mc: MediaController
+
+    private fun showMediaControllerHere() {
+        if (mBound) {
+            mc = MediaController(this)
+            mc.setAnchorView(mService.videoView);
+            //mc.setMediaPlayer(mService.videoView)
+            //mc.setEnabled(true)
+            mService.videoView.setMediaController(mc)
+            //mc.show(0)
+            //mService.initVideo()
+            //Toast.makeText(this, "MC DONE", Toast.LENGTH_SHORT).show()
+
+        }
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        //the MediaController will hide after 3 seconds - tap the screen to make it appear again
+        if (first) {
+            if (mBound) {
+                //mService.initVideo()
+                showMediaControllerHere()
+                first = false
+                mService.Make()
+            }
+        } else {
+            if (mBound) {
+                mc.show(0)
+            }
+        }
+
+        return false
+    }
+
 
     // check if permission is granted or not.
     private fun isCameraPermissionGranted(): Boolean {

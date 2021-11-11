@@ -10,7 +10,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +25,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -37,10 +40,27 @@ public class FloatingVideo extends Service {
 	private VideoView chatHead;
 	private int windowWidth;
 	private int windowHeigth;
+	private String vid_path;
+
+	private static final String Tag = "Floating_Video_TAG";
 
 	private ServiceUpdateReceiver serviceUpdateReceiver;
 
 	private final int MARGIN = 50;
+
+	private final IBinder mBinder = (IBinder) new LocalBinder();
+
+	public class LocalBinder extends Binder {
+		public FloatingVideo getService() {
+			// Return this instance of LocalService so clients can call public methods
+			return FloatingVideo.this;
+		}
+	}
+
+	@Override
+	public IBinder onBind(Intent intent) {
+		return mBinder;
+	}
 
 
 	@Override
@@ -51,16 +71,26 @@ public class FloatingVideo extends Service {
 		//videoContainer = new FrameLayout(this);
 		//videoContainer.setBackgroundColor(Color.rgb(0, 86, 88));
 
-		String vid_path = intent.getStringExtra("videoUrl");
+		vid_path = intent.getStringExtra("videoUrl");
 		chatHead = new VideoView(this);
-		Uri uri = Uri.parse(vid_path);
-		chatHead.setVideoURI(uri);
+
+		initVideo();
+
+		/*MediaController mediaController = new MediaController(this);
+		chatHead.setMediaController(mediaController);
 
 		//videoContainer.addView(chatHead);
 
 		//String vid_path = "android.resource://" + getPackageName() + "/" + R.raw.braceadas_defensivas1
+		chatHead.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+			@Override
+			public void onPrepared(MediaPlayer mp) {
+				Log.d(Tag,"onprepared video prepared, playing ....");
+				mp.setLooping(true);
+				mp.start();
+			}
+		});*/
 
-		chatHead.start();
 
 		//sendBroadcast(new Intent("RefreshTask.REFRESH_DATA_INTENT"));
 
@@ -197,11 +227,7 @@ public class FloatingVideo extends Service {
 		return START_NOT_STICKY;
 	}
 
-	@Override
-	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 
 	@SuppressLint("ClickableViewAccessibility")
@@ -239,6 +265,24 @@ public class FloatingVideo extends Service {
 
 		translator.setDuration(100);
 		translator.start();
+	}
+
+	public VideoView getVideoView() {
+		return chatHead;
+	}
+
+	public void Make() {
+		Toast.makeText(getApplicationContext(),"PRINT", Toast.LENGTH_SHORT).show();
+	}
+
+	public void initVideo() {
+
+		Uri uri = Uri.parse(vid_path);
+		/*MediaController mediaController = new MediaController(getApplicationContext());
+		mediaController.setAnchorView(chatHead);
+		chatHead.setMediaController(mediaController);*/
+		chatHead.setVideoURI(uri);
+		chatHead.start();
 	}
 
 
