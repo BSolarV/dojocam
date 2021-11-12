@@ -61,11 +61,6 @@ import android.content.ServiceConnection
 
 
 
-
-
-
-
-
 class Ml_model : AppCompatActivity(){
     companion object {
         private const val FRAGMENT_DIALOG = "dialog"
@@ -203,23 +198,6 @@ class Ml_model : AppCompatActivity(){
             requestPermission()
         }
 
-        //Estas son mis cositas nuevas :3
-        var btn_comeback = findViewById(R.id.imageBtn) as ImageButton
-
-        btn_comeback.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent);
-        }
-
-        mlPlayButton = findViewById(R.id.MLPlayButton)
-        mlPlayButton.setOnClickListener {
-            sendBroadcast(Intent("RefreshTask.START_VIDEO"))
-        }
-        mlPauseButton = findViewById(R.id.MLPauseButton)
-        mlPauseButton.setOnClickListener {
-            sendBroadcast(Intent("RefreshTask.PAUSE_VIDEO"))
-        }
-
     }
 
     //service android app
@@ -305,7 +283,7 @@ class Ml_model : AppCompatActivity(){
         }
     }
 
-
+/*
     //Media Controller binder
 
     private var first = true
@@ -341,7 +319,7 @@ class Ml_model : AppCompatActivity(){
         }
 
         return false
-    }
+    }*/
 
 
     // check if permission is granted or not.
