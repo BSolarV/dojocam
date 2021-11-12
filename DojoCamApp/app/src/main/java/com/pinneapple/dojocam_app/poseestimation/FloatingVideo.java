@@ -285,6 +285,11 @@ public class FloatingVideo extends Service {
 		chatHead.start();
 	}
 
+	public int  getVideoDuration(){
+		return chatHead.getDuration();
+	}
+
+
 
 
 	public void startVideo(){

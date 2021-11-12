@@ -88,6 +88,8 @@ class Ml_model : AppCompatActivity(){
     //receiver
     private var serviceUpdateReceiver: ServiceUpdateReceiver? = null
 
+    private var current  = 0
+
 
     private lateinit var tvScore: TextView
     private lateinit var tvFPS: TextView
@@ -494,15 +496,17 @@ class Ml_model : AppCompatActivity(){
 
             //val current: Int = videoView.getCurrentPosition()
             //Log.d(Tag,"Tiempo: "+current+"");
-            var result = cameraSource?.checkPose(0.toString())
+            var result = cameraSource?.checkPose(current.toString())
             if ( result == true ) {
+                current++
 
                 //sendBroadcast(Intent("RefreshTask.START_VIDEO"))
+
                 mService.startVideo()
             }
             //Teminar con el timer
-            /*
-            if (current == videoDuration) {
+
+            /*if ( current -1 == mService.videoDuration) {
                 timer!!.cancel()
             }*/
         }
