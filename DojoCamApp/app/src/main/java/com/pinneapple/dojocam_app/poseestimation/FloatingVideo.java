@@ -287,7 +287,7 @@ public class FloatingVideo extends Service {
 
 
 
-	private void startVideo(){
+	public void startVideo(){
 		chatHead.start();
 	}
 
@@ -296,7 +296,7 @@ public class FloatingVideo extends Service {
 		chatHead.resume();
 	}
 
-	private void pauseVideo(){
+	public void pauseVideo(){
 		chatHead.pause();
 	}
 
