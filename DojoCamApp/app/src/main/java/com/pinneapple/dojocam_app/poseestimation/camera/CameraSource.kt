@@ -275,28 +275,22 @@ class CameraSource(
         surfaceCanvas?.let { canvas ->
             val screenWidth: Int
             val screenHeight: Int
-            val left: Int
-            val top: Int
+            val left = 0
+            val top = 0
 
             if (canvas.height > canvas.width) {
                 val ratio = outputBitmap.height.toFloat() / outputBitmap.width
                 screenWidth = canvas.width
-                left = 0
                 screenHeight = (canvas.width * ratio).toInt()
-                top = (canvas.height - screenHeight) / 2
             } else {
                 val ratio = outputBitmap.width.toFloat() / outputBitmap.height
                 screenHeight = canvas.height
-                top = 0
                 screenWidth = (canvas.height * ratio).toInt()
-                left = (canvas.width - screenWidth) / 2
             }
-            val right: Int = left + screenWidth
-            val bottom: Int = top + screenHeight
 
             canvas.drawBitmap(
                 outputBitmap, Rect(0, 0, outputBitmap.width, outputBitmap.height),
-                Rect(left, top, right, bottom), null
+                Rect(left, top, screenWidth, screenHeight), null
             )
             surfaceView.holder.unlockCanvasAndPost(canvas)
         }
