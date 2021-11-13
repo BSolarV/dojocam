@@ -47,6 +47,7 @@ import org.tensorflow.lite.examples.poseestimation.ml.MoveNet
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
 import java.util.*
+import androidx.appcompat.widget.AppCompatImageButton
 
 import com.pinneapple.dojocam_app.objets.LocalBinder
 
@@ -101,6 +102,12 @@ class Ml_model : AppCompatActivity(){
     private lateinit var swClassification: SwitchCompat
     private lateinit var mlPlayButton: Button
     private lateinit var mlPauseButton: Button
+
+    private lateinit var backwardBtn: androidx.appcompat.widget.AppCompatImageButton
+    private lateinit var forwardBtn: androidx.appcompat.widget.AppCompatImageButton
+    private lateinit var pauseBtn: androidx.appcompat.widget.AppCompatImageButton
+
+
 
     private var cameraSource: CameraSource? = null
     private var isClassifyPose = false
@@ -177,7 +184,7 @@ class Ml_model : AppCompatActivity(){
             finish()
         }
 
-        timerCounter()
+        //timerCounter()
 
 
 
@@ -198,6 +205,33 @@ class Ml_model : AppCompatActivity(){
 
         if (!isCameraPermissionGranted()) {
             requestPermission()
+        }
+        /*********************************************************
+         *
+         * HandMade MediaPlayer Listeners
+         *
+         ********************************************************/
+        backwardBtn = findViewById(R.id.mlBackButton)
+        forwardBtn = findViewById(R.id.mlSkipButton)
+        pauseBtn = findViewById(R.id.mlPlayPauseButton)
+
+        backwardBtn.setOnClickListener{
+            mService.pauseVideo()
+            mService.videoView.seekTo(mService.currentTime - 1000)
+            mService.startVideo()
+        }
+        forwardBtn.setOnClickListener{
+            mService.pauseVideo()
+            mService.videoView.seekTo(mService.currentTime + 1000)
+            mService.startVideo()
+        }
+        pauseBtn.setOnClickListener{
+            if (mService.videoView.isPlaying) {
+                mService.pauseVideo()
+            }
+            else {
+                mService.startVideo()
+            }
         }
 
     }
@@ -229,6 +263,8 @@ class Ml_model : AppCompatActivity(){
 
 
         }
+
+
     }
 
 
@@ -499,6 +535,8 @@ class Ml_model : AppCompatActivity(){
             var result = cameraSource?.checkPose(current.toString())
             if ( result == true ) {
                 current++
+
+
 
                 //sendBroadcast(Intent("RefreshTask.START_VIDEO"))
 
