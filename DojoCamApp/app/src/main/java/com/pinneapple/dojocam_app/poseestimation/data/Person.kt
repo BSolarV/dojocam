@@ -57,7 +57,7 @@ data class Person(val keyPoints: List<KeyPoint>, val score: Float){
     fun getDiference(person: Person): Int {
         var diference = 0f
         // Every Other Keypoint
-        Log.wtf("AAAAAAAAAAAAAAAAAAAAAA", diference.pow(0.5f).roundToInt().toString())
+        //Log.wtf("AAAAAAAAAAAAAAAAAAAAAA", diference.pow(0.5f).roundToInt().toString())
         var i = 0
         while( i<keyPoints.size ){
             val thisKP = keyPoints[i].coordinate
@@ -65,6 +65,10 @@ data class Person(val keyPoints: List<KeyPoint>, val score: Float){
             val distance = ( ( thisKP.x - personKP.x ).pow(2) + ( thisKP.y - personKP.y ).pow(2) )
             diference += distance
             i++
+        }
+        if(diference.pow(0.5f) == Float.NaN){
+            Log.wtf("BBBBBBBBBBBBBBBBBBBB", "NaN")
+            return 1000
         }
         Log.wtf("BBBBBBBBBBBBBBBBBBBB", diference.pow(0.5f).roundToInt().toString())
         return diference.pow(0.5f).roundToInt()

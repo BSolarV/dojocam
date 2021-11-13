@@ -40,6 +40,8 @@ class CameraSource(
         private const val MIN_CONFIDENCE = .6f
         private const val TAG = "Camera Source"
     }
+    private var current = 0
+
 
     private val lock = Any()
     private var detector: PoseDetector? = null
@@ -234,7 +236,7 @@ class CameraSource(
                 person = it
                 classifier?.run {
                     classificationResult = classify(person)
-                    outputBitmap = drawExpectedBody(bitmap, it)
+                    outputBitmap = drawExpectedBody(bitmap, current.toString(),it)
                 }
             }
         }
@@ -334,6 +336,7 @@ class CameraSource(
         if( difference < 100 ) {
             feedbackPose = 1
             Toast.makeText(surfaceView.context, "Aproved!", Toast.LENGTH_SHORT ).show()
+            current++
         } else if( difference < 300 ) {
             feedbackPose = 2
         } else {

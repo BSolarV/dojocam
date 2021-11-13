@@ -88,6 +88,8 @@ class Ml_model : AppCompatActivity(){
     //receiver
     private var serviceUpdateReceiver: ServiceUpdateReceiver? = null
 
+    private var current  = 0
+
 
     private lateinit var tvScore: TextView
     private lateinit var tvFPS: TextView
@@ -484,23 +486,30 @@ class Ml_model : AppCompatActivity(){
 
     private var isChecking: Boolean = false
     fun updateUI() {
-        sendBroadcast(Intent("RefreshTask.PAUSE_VIDEO"))
+        //sendBroadcast(Intent("RefreshTask.PAUSE_VIDEO"))
+        if(mBound){
+            mService.pauseVideo()
 
-        if( cameraSource?.getFeedbackStatus() != true ){
-            cameraSource?.enableFeedbackPose()
-        }
+            if( cameraSource?.getFeedbackStatus() != true ){
+                cameraSource?.enableFeedbackPose()
+            }
 
-        //val current: Int = videoView.getCurrentPosition()
-        //Log.d(Tag,"Tiempo: "+current+"");
-        var result = cameraSource?.checkPose(0.toString())
-        if ( result == true ) {
-            sendBroadcast(Intent("RefreshTask.START_VIDEO"))
+            //val current: Int = videoView.getCurrentPosition()
+            //Log.d(Tag,"Tiempo: "+current+"");
+            var result = cameraSource?.checkPose(current.toString())
+            if ( result == true ) {
+                current++
+
+                //sendBroadcast(Intent("RefreshTask.START_VIDEO"))
+
+                mService.startVideo()
+            }
+            //Teminar con el timer
+
+            /*if ( current -1 == mService.videoDuration) {
+                timer!!.cancel()
+            }*/
         }
-        //Teminar con el timer
-        /*
-        if (current == videoDuration) {
-            timer!!.cancel()
-        }*/
     }
 
     /**
