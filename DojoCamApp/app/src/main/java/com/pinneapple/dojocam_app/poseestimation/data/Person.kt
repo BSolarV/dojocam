@@ -18,6 +18,7 @@ package org.tensorflow.lite.examples.poseestimation.data
 
 import android.util.Log
 import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
+import java.lang.Double.NaN
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -66,7 +67,7 @@ data class Person(val keyPoints: List<KeyPoint>, val score: Float){
             diference += distance
             i++
         }
-        if(diference.pow(0.5f) == Float.NaN){
+        if(diference.pow(0.5f).isNaN()){
             Log.wtf("BBBBBBBBBBBBBBBBBBBB", "NaN")
             return 1000
         }
