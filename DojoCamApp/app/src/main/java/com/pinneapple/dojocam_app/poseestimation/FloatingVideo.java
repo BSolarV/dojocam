@@ -289,6 +289,8 @@ public class FloatingVideo extends Service {
 		return chatHead.getDuration();
 	}
 
+	public int getCurrentTime() { return chatHead.getCurrentPosition();}
+
 
 
 
