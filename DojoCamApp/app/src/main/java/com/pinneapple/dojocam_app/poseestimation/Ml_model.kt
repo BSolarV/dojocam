@@ -58,7 +58,7 @@ import android.view.MotionEvent
 import android.content.ComponentName
 
 import android.content.ServiceConnection
-
+import android.media.MediaPlayer
 
 
 class Ml_model : AppCompatActivity(){
@@ -89,6 +89,7 @@ class Ml_model : AppCompatActivity(){
     private var serviceUpdateReceiver: ServiceUpdateReceiver? = null
 
     private var current  = 0
+    private lateinit var floatingVideoVideo: VideoView
 
 
     private lateinit var tvScore: TextView
@@ -177,9 +178,6 @@ class Ml_model : AppCompatActivity(){
             finish()
         }
 
-        timerCounter()
-
-
 
         // keep screen on while app is running
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -222,12 +220,15 @@ class Ml_model : AppCompatActivity(){
             mService = binder.service
             mBound = true
 
+            floatingVideoVideo = mService.videoView
+
+            floatingVideoVideo.setOnPreparedListener(MediaPlayer.OnPreparedListener {
+                //timerCounter()
+            })
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {
             mBound = false
-
-
         }
     }
 
@@ -481,35 +482,39 @@ class Ml_model : AppCompatActivity(){
             }
         }
 
-        timer!!.schedule(task, 0, 1000)
+        timer!!.schedule(task, 0, 100)
     }
 
     private var isChecking: Boolean = false
+    private var isPaused: Boolean = false
     fun updateUI() {
         //sendBroadcast(Intent("RefreshTask.PAUSE_VIDEO"))
-        if(mBound){
-            mService.pauseVideo()
+        current = floatingVideoVideo.currentPosition
 
-            if( cameraSource?.getFeedbackStatus() != true ){
-                cameraSource?.enableFeedbackPose()
-            }
+        if( cameraSource?.getFeedbackStatus() != true ){
+            cameraSource?.enableFeedbackPose()
+        }
 
-            //val current: Int = videoView.getCurrentPosition()
-            //Log.d(Tag,"Tiempo: "+current+"");
+        if( current % 2 == 0 ){
+            floatingVideoVideo.pause()
+            isPaused = true
+        }
+
+        if( isPaused ){
             var result = cameraSource?.checkPose(current.toString())
             if ( result == true ) {
-                current++
 
                 //sendBroadcast(Intent("RefreshTask.START_VIDEO"))
 
                 mService.startVideo()
             }
-            //Teminar con el timer
-
-            /*if ( current -1 == mService.videoDuration) {
-                timer!!.cancel()
-            }*/
         }
+
+        //Teminar con el timer
+
+        /*if ( current -1 == mService.videoDuration) {
+            timer!!.cancel()
+        }*/
     }
 
     /**

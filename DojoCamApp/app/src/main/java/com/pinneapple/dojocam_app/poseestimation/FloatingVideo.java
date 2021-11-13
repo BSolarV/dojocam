@@ -44,7 +44,7 @@ public class FloatingVideo extends Service {
 
 	private static final String Tag = "Floating_Video_TAG";
 
-	private ServiceUpdateReceiver serviceUpdateReceiver;
+	//private ServiceUpdateReceiver serviceUpdateReceiver;
 
 	private final int MARGIN = 50;
 
@@ -92,9 +92,7 @@ public class FloatingVideo extends Service {
 		});*/
 
 
-		//sendBroadcast(new Intent("RefreshTask.REFRESH_DATA_INTENT"));
-
-
+/*
 		//Service listener
 		if (serviceUpdateReceiver == null) serviceUpdateReceiver = new ServiceUpdateReceiver();
 
@@ -102,7 +100,7 @@ public class FloatingVideo extends Service {
 		IntentFilter intentFilterStop = new IntentFilter("RefreshTask.PAUSE_VIDEO");
 
 		registerReceiver(serviceUpdateReceiver, intentFilterStart);
-		registerReceiver(serviceUpdateReceiver, intentFilterStop);
+		registerReceiver(serviceUpdateReceiver, intentFilterStop);*/
 
 
 		int LAYOUT_FLAG;
@@ -243,7 +241,7 @@ public class FloatingVideo extends Service {
 		if (chatHead != null) windowManager.removeView(chatHead);
 
 		//Service listener
-		if (serviceUpdateReceiver != null) unregisterReceiver(serviceUpdateReceiver);
+		//if (serviceUpdateReceiver != null) unregisterReceiver(serviceUpdateReceiver);
 	}
 
 	public void animate(final View v, int startX, int endX, int startY, int endY) {
@@ -278,24 +276,17 @@ public class FloatingVideo extends Service {
 	public void initVideo() {
 
 		Uri uri = Uri.parse(vid_path);
-		/*MediaController mediaController = new MediaController(getApplicationContext());
-		mediaController.setAnchorView(chatHead);
-		chatHead.setMediaController(mediaController);*/
 		chatHead.setVideoURI(uri);
-		chatHead.start();
+
 	}
 
 	public int  getVideoDuration(){
 		return chatHead.getDuration();
 	}
 
-
-
-
 	public void startVideo(){
 		chatHead.start();
 	}
-
 
 	private void resumeVideo(){
 		chatHead.resume();
@@ -306,18 +297,18 @@ public class FloatingVideo extends Service {
 	}
 
 
-	private class ServiceUpdateReceiver extends BroadcastReceiver {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			switch (intent.getAction()) {
-				case "RefreshTask.START_VIDEO":
-					startVideo();
-					break;
-				case "RefreshTask.PAUSE_VIDEO":
-					pauseVideo();
-					break;
-			}
-		}
-	}
+//	private class ServiceUpdateReceiver extends BroadcastReceiver {
+//		@Override
+//		public void onReceive(Context context, Intent intent) {
+//			switch (intent.getAction()) {
+//				case "RefreshTask.START_VIDEO":
+//					startVideo();
+//					break;
+//				case "RefreshTask.PAUSE_VIDEO":
+//					pauseVideo();
+//					break;
+//			}
+//		}
+//	}
 
 }
