@@ -40,7 +40,7 @@ class CameraSource(
         private const val MIN_CONFIDENCE = .6f
         private const val TAG = "Camera Source"
     }
-    private var current = 0
+    private var current = "0"
 
 
     private val lock = Any()
@@ -236,7 +236,7 @@ class CameraSource(
                 person = it
                 classifier?.run {
                     classificationResult = classify(person)
-                    outputBitmap = drawExpectedBody(bitmap, current.toString(),it)
+                    outputBitmap = drawExpectedBody(bitmap, current, person!!)
                 }
             }
         }
@@ -328,15 +328,19 @@ class CameraSource(
     }
 
     fun checkPose( target: String ): Boolean {
+        current = target
+
         var difference : Int = 99999999
         classifier?.run {
-            difference = PoseClassifier.getExpectedBody(target)?.let { person?.getDiference(it) }
+            difference = PoseClassifier.getExpectedBody(current)?.let { person?.getDiference(it) }
                 ?:99999999
+            if( PoseClassifier.getExpectedBody(current) == null ) {
+                Log.wtf("CLASIFIER", "NO EXPECTED BODY: $current")
+            }
         }
         if( difference < 100 ) {
             feedbackPose = 1
             Toast.makeText(surfaceView.context, "Aproved!", Toast.LENGTH_SHORT ).show()
-            current++
         } else if( difference < 300 ) {
             feedbackPose = 2
         } else {

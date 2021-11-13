@@ -91,8 +91,7 @@
     </LinearLayout>
 
 
-    <include layout="@layout/bottom_sheet_layout" android:visibility="invisible" android:layout_height="0dp"
-        android:layout_width="match_parent" />
+    <include layout="@layout/bottom_sheet_layout" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

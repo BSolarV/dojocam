@@ -111,7 +111,7 @@ class Ml_model : AppCompatActivity(){
 
 
     private var cameraSource: CameraSource? = null
-    private var isClassifyPose = false
+    private var isClassifyPose = true
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -158,7 +158,7 @@ class Ml_model : AppCompatActivity(){
     private var setClassificationListener =
         CompoundButton.OnCheckedChangeListener { _, isChecked ->
             showClassificationInfo(isChecked)
-            isClassifyPose = isChecked
+            isClassifyPose = true
             isPoseClassifier()
         }
 
@@ -200,6 +200,9 @@ class Ml_model : AppCompatActivity(){
         spnModel.setSelection(modelPos)
         swClassification.setOnCheckedChangeListener(setClassificationListener)
 
+        isClassifyPose = true
+        isPoseClassifier()
+
         if (!isCameraPermissionGranted()) {
             requestPermission()
         }
@@ -214,12 +217,12 @@ class Ml_model : AppCompatActivity(){
 
         backwardBtn.setOnClickListener{
             mService.pauseVideo()
-            mService.videoView.seekTo(floatingVideoVideo.currentPosition*1000 - 1000)
+            mService.videoView.seekTo(floatingVideoVideo.currentPosition - 1000)
             mService.startVideo()
         }
         forwardBtn.setOnClickListener{
             mService.pauseVideo()
-            mService.videoView.seekTo(floatingVideoVideo.currentPosition*1000 + 1000)
+            mService.videoView.seekTo(floatingVideoVideo.currentPosition + 1000)
             mService.startVideo()
         }
         pauseBtn.setOnClickListener{
@@ -256,7 +259,8 @@ class Ml_model : AppCompatActivity(){
             floatingVideoVideo = mService.videoView
 
             floatingVideoVideo.setOnPreparedListener(MediaPlayer.OnPreparedListener {
-                //timerCounter()
+                timerCounter()
+                it.start()
             })
         }
 
@@ -520,30 +524,27 @@ class Ml_model : AppCompatActivity(){
         timer!!.schedule(task, 0, 100)
     }
 
-    private var isChecking: Boolean = false
     private var isPaused: Boolean = false
+    private var lastSec: Int? = null
     fun updateUI() {
         //sendBroadcast(Intent("RefreshTask.PAUSE_VIDEO"))
-        current = floatingVideoVideo.currentPosition
+        current = floatingVideoVideo.currentPosition / 1000
 
         if( cameraSource?.getFeedbackStatus() != true ){
             cameraSource?.enableFeedbackPose()
         }
 
-        if( current % 2 == 0 ){
+        if( floatingVideoVideo.isPlaying && current % 2 == 0 ){
             floatingVideoVideo.pause()
-            isPaused = true
         }
 
-        if( isPaused ){
+        if( !floatingVideoVideo.isPlaying ){
             var result = cameraSource?.checkPose(current.toString())
             if ( result == true ) {
-
-
-
                 //sendBroadcast(Intent("RefreshTask.START_VIDEO"))
 
-                mService.startVideo()
+                floatingVideoVideo.start()
+                isPaused = false
             }
         }
 
