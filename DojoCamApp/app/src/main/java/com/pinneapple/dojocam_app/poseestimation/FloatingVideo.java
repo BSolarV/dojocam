@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
@@ -73,6 +74,23 @@ public class FloatingVideo extends Service {
 
 		vid_path = intent.getStringExtra("videoUrl");
 		chatHead = new VideoView(this);
+
+
+
+		chatHead.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+			@Override
+			public void onPrepared(MediaPlayer mp) {
+				mp.start();
+				mp.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
+					@Override
+					public void onSeekComplete(MediaPlayer mp) {
+						//SystemClock.sleep(400);
+						mp.start();
+					}
+				});
+
+			}
+		});
 
 		initVideo();
 
@@ -295,6 +313,15 @@ public class FloatingVideo extends Service {
 	public void pauseVideo(){
 		chatHead.pause();
 	}
+
+	public void fwdVideo(){
+		chatHead.seekTo(chatHead.getCurrentPosition() + 1000 );
+	}
+
+	public void bwdVideo(){
+		chatHead.seekTo(chatHead.getCurrentPosition() - 1000 );
+	}
+
 
 
 //	private class ServiceUpdateReceiver extends BroadcastReceiver {

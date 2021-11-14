@@ -216,14 +216,18 @@ class Ml_model : AppCompatActivity(){
         pauseBtn = findViewById(R.id.mlPlayPauseButton)
 
         backwardBtn.setOnClickListener{
-            mService.pauseVideo()
-            mService.videoView.seekTo(floatingVideoVideo.currentPosition - 1000)
-            mService.startVideo()
+            /*mService.pauseVideo()
+            mService.videoView.seekTo(mService.videoView.currentPosition - 1000)
+            Toast.makeText(this, "-1sec", Toast.LENGTH_SHORT).show()
+            mService.videoView.start()*/
+            mService.bwdVideo()
         }
         forwardBtn.setOnClickListener{
-            mService.pauseVideo()
-            mService.videoView.seekTo(floatingVideoVideo.currentPosition + 1000)
-            mService.startVideo()
+            /*mService.pauseVideo()
+            mService.videoView.seekTo(mService.videoView.currentPosition + 1000)
+            Toast.makeText(this, "+1sec", Toast.LENGTH_SHORT).show()
+            mService.videoView.start()*/
+            mService.fwdVideo()
         }
         pauseBtn.setOnClickListener{
             if (mService.videoView.isPlaying) {
@@ -259,7 +263,7 @@ class Ml_model : AppCompatActivity(){
             floatingVideoVideo = mService.videoView
 
             floatingVideoVideo.setOnPreparedListener(MediaPlayer.OnPreparedListener {
-                timerCounter()
+                //timerCounter()
                 it.start()
             })
         }
