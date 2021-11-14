@@ -263,7 +263,7 @@ class Ml_model : AppCompatActivity(){
             floatingVideoVideo = mService.videoView
 
             floatingVideoVideo.setOnPreparedListener(MediaPlayer.OnPreparedListener {
-                //timerCounter()
+                timerCounter()
                 it.start()
             })
         }
