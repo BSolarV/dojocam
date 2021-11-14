@@ -18,7 +18,6 @@ package org.tensorflow.lite.examples.poseestimation.data
 
 import android.util.Log
 import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
-import java.lang.Double.NaN
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -26,17 +25,27 @@ data class Person(val keyPoints: List<KeyPoint>, val score: Float){
     fun repositionFromPerson(person: Person){
         val leftShoulder = keyPoints[5].coordinate
         val rightShoulder = keyPoints[6].coordinate
+        val leftHip = keyPoints[11].coordinate
 
         val leftShoulderPerson = person.keyPoints[5].coordinate
         val rightShoulderPerson = person.keyPoints[6].coordinate
+        val leftHipPerson = person.keyPoints[11].coordinate
 
         // Scaling
-        val distance = ( (leftShoulder.x-rightShoulder.x).toDouble().pow(2) + (leftShoulder.y-rightShoulder.y).toDouble().pow(2) ).toDouble().pow(0.5)
-        val distancePerson = ( (leftShoulderPerson.x-rightShoulderPerson.x).toDouble().pow(2) + (leftShoulderPerson.y-rightShoulderPerson.y).toDouble().pow(2) ).toDouble().pow(0.5)
-        val factor = distancePerson/distance
+        val distanceX = ( (leftShoulder.x-rightShoulder.x).toDouble().pow(2) + (leftShoulder.y-rightShoulder.y).toDouble().pow(2) ).pow(0.5)
+        val distancePersonX = ( (leftShoulderPerson.x-rightShoulderPerson.x).toDouble().pow(2) + (leftShoulderPerson.y-rightShoulderPerson.y).toDouble().pow(2) ).pow(0.5)
+        var factorX = distancePersonX/distanceX
 
-        leftShoulder.x = (leftShoulder.x * factor).toFloat()
-        leftShoulder.y = (leftShoulder.y * factor).toFloat()
+        val distanceY = ( (leftShoulder.x-leftHip.x).toDouble().pow(2) + (leftShoulder.y-leftHip.y).toDouble().pow(2) ).pow(0.5)
+        val distancePersonY = ( (leftShoulderPerson.x-leftHipPerson.x).toDouble().pow(2) + (leftShoulderPerson.y-leftHipPerson.y).toDouble().pow(2) ).pow(0.5)
+        val factorY = distancePersonY/distanceY
+
+        if( distanceX < 50 ){
+            factorX = factorY
+        }
+
+        leftShoulder.x = (leftShoulder.x * factorX).toFloat()
+        leftShoulder.y = (leftShoulder.y * factorY).toFloat()
 
         // Moving
         val xDistance = leftShoulderPerson.x - leftShoulder.x
@@ -45,14 +54,31 @@ data class Person(val keyPoints: List<KeyPoint>, val score: Float){
         leftShoulder.x = leftShoulder.x + xDistance
         leftShoulder.y = leftShoulder.y + yDistance
 
+/*
+        val distCheck = ( ( rightShoulderPerson.x - rightShoulder.x ).pow(2) + ( rightShoulderPerson.y - rightShoulder.y ).pow(2) ).pow(0.5f)
+        val midPoint = CameraSource.PREVIEW_WIDTH / 2
+        val flippedRightShoulderX = midPoint - ( rightShoulder.x - midPoint )
+        val newDist = ( ( rightShoulderPerson.x - flippedRightShoulderX ).pow(2) + ( rightShoulderPerson.y - rightShoulder.y ).pow(2) ).pow(0.5f)
+        if( newDist < distCheck ){
+            for (kp in keyPoints){
+                if (kp == keyPoints[5]){
+                    continue
+                }
+                kp.coordinate.x =  midPoint - ( kp.coordinate.x - midPoint )
+            }
+        }
+        */
+
         // Every Other Keypoint
         for (kp in keyPoints){
-            if (kp == keyPoints[5]){
+            if (kp == keyPoints[5] ){
                 continue
             }
-            kp.coordinate.x = (kp.coordinate.x * factor).toFloat() + xDistance
-            kp.coordinate.y = (kp.coordinate.y * factor).toFloat() + yDistance
+            kp.coordinate.x = (kp.coordinate.x * factorX).toFloat() + xDistance
+            kp.coordinate.y = (kp.coordinate.y * factorY).toFloat() + yDistance
         }
+
+
     }
 
     fun getDiference(person: Person): Int {

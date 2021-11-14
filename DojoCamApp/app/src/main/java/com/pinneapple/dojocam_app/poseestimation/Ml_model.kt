@@ -528,8 +528,8 @@ class Ml_model : AppCompatActivity(){
         timer!!.schedule(task, 0, 100)
     }
 
-    private var isPaused: Boolean = false
     private var lastSec: Int? = null
+    private var keepAsking: Boolean = false
     fun updateUI() {
         //sendBroadcast(Intent("RefreshTask.PAUSE_VIDEO"))
         current = floatingVideoVideo.currentPosition / 1000
@@ -539,16 +539,19 @@ class Ml_model : AppCompatActivity(){
         }
 
         if( floatingVideoVideo.isPlaying && current % 2 == 0 ){
-            floatingVideoVideo.pause()
+            if (lastSec != current){
+                floatingVideoVideo.pause()
+                lastSec = current
+                keepAsking = true
+            }
         }
 
-        if( !floatingVideoVideo.isPlaying ){
+        if( !floatingVideoVideo.isPlaying && keepAsking ){
             var result = cameraSource?.checkPose(current.toString())
             if ( result == true ) {
                 //sendBroadcast(Intent("RefreshTask.START_VIDEO"))
-
                 floatingVideoVideo.start()
-                isPaused = false
+                keepAsking = false
             }
         }
 
