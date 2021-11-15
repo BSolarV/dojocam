@@ -8,12 +8,14 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
 import android.media.ImageReader
+import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
 import android.view.Surface
 import android.view.SurfaceView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.pinneapple.dojocam_app.R
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.tensorflow.lite.examples.poseestimation.VisualizationUtils
@@ -226,6 +228,7 @@ class CameraSource(
     }
 
     // process image
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun processImage(bitmap: Bitmap) {
         outputBitmap = bitmap
 
@@ -251,6 +254,8 @@ class CameraSource(
         }
     }
 
+    private var drawingOnScreen = false
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun visualize(person: Person, bitmap: Bitmap) {
         var outputBitmap: Bitmap
 
@@ -272,6 +277,18 @@ class CameraSource(
         if( feedbackPose != 0 ) {
             outputBitmap = VisualizationUtils.drawFeedback(outputBitmap, feedbackPose)
         }
+
+        if( drawingOnScreen ){
+            val paint: Paint = Paint().apply {
+                strokeWidth = 700f
+                color = Color.argb(onScreenAlpha, 1f, 0f, 0f)
+                style = Paint.Style.FILL
+                textSize = onScreenSize
+                textAlign = Paint.Align.CENTER
+            }
+            outputBitmap = VisualizationUtils.drawTextOnScreen( outputBitmap, onScreenText, paint )
+        }
+
         val holder = surfaceView.holder
         val surfaceCanvas = holder.lockCanvas()
         surfaceCanvas?.let { canvas ->
@@ -294,9 +311,25 @@ class CameraSource(
                 outputBitmap, Rect(0, 0, outputBitmap.width, outputBitmap.height),
                 Rect(left, top, screenWidth, screenHeight), null
             )
+
             surfaceView.holder.unlockCanvasAndPost(canvas)
         }
     }
+
+    public fun tootgleDrawOnScreen(boolean: Boolean){
+        drawingOnScreen = boolean
+        onScreenText = ""
+    }
+
+    private var onScreenText: String = ""
+    private var onScreenSize: Float = 0f
+    private var onScreenAlpha: Float = 1f
+    public fun setDrawOnScreen( text: String, size: Float, alpha: Float = 1f ){
+        onScreenText = text
+        onScreenSize = size
+        onScreenAlpha = if ( alpha > 1 ) 1f else alpha
+    }
+
 
     private fun stopImageReaderThread() {
         imageReaderThread?.quitSafely()
@@ -349,6 +382,32 @@ class CameraSource(
         //outputBitmap = VisualizationUtils.drawBodyKeypointsError(outputBitmap, "Difference: "+difference+"")
         Log.wtf(TAG, "checkPose: Difference:" + difference+"")
         return difference < 100;
+
+    }
+
+    fun scorePose( target: String ): Int {
+        current = target
+
+        var difference : Int = 99999999
+        classifier?.run {
+            difference = PoseClassifier.getExpectedBody(current)?.let { person?.getDiference(it) }
+                ?:99999999
+            if( PoseClassifier.getExpectedBody(current) == null ) {
+                Log.wtf("CLASIFIER", "NO EXPECTED BODY: $current")
+            }
+        }
+        if( difference < 100 ) {
+            feedbackPose = 1
+            Toast.makeText(surfaceView.context, "Aproved!", Toast.LENGTH_SHORT ).show()
+        } else if( difference < 300 ) {
+            feedbackPose = 2
+        } else {
+            feedbackPose = 3
+        }
+        //outputBitmap = VisualizationUtils.drawBodyKeypointsError(outputBitmap, "Difference: "+difference+"")
+        Log.wtf(TAG, "checkPose: Difference:" + difference+"")
+        val score = 300-difference
+        return if( score < 0 ) 0 else score;
 
     }
 }

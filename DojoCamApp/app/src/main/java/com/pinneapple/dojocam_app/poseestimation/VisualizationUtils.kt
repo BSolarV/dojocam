@@ -198,4 +198,19 @@ object VisualizationUtils {
         )
         return output
     }
+
+    public fun drawTextOnScreen( input: Bitmap, text: String, paint: Paint ): Bitmap{
+        val output = input.copy(Bitmap.Config.ARGB_8888,true)
+        val originalSizeCanvas = Canvas(output)
+
+        originalSizeCanvas.drawText(
+            text,
+            originalSizeCanvas.width / 2f,
+            originalSizeCanvas.height /2f,
+            paint
+        )
+
+        return output
+    }
+
 }

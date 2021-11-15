@@ -22,8 +22,6 @@ import android.app.Dialog
 import android.app.Service
 import android.content.*
 import android.content.pm.PackageManager
-import android.os.Bundle
-import android.os.Process
 import android.provider.Settings
 import android.view.SurfaceView
 import android.view.View
@@ -51,15 +49,14 @@ import androidx.appcompat.widget.AppCompatImageButton
 
 import com.pinneapple.dojocam_app.objets.LocalBinder
 
-import android.os.IBinder
-
-import android.os.Binder
 import kotlin.properties.Delegates
 import android.view.MotionEvent
 import android.content.ComponentName
 
 import android.content.ServiceConnection
 import android.media.MediaPlayer
+import android.os.*
+import androidx.annotation.RequiresApi
 
 
 class Ml_model : AppCompatActivity(){
@@ -265,6 +262,7 @@ class Ml_model : AppCompatActivity(){
             floatingVideoVideo.setOnPreparedListener(MediaPlayer.OnPreparedListener {
                 timerCounter()
                 it.start()
+                videoDuration = it.duration
             })
         }
 
@@ -528,17 +526,70 @@ class Ml_model : AppCompatActivity(){
         timer!!.schedule(task, 0, 100)
     }
 
+    private var videoDuration = 99999
+    private var currentTime = 0
     private var lastSec: Int? = null
     private var keepAsking: Boolean = false
+    private var counterTime = 0
+    private val NUM_DURATION = 10
+    private var textIndex = 1
+    private var learning = 0
+    private var showed = false
+    private var alphaFactor = 1f
+    private var total = 0
+
+    @RequiresApi(Build.VERSION_CODES.N)
     fun updateUI() {
         //sendBroadcast(Intent("RefreshTask.PAUSE_VIDEO"))
-        current = floatingVideoVideo.currentPosition / 1000
+        currentTime = floatingVideoVideo.currentPosition
+        current = currentTime / 1000
+
+        if( currentTime + 20 >= videoDuration ){
+
+            if( counterTime == 0 ){
+                cameraSource?.tootgleDrawOnScreen( true )
+                learning++
+            }
+            if( showed ){
+                cameraSource?.tootgleDrawOnScreen( true )
+                alphaFactor =  1f
+                cameraSource?.setDrawOnScreen("Bien Hecho!! \n $total", 48f, alphaFactor )
+                counterTime++
+            } else {
+                val text = if (textIndex == 1) " Bien Hecho"
+                else if (textIndex == 2) "Ahora todo junto"
+                else if (textIndex == 3) "¿Listo?"
+                else if (textIndex == 4) "3"
+                else if (textIndex == 5) "2"
+                else if (textIndex == 6) "1"
+                else "¡Vamos!"
+
+                alphaFactor =
+                    if (counterTime < NUM_DURATION * textIndex / 3) (counterTime % NUM_DURATION) / (NUM_DURATION / 3).toFloat() else if (counterTime < NUM_DURATION * textIndex * 2 / 3f) 1f else (NUM_DURATION - counterTime % (NUM_DURATION * textIndex * 2 / 3f)) / (NUM_DURATION / 3)
+                cameraSource?.setDrawOnScreen(text, 48f, alphaFactor)
+
+                if (counterTime >= NUM_DURATION * (1 + textIndex)) {
+                    if (textIndex == 7) {
+                        floatingVideoVideo.stopPlayback()
+                        textIndex = 0
+                        showed = true
+                        keepAsking = true
+                        cameraSource?.tootgleDrawOnScreen(false)
+                        floatingVideoVideo.resume()
+                    } else {
+                        textIndex++
+                    }
+                }
+
+                counterTime++
+            }
+        }
 
         if( cameraSource?.getFeedbackStatus() != true ){
             cameraSource?.enableFeedbackPose()
         }
 
-        if( floatingVideoVideo.isPlaying && current % 2 == 0 ){
+        if( learning == 0 && floatingVideoVideo.isPlaying && current % 2 == 0 ){
             if (lastSec != current){
                 floatingVideoVideo.pause()
                 lastSec = current
@@ -546,12 +597,17 @@ class Ml_model : AppCompatActivity(){
             }
         }
 
-        if( !floatingVideoVideo.isPlaying && keepAsking ){
-            var result = cameraSource?.checkPose(current.toString())
-            if ( result == true ) {
-                //sendBroadcast(Intent("RefreshTask.START_VIDEO"))
-                floatingVideoVideo.start()
-                keepAsking = false
+        if( keepAsking ){
+            if( showed ){
+                var score = cameraSource?.scorePose(current.toString())
+                total += if( Objects.isNull(score) ) 0 else score!!
+            }else{
+                var result = cameraSource?.checkPose(current.toString())
+                if ( result == true ) {
+                    //sendBroadcast(Intent("RefreshTask.START_VIDEO"))
+                    floatingVideoVideo.start()
+                    keepAsking = false
+                }
             }
         }
 
