@@ -105,7 +105,7 @@
     <string name="dif_start">Practicar</string>
     <string name="dificultades">Dificultades</string>
     <string name="ejercicios">Ejercicios</string>
-    <string name="dif_recomendado">Recomendado</string>
+    <string name="dif_recomendado">Bienvenido a DojoCam</string>
     <string name="dia">Dia</string>
     <string name="mes">Mes</string>
     <string name="semana">Semana</string>
@@ -127,7 +127,7 @@
     <string name="btn_cerrar">Cerrar Sesión:</string>
 
     //dashboard
-    <string name="nombre_recomendado">Patada Abdomen</string>
+    <string name="nombre_recomendado">Defensa Alta</string>
     <string name="pregunta">¿Qué quieres hacer hoy?</string>
     <string name="tecnica">Técnica</string>
     <string name="fisico">Físico</string>

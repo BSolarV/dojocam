@@ -47,7 +47,7 @@
                         android:id="@+id/imageView6"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/kick" />
+                        android:src="@drawable/defensa" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -72,7 +72,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="66dp"
                             android:gravity="center"
-                            android:text="Dificultad: Intermedio"
+                            android:text="Dificultad: Básico"
                             android:textSize="17sp" />
 
                         <Button

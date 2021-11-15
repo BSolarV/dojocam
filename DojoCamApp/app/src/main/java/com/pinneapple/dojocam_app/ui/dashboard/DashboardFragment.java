@@ -76,7 +76,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.exerciseDetail);
+                Bundle bundle = new Bundle();
+
+                bundle.putString("difficulty" , "basico");
+                bundle.putString("videoId", "G4Amg9DogfEr8jbRC6cO");
+                bundle.putString("name", "Defensa alta");
+
+                Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
+
 
             }
         });
@@ -84,21 +91,39 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         one.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.exerciseDetail);
+                Bundle bundle = new Bundle();
+
+                bundle.putString("difficulty" , "basico");
+                bundle.putString("videoId", "G4Amg9DogfEr8jbRC6cO");
+                bundle.putString("name", "Defensa alta");
+
+                Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
 
             }
         });
         two.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.exerciseDetail);
+                Bundle bundle = new Bundle();
+
+                bundle.putString("difficulty" , "basico");
+                bundle.putString("videoId", "G4Amg9DogfEr8jbRC6cO");
+                bundle.putString("name", "Defensa alta");
+
+                Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
 
             }
         });
         three.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.exerciseDetail);
+                Bundle bundle = new Bundle();
+
+                bundle.putString("difficulty" , "basico");
+                bundle.putString("videoId", "G4Amg9DogfEr8jbRC6cO");
+                bundle.putString("name", "Defensa alta");
+
+                Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
 
             }
         });
