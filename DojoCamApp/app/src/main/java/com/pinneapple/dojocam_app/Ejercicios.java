@@ -3,6 +3,9 @@ package com.pinneapple.dojocam_app;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -16,7 +19,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
 import androidx.navigation.Navigation;
 
 import com.google.android.gms.tasks.Task;
@@ -35,7 +40,7 @@ import java.util.List;
  * Use the {@link Ejercicios#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Ejercicios extends Fragment implements AdapterView.OnItemClickListener {
+public class Ejercicios extends ListFragment implements AdapterView.OnItemClickListener,SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -89,15 +94,18 @@ public class Ejercicios extends Fragment implements AdapterView.OnItemClickListe
         }
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_ejercicios, container, false);
     }
     @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
+        //super.onViewCreated(view, savedInstanceState);
 
         difficulty = getArguments().getString("difficulty");
 
@@ -122,6 +130,19 @@ public class Ejercicios extends Fragment implements AdapterView.OnItemClickListe
 
         loadingDialog.startLoadingDialog();
 
+
+
+    }
+    @Override
+    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(this);
+        searchView.setQueryHint("Buscar");
+
+
+        super.onCreateOptionsMenu(menu, inflater);
 
 
     }
@@ -203,5 +224,26 @@ public class Ejercicios extends Fragment implements AdapterView.OnItemClickListe
 
 
         });
+    }
+
+    @Override
+    public boolean onMenuItemActionExpand(MenuItem menuItem) {
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        adapter.getFilter().filter(newText);
+        return true;
     }
 }
