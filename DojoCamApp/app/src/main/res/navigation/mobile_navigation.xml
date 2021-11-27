@@ -30,7 +30,11 @@
         android:id="@+id/perfil"
         android:name="com.pinneapple.dojocam_app.Perfil"
         android:label="@string/title_profile"
-        tools:layout="@layout/fragment_perfil" />
+        tools:layout="@layout/fragment_perfil" >
+        <action
+            android:id="@+id/action_perfil_to_AddFriend"
+            app:destination="@id/AddFriend" />
+    </fragment>
     <fragment
         android:id="@+id/exerciseDetail"
         android:name="com.pinneapple.dojocam_app.ExerciseDetail"
@@ -57,6 +61,21 @@
         <action
             android:id="@+id/action_ejercicios_to_exerciseDetail"
             app:destination="@id/exerciseDetail" />
+    </fragment>
+    <fragment
+        android:id="@+id/perfil_publico"
+        android:name="com.pinneapple.dojocam_app.Perfil_publico"
+        android:label="Perfil Usuario"
+        tools:layout="@layout/fragment_perfilpublico" >
+    </fragment>
+    <fragment
+        android:id="@+id/AddFriend"
+        android:name="com.pinneapple.dojocam_app.addfriend"
+        android:label="Agregar Amigos"
+        tools:layout="@layout/fragment_addfriends" >
+        <action
+            android:id="@+id/action_addFriend_to_perfil_publico"
+            app:destination="@id/perfil_publico" />
     </fragment>
     <fragment
         android:id="@+id/practice"

@@ -24,7 +24,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.Navigation;
 
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -35,6 +34,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -79,7 +79,7 @@ import java.util.Objects;
  * create an instance of this fragment.
  */
 
-public class Perfil extends Fragment {
+public class Perfil_publico extends Fragment {
 
     private FragmentPerfilBinding binding;
 
@@ -87,6 +87,9 @@ public class Perfil extends Fragment {
 
     private String imageId;
     private String image_path;
+
+    private String weonId;
+
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -108,7 +111,7 @@ public class Perfil extends Fragment {
 
     private FragmentActivity myContext;
 
-    public Perfil() {
+    public Perfil_publico() {
         // Required empty public constructor
     }
 
@@ -121,8 +124,8 @@ public class Perfil extends Fragment {
      * @return A new instance of fragment Perfil.
      */
     // TODO: Rename and change types and number of parameters
-    public static Perfil newInstance(String param1, String param2) {
-        Perfil fragment = new Perfil();
+    public static Perfil_publico newInstance(String param1, String param2) {
+        Perfil_publico fragment = new Perfil_publico();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -158,17 +161,17 @@ public class Perfil extends Fragment {
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentPerfilBinding.inflate(inflater, container, false);
-        return binding.getRoot();
+        return inflater.inflate(R.layout.fragment_perfilpublico, container, false);
     }
 
     void setUp(){
-
-        DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+        weonId = getArguments().getString("weonId");
+        System.out.println(weonId);
+        DocumentReference userReference = db.collection("Users").document(weonId);
         //Uri downloadURI = sref.child(Objects.requireNonNull("images/"+FirebaseAuth.getInstance().getCurrentUser().getEmail())+".jpg").getDownloadUrl().getResult();
 
         //imageViewProfilePicture.setImageURI(downloadURI);
-        sref.child("images/" + Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail())+ ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        sref.child("images/" + weonId + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 System.out.println(uri);
@@ -177,80 +180,51 @@ public class Perfil extends Fragment {
             }
         });
 
-
         userReference.get().addOnSuccessListener(command -> {
             UserData user = command.toObject(UserData.class);
             assert user != null;
+            System.out.println(user.getFirstName());
 
+            EditText tv1 = (EditText)getView().findViewById(R.id.ProfileFirstName_p);
+            tv1.setText(user.getFirstName());
 
+            EditText tv2 = (EditText)getView().findViewById(R.id.ProfileLastName_p);
+            tv2.setText(user.getLastName());
 
-            binding.ProfileFirstName.setText( user.getFirstName() );
-            binding.ProfileLastName.setText( user.getLastName());
-            // Sex Spinner
             // Create an ArrayAdapter using the string array and a default spinner layout
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(),
                     R.array.sexOptions, android.R.layout.simple_spinner_item);
             // Specify the layout to use when the list of choices appears
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             // Apply the adapter to the spinner
-            binding.ProfileSexSpinner.setAdapter(adapter);
-            binding.ProfileSexSpinner.setEnabled(false);
             binding.ProfileSexSpinner.setSelection( user.getSex() );
-
+     /*
             DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             binding.ProfileBirthDate.setText( formatter.format( user.getBirthDate() ) );
             binding.ProfileHeight.setText( user.getHeight().toString() );
             binding.ProfileWeight.setText( user.getWeight().toString() );
             loadingDialog.dismissDialog();
-        });
-        // Logout
-        Button logout = (Button) getView().findViewById(R.id.ProfileLogoutButton);
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent loginActivity = new Intent(getContext(), LoginActivity.class);
-                startActivity(loginActivity);
-                getActivity().finish();
-            }
+            */
         });
 
-        Button update_inf = (Button) getView().findViewById(R.id.ProfileUpdatebutton);
-        update_inf.setOnClickListener(new View.OnClickListener() {
+        Button follow = (Button) getView().findViewById(R.id.Follow);
+        follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                System.out.println("Hola");
+                /*
                 Editable height = binding.ProfileHeight.getText();
                 Editable weight = binding.ProfileWeight.getText();
                 Editable firstName = binding.ProfileFirstName.getText();
                 Editable lastName = binding.ProfileLastName.getText();
 
                 UpdateData(height,weight,firstName,lastName);
+
+                 */
             }
         });
 
-        Button add_friend = (Button) getView().findViewById(R.id.AddFriend);
-        add_friend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.AddFriend);
-/*
-                Fragment fragment = new addfriend();
-
-                FragmentManager fm = getFragmentManager();
-                FragmentTransaction transaction = fm.beginTransaction();
-                transaction.replace(R.id.contentFragment, fragment);
-                transaction.commit();
-*/
-            }
-        });
-        imageViewProfilePicture = getView().findViewById(R.id.ProfileImage);
-        imageViewProfilePicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chooseProfilePicture();
-            }
-        });
+        imageViewProfilePicture = getView().findViewById(R.id.ProfileImage_p);
     }
     private Bitmap getImageBitmap(String url) {
         Bitmap bm = null;
@@ -277,42 +251,7 @@ public class Perfil extends Fragment {
         userReference.update("lastName",(String.valueOf(lastName)));
     }
 
-    private void chooseProfilePicture() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.alert_dalog_perfil, null);
-        builder.setCancelable(false);
-        builder.setView(dialogView);
-
-        ImageView imageViewADPPCamera = dialogView.findViewById(R.id.imageViewADPPCamera);
-        ImageView imageViewADPPGallery = dialogView.findViewById(R.id.imageViewADPPGallery);
-        ImageView background = dialogView.findViewById(R.id.notification_background);
-
-        final AlertDialog alertDialogProfilePicture = builder.create();
-        alertDialogProfilePicture.show();
-
-        imageViewADPPGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                takePictureFromGallery();
-                alertDialogProfilePicture.dismiss();
-            }
-        });
-        imageViewADPPCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                takePictureFromCamera();
-                alertDialogProfilePicture.dismiss();
-            }
-        });
-        background.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //SetBackground();
-                // here I want to dismiss it after SetBackground() method
-                alertDialogProfilePicture.dismiss();
-            }
-        });
-    }
+    
     private void takePictureFromGallery(){
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(pickPhoto, 1);
