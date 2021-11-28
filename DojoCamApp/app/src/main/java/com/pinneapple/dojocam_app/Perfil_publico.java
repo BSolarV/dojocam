@@ -36,6 +36,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -170,6 +172,8 @@ public class Perfil_publico extends Fragment {
         DocumentReference userReference = db.collection("Users").document(weonId);
         //Uri downloadURI = sref.child(Objects.requireNonNull("images/"+FirebaseAuth.getInstance().getCurrentUser().getEmail())+".jpg").getDownloadUrl().getResult();
 
+        imageViewProfilePicture = getView().findViewById(R.id.ProfileImage_p);
+
         //imageViewProfilePicture.setImageURI(downloadURI);
         sref.child("images/" + weonId + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -178,6 +182,11 @@ public class Perfil_publico extends Fragment {
                 Bitmap bm = getImageBitmap(uri.toString());
                 imageViewProfilePicture.setImageBitmap(bm);
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "No posee Foto de Perfil", Toast.LENGTH_SHORT).show();
+            }
         });
 
         userReference.get().addOnSuccessListener(command -> {
@@ -185,20 +194,26 @@ public class Perfil_publico extends Fragment {
             assert user != null;
             System.out.println(user.getFirstName());
 
-            EditText tv1 = (EditText)getView().findViewById(R.id.ProfileFirstName_p);
+            TextView tv1 = (TextView)getView().findViewById(R.id.ProfileFirstName_p);
             tv1.setText(user.getFirstName());
 
-            EditText tv2 = (EditText)getView().findViewById(R.id.ProfileLastName_p);
+            TextView tv2 = (TextView)getView().findViewById(R.id.ProfileLastName_p);
             tv2.setText(user.getLastName());
 
-            // Create an ArrayAdapter using the string array and a default spinner layout
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(),
-                    R.array.sexOptions, android.R.layout.simple_spinner_item);
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            // Apply the adapter to the spinner
-            binding.ProfileSexSpinner.setSelection( user.getSex() );
-     /*
+            Spinner tv3 = (Spinner) getView().findViewById(R.id.ProfileSexSpinner_p);
+            tv3.setSelection(user.getSex());
+
+            DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            TextView tv4 = (TextView)getView().findViewById(R.id.ProfileLastName_p);
+            tv4.setText(formatter.format( user.getBirthDate() ) );
+
+            TextView tv5 = (TextView)getView().findViewById(R.id.ProfileHeight_p);
+            tv5.setText(user.getHeight().toString());
+
+            TextView tv6 = (TextView)getView().findViewById(R.id.ProfileWeight_p);
+            tv6.setText(user.getHeight().toString());
+
+        /*
             DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             binding.ProfileBirthDate.setText( formatter.format( user.getBirthDate() ) );
             binding.ProfileHeight.setText( user.getHeight().toString() );
@@ -212,19 +227,11 @@ public class Perfil_publico extends Fragment {
             @Override
             public void onClick(View v) {
                 System.out.println("Hola");
-                /*
-                Editable height = binding.ProfileHeight.getText();
-                Editable weight = binding.ProfileWeight.getText();
-                Editable firstName = binding.ProfileFirstName.getText();
-                Editable lastName = binding.ProfileLastName.getText();
 
-                UpdateData(height,weight,firstName,lastName);
-
-                 */
             }
         });
 
-        imageViewProfilePicture = getView().findViewById(R.id.ProfileImage_p);
+
     }
     private Bitmap getImageBitmap(String url) {
         Bitmap bm = null;
@@ -242,26 +249,8 @@ public class Perfil_publico extends Fragment {
         }
         return bm;
     }
-    private void UpdateData(Editable height, Editable weight, Editable firstName, Editable lastName) {
-        DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
 
-        userReference.update("height",Integer.parseInt(String.valueOf(height)));
-        userReference.update("weight",Integer.parseInt(String.valueOf(weight)));
-        userReference.update("firstName",(String.valueOf(firstName)));
-        userReference.update("lastName",(String.valueOf(lastName)));
-    }
 
-    
-    private void takePictureFromGallery(){
-        Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(pickPhoto, 1);
-    }
-    private void takePictureFromCamera(){
-        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if(takePicture.resolveActivity(getActivity().getPackageManager()) != null){
-            startActivityForResult(takePicture, 2);
-        }
-    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -367,15 +356,4 @@ public class Perfil_publico extends Fragment {
         }
         return true;
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 20 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            takePictureFromCamera();
-        }
-        else
-            Toast.makeText(getActivity(), "Permission not Granted", Toast.LENGTH_SHORT).show();
-    }
-
-
 }
