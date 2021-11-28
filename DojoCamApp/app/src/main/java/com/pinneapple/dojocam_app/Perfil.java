@@ -233,14 +233,7 @@ public class Perfil extends Fragment {
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(v).navigate(R.id.AddFriend);
-/*
-                Fragment fragment = new addfriend();
 
-                FragmentManager fm = getFragmentManager();
-                FragmentTransaction transaction = fm.beginTransaction();
-                transaction.replace(R.id.contentFragment, fragment);
-                transaction.commit();
-*/
             }
         });
         imageViewProfilePicture = getView().findViewById(R.id.ProfileImage);

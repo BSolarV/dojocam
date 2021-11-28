@@ -58,6 +58,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.pinneapple.dojocam_app.Login.LoginActivity;
 import com.pinneapple.dojocam_app.databinding.FragmentPerfilBinding;
+import com.pinneapple.dojocam_app.objets.Friends;
 import com.pinneapple.dojocam_app.objets.UserData;
 
 import org.jetbrains.annotations.NotNull;
@@ -226,11 +227,32 @@ public class Perfil_publico extends Fragment {
         follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                saveFriend();
                 System.out.println("Hola");
 
             }
         });
 
+
+    }
+    private void saveFriend() {
+        Map<String, Object> amiwo = new HashMap<>();
+        amiwo.put("Amigo", weonId.toString());
+
+        db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                .set(amiwo)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Siguiendo");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
+                    }
+                });
 
     }
     private Bitmap getImageBitmap(String url) {
