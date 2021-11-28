@@ -84,7 +84,6 @@
     <string name="body_not_found">No te encuentro, prueba más ilumincación</string>
 
 
-
     <string-array name="tfe_pe_models_array">
         <item>Movenet Lightning</item>
         <item>Movenet Thunder</item>
@@ -115,7 +114,6 @@
     <string name="tiempo_ejercicio">Tiempo de Ejecicio</string>
     <string name="postura">Postura</string>
     <string name="puntuacion">Puntuación</string>
-
 
 
     // prefil

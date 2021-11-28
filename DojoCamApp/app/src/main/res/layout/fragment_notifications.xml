@@ -175,12 +175,10 @@
                 android:inputType="textPersonName"
                 android:text="@string/postura" />
 
-            <ImageView
-                android:id="@+id/imageView4"
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/barChart"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/porcentaje" />
+                android:layout_height="1000px" />
 
             <EditText
                 android:id="@+id/editTextPuntuacion"
