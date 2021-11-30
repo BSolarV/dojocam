@@ -12,7 +12,8 @@ public class UserData {
     private Date birthDate;
     private Integer height;
     private Integer weight;
-    private Map<String, Integer> score;
+    // <ID_ejercicio: <Fecha, Score>>
+    private List score;
     private List<String> exercisesDone;
 
     public UserData(){}
@@ -24,7 +25,7 @@ public class UserData {
         this.birthDate = birthDate;
         this.height = height;
         this.weight = weight;
-        score = score;
+        score = null;
         exercisesDone = new ArrayList<String>();
     }
 
@@ -76,11 +77,11 @@ public class UserData {
         this.weight = weight;
     }
 
-    public Map<String, Integer> getScore() {
+    public List getScore() {
         return score;
     }
 
-    public void setScore(Map<String, Integer> score) {
+    public void setScore(List score) {
         this.score = score;
     }
 

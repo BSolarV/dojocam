@@ -57,6 +57,10 @@ import android.content.ServiceConnection
 import android.media.MediaPlayer
 import android.os.*
 import androidx.annotation.RequiresApi
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.serialization.descriptors.StructureKind
 
 
 class Ml_model : AppCompatActivity(){
@@ -78,10 +82,13 @@ class Ml_model : AppCompatActivity(){
     private var device = Device.GPU
 
     //windu
+    private lateinit var id_ejercicio: String
     private lateinit var namefile: String
     private lateinit var vid_path: String
     private lateinit var videoPip: Intent
     private var init: Boolean = false
+
+    private val db = FirebaseFirestore.getInstance()
 
     //receiver
     private var serviceUpdateReceiver: ServiceUpdateReceiver? = null
@@ -166,6 +173,7 @@ class Ml_model : AppCompatActivity(){
 
         //windu
         val b = intent.extras
+        id_ejercicio = b!!.getString("id_ejercicio").toString()
         namefile = b!!.getString("namefile").toString()
         vid_path = b!!.getString("vid_path").toString()
 
@@ -556,6 +564,10 @@ class Ml_model : AppCompatActivity(){
                 alphaFactor =  1f
                 total /= 3
                 total = if (divisor == 0) 0 else total/divisor
+
+                //Corro función que envía el puntaje a BD
+                putScoreBD(total)
+
                 cameraSource?.setDrawOnScreen("Bien Hecho!! \n $total", 48f, alphaFactor )
                 keepAsking = false
                 counterTime++
@@ -623,6 +635,30 @@ class Ml_model : AppCompatActivity(){
         }*/
     }
 
+
+    private val antScore: List<*>? = null
+    private var aux:List<Map<String,*>>? = null
+
+
+
+    private fun putScoreBD(total: Int) {
+        var timestamp = Timestamp.now()
+        antScore?.forEachIndexed { index, any ->
+            if(antScore[index] == id_ejercicio) {
+
+                aux = antScore[index+1] as List<Map<String,*>>
+                return@forEachIndexed
+            }
+        }
+
+        aux!!.toMutableList().add(mapOf("timestamp" to timestamp, "score" to total))
+
+        val userReference = Objects.requireNonNull(FirebaseAuth.getInstance().currentUser!!.email)?.let { db.collection("Users").document(it) }
+
+        userReference?.update("score", antScore)
+
+    }
+
     /**
      * Shows an error message dialog.
      */
@@ -648,3 +684,5 @@ class Ml_model : AppCompatActivity(){
         }
     }
 }
+
+
