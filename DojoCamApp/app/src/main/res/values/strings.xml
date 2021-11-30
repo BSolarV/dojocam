@@ -8,6 +8,12 @@
     <string name="ConectionError">Ha ocurrido un error de conexión.</string>
     <string name="preference_file_key">VIDEO_STORAGE</string>
 
+    <!-- Login Activity Strings -->
+    <string name="requiredEmail">El email es requerido</string>
+    <string name="emailInUse">El email ya esta en uso</string>
+    <string name="weekPass">Su contraseña es muy débil</string>
+    <string name="passDontMatch">Sus contraseñas no coinciden</string>
+
     <!-- Login Strins -->
     <string name="email">Email</string>
     <string name="password">Contraseña</string>

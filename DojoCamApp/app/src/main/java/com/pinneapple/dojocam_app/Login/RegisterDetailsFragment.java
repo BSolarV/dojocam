@@ -20,7 +20,10 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -51,10 +54,12 @@ public class RegisterDetailsFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    public static final String EMAIL = "EMAIL";
+    public static final String PASSWORD = "PASSWORD";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private String mEMAIL;
+    private String mPASSWORD;
 
     // Attributes
     private final LoadingDialog loadingDialog = new LoadingDialog(this);
@@ -73,10 +78,11 @@ public class RegisterDetailsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static RegisterDetailsFragment newInstance(String param1) {
+    public static RegisterDetailsFragment newInstance(String email, String password) {
         RegisterDetailsFragment fragment = new RegisterDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putString(EMAIL, email);
+        args.putString(PASSWORD, password);
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,6 +90,10 @@ public class RegisterDetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mEMAIL = getArguments().getString(EMAIL);
+            mPASSWORD = getArguments().getString(PASSWORD);
+        }
     }
 
     @Override
@@ -139,7 +149,7 @@ public class RegisterDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 saveInformation();
-                toMainActivity();
+
             }
         });
 
@@ -154,8 +164,21 @@ public class RegisterDetailsFragment extends Fragment {
                 Integer.valueOf(height.getText().toString()),
                 Integer.valueOf(weight.getText().toString()));
         loadingDialog.startLoadingDialog();
-        db.collection("Users").document(Objects.requireNonNull(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail())).set(user);
-        loadingDialog.dismissDialog();
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(mEMAIL, mPASSWORD)
+                .addOnSuccessListener(command -> {
+                    if( command.getUser() == null || command.getUser().getEmail() == null ){
+                        loadingDialog.dismissDialog();
+                        Toast.makeText(requireContext(), "Error: No se pudo crear su cuenta. Por favor intente nuevamente", Toast.LENGTH_LONG).show();
+                    } else {
+                        db.collection("Users").document(command.getUser().getEmail()).set(user);
+                        loadingDialog.dismissDialog();
+                        toMainActivity();
+                    }
+                })
+                .addOnFailureListener(command -> {
+                    loadingDialog.dismissDialog();
+                    Toast.makeText(requireContext(), "Error: "+command.getMessage(), Toast.LENGTH_LONG).show();
+                });
     }
 
     @Override
