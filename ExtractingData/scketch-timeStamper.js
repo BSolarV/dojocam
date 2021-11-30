@@ -5,11 +5,6 @@ var video;
 let path = "./Videos/";
 let videos = [
   ["Barrido_Delante_A.mp4",0],
-  ["Caida_Atras_Alta_A.mp4",0],
-  ["Caida_Atras_B.mp4",0],
-  ["Caida_Delante_Alta_m.mp4",0],
-  ["Caida_Delante_b.mp4",0],
-  ["Caida_Lateral_b.mp4",0],
   ["Codazo_Giro_A.mp4",0],
   ["Codazo_Lateral_B_SHORT.mp4",0],
   ["Cross_B_SHORT.mp4",0],
@@ -250,7 +245,7 @@ function drawKeypoints()  {
   let inputs = [];
   // Loop through all the poses detected
   for (let i = 0; i < poses.length; i++) {
-    if (poses[i].pose.score > 0.5) {
+    if (poses[i].pose.score > 0.01) {
       // For each pose detected, loop through all the keypoints
       for (let j = 0; j < poses[i].pose.keypoints.length; j++) {
         // A keypoint is an object describing a body part (like rightArm or leftShoulder)
@@ -286,7 +281,7 @@ function keyPressed() {
     toggleVid();
     var inputs = [];
     for (let i = 0; i < poses.length; i++) {
-      if (poses[i].pose.score > 0.5) {
+      if (poses[i].pose.score > 0.01) {
         // For each pose detected, loop through all the keypoints
         for (let j = 0; j < poses[i].pose.keypoints.length; j++) {
           // A keypoint is an object describing a body part (like rightArm or leftShoulder)

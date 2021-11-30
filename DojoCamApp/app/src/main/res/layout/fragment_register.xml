@@ -17,7 +17,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="50dp" />
+                android:layout_height="30dp" />
 
             <ImageView
                 android:id="@+id/DojoCamLogoLogin"
@@ -38,34 +38,61 @@
                 android:textSize="48sp"
                 android:layout_marginBottom="10dp"/>
 
+            <TextView
+                android:id="@+id/RegisterEmailMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:layout_marginVertical="1dp"
+                android:layout_marginHorizontal="40dp"
+                android:textAlignment="center"
+                android:textColor="@color/danger" />
             <EditText
                 android:id="@+id/RegisterEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="@string/email"
-                android:layout_marginVertical="5dp"
+                android:layout_marginBottom="5dp"
                 android:layout_marginHorizontal="20dp"
                 android:inputType="textEmailAddress"
                 android:autofillHints="@string/email" />
 
+            <TextView
+                android:id="@+id/RegisterPasswordMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:layout_marginVertical="1dp"
+                android:layout_marginHorizontal="40dp"
+                android:textAlignment="center"
+                android:textColor="@color/danger" />
             <EditText
                 android:id="@+id/RegisterPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="5dp"
+                android:layout_marginBottom="5dp"
                 android:ems="10"
                 android:hint="@string/password"
                 android:inputType="textPassword"
                 android:autofillHints="@string/password" />
 
+            <TextView
+                android:id="@+id/RegisterConfirmPasswordMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:layout_marginVertical="1dp"
+                android:layout_marginHorizontal="40dp"
+                android:textAlignment="center"
+                android:textColor="@color/danger" />
             <EditText
                 android:id="@+id/RegisterConfirmPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="5dp"
+                android:layout_marginBottom="5dp"
                 android:ems="10"
                 android:hint="@string/confirmPassword"
                 android:inputType="textPassword"
@@ -76,7 +103,7 @@
                 android:backgroundTint="@color/colorPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="5dp"
+                android:layout_marginVertical="10dp"
                 android:layout_marginHorizontal="50dp"
                 android:text="@string/register"
                 tools:targetApi="lollipop" />
