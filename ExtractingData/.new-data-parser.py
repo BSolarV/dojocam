@@ -4,7 +4,7 @@ import numpy as np
 
 modelPath = sys.argv[1]
 modeName = modelPath.split('/')[-1]
-videoName = modeName.split("-")[0]
+videoName = modeName.split(".")[0]
 jsonPath = modelPath
 jsonFile = open(jsonPath, "r")
 jsonData = json.load(jsonFile)
