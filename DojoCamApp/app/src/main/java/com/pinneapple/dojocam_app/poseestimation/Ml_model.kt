@@ -537,6 +537,7 @@ class Ml_model : AppCompatActivity(){
     private var showed = false
     private var alphaFactor = 1f
     private var total = 0
+    private var divisor = 0
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun updateUI() {
@@ -553,7 +554,10 @@ class Ml_model : AppCompatActivity(){
             if( showed ){
                 cameraSource?.tootgleDrawOnScreen( true )
                 alphaFactor =  1f
+                total /= 3
+                total = if (divisor == 0) 0 else total/divisor
                 cameraSource?.setDrawOnScreen("Bien Hecho!! \n $total", 48f, alphaFactor )
+                keepAsking = false
                 counterTime++
             } else {
                 val text = if (textIndex == 1) " Bien Hecho"
@@ -601,6 +605,7 @@ class Ml_model : AppCompatActivity(){
             if( showed ){
                 var score = cameraSource?.scorePose(current.toString())
                 total += if( Objects.isNull(score) ) 0 else score!!
+                divisor++
             }else{
                 var result = cameraSource?.checkPose(current.toString())
                 if ( result == true ) {
