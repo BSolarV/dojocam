@@ -21,6 +21,9 @@ for data in jsonData["data"]:
 	for i in range(len(keypoints)):
 		targetKeypoints[target][i] = keypoints[i][1] 
 
+if "0" not in targetKeypoints:
+	targetKeypoints["0"] = [ 0.0 for i in range(34) ]
+
 
 
 with open(f'models-data/{videoName}.csv', 'w') as fp:
