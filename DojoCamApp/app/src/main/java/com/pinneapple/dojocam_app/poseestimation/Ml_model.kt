@@ -64,6 +64,8 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pinneapple.dojocam_app.objets.UserData
 import kotlinx.serialization.descriptors.StructureKind
+import java.io.File
+import java.io.FileNotFoundException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
@@ -100,6 +102,8 @@ class Ml_model : AppCompatActivity(){
 
     private var current  = 0
     private lateinit var floatingVideoVideo: VideoView
+
+    private var LABELS_FILENAME = ""
 
 
     private lateinit var tvScore: TextView
@@ -196,6 +200,8 @@ class Ml_model : AppCompatActivity(){
         }
 
         // keep screen on while app is running
+        LABELS_FILENAME = "models-data/$namefile-labels.txt"
+        read()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         tvScore = findViewById(R.id.tvScore)
         tvFPS = findViewById(R.id.tvFps)
@@ -560,11 +566,35 @@ class Ml_model : AppCompatActivity(){
     private var total = 0
     private var divisor = 0
 
+    private var labels: List<Int>? = null
+
+
+    private fun read() {
+        try {
+            val myObj = File(LABELS_FILENAME)
+            val myReader = Scanner(myObj)
+            while (myReader.hasNextLine()) {
+                val data = myReader.nextLine()
+                labels!!.toMutableList().add(data.toInt())
+            }
+            myReader.close()
+        } catch (e: FileNotFoundException) {
+            println("An error occurred.")
+            e.printStackTrace()
+        }
+    }
+
+
+    private var index = 0
+
+
+
     @RequiresApi(Build.VERSION_CODES.N)
     fun updateUI() {
         //sendBroadcast(Intent("RefreshTask.PAUSE_VIDEO"))
         currentTime = floatingVideoVideo.currentPosition
-        current = currentTime / 1000
+        //current = currentTime / 1000
+        current = currentTime
 
         if( currentTime + 20 >= videoDuration ){
 
@@ -582,7 +612,7 @@ class Ml_model : AppCompatActivity(){
                 putScoreBD(total)
 
                 cameraSource?.setDrawOnScreen("Bien Hecho!! \n $total", 48f, alphaFactor )
-                //keepAsking = false
+                keepAsking = false
                 counterTime++
             } else {
                 val text = if (textIndex == 1) " Bien Hecho"
@@ -603,6 +633,7 @@ class Ml_model : AppCompatActivity(){
                         textIndex = 0
                         showed = true
                         keepAsking = true
+                        index = 0
                         cameraSource?.tootgleDrawOnScreen(false)
                         floatingVideoVideo.resume()
                     } else {
@@ -625,50 +656,68 @@ class Ml_model : AppCompatActivity(){
                 keepAsking = true
             }
         }
-
-        if( keepAsking ){
-            if( showed ){
-                var score = cameraSource?.scorePose(current.toString())
-                total += if( Objects.isNull(score) ) 0 else score!!
-                divisor++
-            }else{
-                var result = cameraSource?.checkPose(current.toString())
-                if ( result == true ) {
-                    //sendBroadcast(Intent("RefreshTask.START_VIDEO"))
-                    floatingVideoVideo.start()
-                    keepAsking = false
+        if (labels != null){
+            if( keepAsking  && (labels!![index] <= current) ){
+                if( showed ){
+                    var score = cameraSource?.scorePose(current.toString())
+                    total += if( Objects.isNull(score) ) 0 else score!!
+                    divisor++
+                }else{
+                    var result = cameraSource?.checkPose(current.toString())
+                    if ( result == true ) {
+                        //sendBroadcast(Intent("RefreshTask.START_VIDEO"))
+                        floatingVideoVideo.start()
+                        keepAsking = false
+                        index++
+                    }
                 }
             }
         }
 
-        //Teminar con el timer
+            //Teminar con el timer
 
-        /*if ( current -1 == mService.videoDuration) {
-            timer!!.cancel()
-        }*/
+            /*if ( current -1 == mService.videoDuration) {
+                timer!!.cancel()
+            }*/
     }
 
 
     private var antScore: List<*>? = null
     private var aux:List<Map<String,*>>? = null
+    private var ind = 0
 
 
 
     private fun putScoreBD(total: Int) {
+
         var timestamp = Timestamp.now()
         antScore?.forEachIndexed { index, any ->
             if(antScore!![index] == id_ejercicio) {
 
                 aux = antScore!![index+1] as List<Map<String,*>>
+                ind = index+1
                 return@forEachIndexed
             }
         }
-
+        var none = true
+        if(aux == null){
+            aux = listOf()
+            none = false
+        }
         aux!!.toMutableList().add(mapOf("timestamp" to timestamp, "score" to total))
 
         val userReference = Objects.requireNonNull(FirebaseAuth.getInstance().currentUser!!.email)?.let { db.collection("Users").document(it) }
 
+        if(!none) {
+
+            antScore!!.toMutableList().add(id_ejercicio)
+            antScore!!.toMutableList().add(aux)
+        } else{
+           antScore!!.toMutableList()[ind] = aux
+        }
+
         userReference?.update("score", antScore)
+        Toast.makeText(this, "done",Toast.LENGTH_SHORT).show()
 
     }
 
