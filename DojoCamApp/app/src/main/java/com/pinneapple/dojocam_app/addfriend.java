@@ -62,7 +62,7 @@ public class addfriend extends Fragment implements AdapterView.OnItemClickListen
     private ArrayAdapter adapter;
     private LoadingDialog loadingDialog = new LoadingDialog(this);
 
-    private String difficulty;
+    private String search_txt;
     public addfriend() {
         // Required empty public constructor
     }
@@ -90,24 +90,24 @@ public class addfriend extends Fragment implements AdapterView.OnItemClickListen
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        //setHasOptionsMenu(true);
+        // setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_addfriends, container, false);
     }
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
+
+        //search_txt = getArguments().getString("difficulty");
 
         adapter = new ArrayAdapter(getContext(), R.layout.list_vid, user_list );
         ListView lv = (ListView) getView().findViewById(R.id.user_list);
@@ -163,9 +163,10 @@ public class addfriend extends Fragment implements AdapterView.OnItemClickListen
             //title.setText(command.get("nombre").toString());
             //desc.setText(command.get("descripcion").toString());
         });
-        bundle.putString("weonId",  id_list.get(pos));
 
+        bundle.putString("weonId",  id_list.get(pos));
         Navigation.findNavController(view).navigate(R.id.perfil_publico, bundle);
+
     }
 
     @Override
@@ -186,7 +187,6 @@ public class addfriend extends Fragment implements AdapterView.OnItemClickListen
                 int i = 0;
                 for (UserData UserData:
                         docList) {
-
                     String aux =UserData.getFirstName();
                     user_list.add(aux);
                     id_list.add(command.getDocuments().get(i).getId());
@@ -209,7 +209,6 @@ public class addfriend extends Fragment implements AdapterView.OnItemClickListen
 
             //title.setText(command.get("nombre").toString());
             //desc.setText(command.get("descripcion").toString());
-
 
         });
         data.addOnFailureListener(command -> {

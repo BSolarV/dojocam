@@ -72,6 +72,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -92,7 +94,6 @@ public class Perfil_publico extends Fragment {
     private String image_path;
 
     private String weonId;
-
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -160,6 +161,7 @@ public class Perfil_publico extends Fragment {
         }
         setUp();
     }
+
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -232,12 +234,20 @@ public class Perfil_publico extends Fragment {
 
             }
         });
-
-
     }
+
     private void saveFriend() {
+
         Map<String, Object> amiwo = new HashMap<>();
-        amiwo.put("Amigo", weonId.toString());
+
+        ArrayList<String> aList = new ArrayList<String>();
+
+        aList.add(weonId.toString());
+        aList.add(weonId.toString());
+
+        amiwo.put("Amigo", aList);
+
+        //DocumentReference userReference = db.collection("Friends").document(weonId);
 
         db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
                 .set(amiwo)
@@ -253,8 +263,8 @@ public class Perfil_publico extends Fragment {
                         Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
                     }
                 });
-
     }
+
     private Bitmap getImageBitmap(String url) {
         Bitmap bm = null;
         try {
@@ -271,7 +281,6 @@ public class Perfil_publico extends Fragment {
         }
         return bm;
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

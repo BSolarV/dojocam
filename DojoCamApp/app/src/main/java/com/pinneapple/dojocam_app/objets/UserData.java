@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UserData {
+
     private String firstName;
     private String lastName;
     private int sex;
@@ -13,7 +14,7 @@ public class UserData {
     private Integer height;
     private Integer weight;
     // <ID_ejercicio: <Fecha, Score>>
-    private List score;
+    //private List score;
     private List<String> exercisesDone;
 
     public UserData(){}
@@ -25,7 +26,7 @@ public class UserData {
         this.birthDate = birthDate;
         this.height = height;
         this.weight = weight;
-        score = null;
+        //score = null;
         exercisesDone = new ArrayList<String>();
     }
 
@@ -76,7 +77,7 @@ public class UserData {
     public void setWeight(Integer weight) {
         this.weight = weight;
     }
-
+/*
     public List getScore() {
         return score;
     }
@@ -84,7 +85,7 @@ public class UserData {
     public void setScore(List score) {
         this.score = score;
     }
-
+*/
     public List<String> getExercisesDone() {
         return exercisesDone;
     }
