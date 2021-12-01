@@ -18,6 +18,8 @@ public class WeightPickerFragment extends DialogFragment {
 
     private NumberPicker.OnValueChangeListener listener;
 
+    public static Integer DEFAULT_VALUE = 75;
+
     public static WeightPickerFragment newInstance( NumberPicker.OnValueChangeListener listener) {
         WeightPickerFragment fragment = new WeightPickerFragment();
         fragment.setListener(listener);
@@ -35,7 +37,7 @@ public class WeightPickerFragment extends DialogFragment {
         final NumberPicker myNumberPicker = new NumberPicker(requireContext());
         myNumberPicker.setMinValue(15);
         myNumberPicker.setMaxValue(500);
-        myNumberPicker.setValue(75);
+        myNumberPicker.setValue(DEFAULT_VALUE);
         myNumberPicker.setOnValueChangedListener(listener);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(50, 50, 1);
