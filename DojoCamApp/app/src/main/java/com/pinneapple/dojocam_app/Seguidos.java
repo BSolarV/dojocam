@@ -65,8 +65,8 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
 
     TextView title ,desc;
 
-    private List<String> user_list = new ArrayList();
-    private List<String> id_list = new ArrayList();
+    private List<String> user_list2 = new ArrayList();
+    private List<String> id_list2 = new ArrayList();
     private ArrayAdapter adapter;
     private LoadingDialog loadingDialog = new LoadingDialog(this);
 
@@ -117,8 +117,8 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
 
         //search_txt = getArguments().getString("difficulty");
 
-        adapter = new ArrayAdapter(getContext(), R.layout.list_vid, user_list );
-        ListView lv = (ListView) getView().findViewById(R.id.user_list);
+        adapter = new ArrayAdapter(getContext(), R.layout.list_vid, user_list2 );
+        ListView lv = (ListView) getView().findViewById(R.id.user_list2);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(this);
 
@@ -152,8 +152,8 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
                 for (UserData UserData:
                         docList) {
                     String aux =UserData.getFirstName();
-                    user_list.add(aux);
-                    id_list.add(command.getDocuments().get(i).getId());
+                    user_list2.add(aux);
+                    id_list2.add(command.getDocuments().get(i).getId());
                     i++;
                 }
                 //Toast.makeText(getContext(), "Wena", Toast.LENGTH_LONG).show();
@@ -172,7 +172,25 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
             //desc.setText(command.get("descripcion").toString());
         });
 
-        bundle.putString("weonId", "carlos.jaraa@sansano.usm.cl");
+
+        DocumentReference userReference = db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        userReference.get().addOnSuccessListener(command -> {
+            Friends followers = command.toObject(Friends.class);
+            System.out.println(followers.getFollowers());
+            for(String amiwo : followers.getFollowers()) {
+                System.out.println(amiwo);
+                user_list2.add(amiwo);
+            }
+            adapter.notifyDataSetChanged();
+            loadingDialog.dismissDialog();
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
+            }
+        });
+
+        bundle.putString("weonId", user_list2.get(pos));
         Navigation.findNavController(view).navigate(R.id.perfil_publico, bundle);
 
     }
@@ -182,8 +200,8 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
 
         super.onResume();
 
-        user_list.clear();
-        id_list.clear();
+        user_list2.clear();
+        id_list2.clear();
 
         // Get post and answers from database
 
@@ -193,7 +211,7 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
             System.out.println(followers.getFollowers());
             for(String amiwo : followers.getFollowers()) {
                 System.out.println(amiwo);
-                user_list.add(amiwo);
+                user_list2.add(amiwo);
             }
             adapter.notifyDataSetChanged();
             loadingDialog.dismissDialog();
@@ -201,6 +219,14 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
+            }
+        });
+
+        Button add_friend = (Button) getView().findViewById(R.id.AddFriend);
+        add_friend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.AddFriend);
             }
         });
 

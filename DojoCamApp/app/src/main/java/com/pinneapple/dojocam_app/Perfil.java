@@ -233,14 +233,6 @@ public class Perfil extends Fragment {
             }
         });
 
-        Button add_friend = (Button) getView().findViewById(R.id.AddFriend);
-        add_friend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.AddFriend);
-
-            }
-        });
         imageViewProfilePicture = getView().findViewById(R.id.ProfileImage);
         imageViewProfilePicture.setOnClickListener(new View.OnClickListener() {
             @Override
