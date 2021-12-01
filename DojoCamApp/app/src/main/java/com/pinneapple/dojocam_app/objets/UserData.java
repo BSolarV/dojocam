@@ -80,16 +80,16 @@ public class UserData {
 
 
 
+
     /*
     public List getScore() {
-
         return score;
     }
 
     public void setScore(List score) {
         this.score = score;
-
     }*/
+
 
     public List<String> getExercisesDone() {
         return exercisesDone;
