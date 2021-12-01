@@ -151,6 +151,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         if( vid_path != null ){
             Bundle bundle = new Bundle();
+            bundle.putString("id_ejercicio",videoId);
             bundle.putString("namefile", namefile);
             bundle.putString("vid_path", vid_path);
             Intent mainActivity = new Intent(getContext(), Ml_model.class);

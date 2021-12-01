@@ -174,6 +174,11 @@ public class Perfil extends Fragment {
                 Bitmap bm = getImageBitmap(uri.toString());
                 imageViewProfilePicture.setImageBitmap(bm);
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "No posee Foto de Perfil", Toast.LENGTH_SHORT).show();
+            }
         });
 
 

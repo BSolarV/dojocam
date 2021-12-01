@@ -57,6 +57,15 @@ import android.content.ServiceConnection
 import android.media.MediaPlayer
 import android.os.*
 import androidx.annotation.RequiresApi
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
+import com.pinneapple.dojocam_app.objets.UserData
+import kotlinx.serialization.descriptors.StructureKind
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 
 class Ml_model : AppCompatActivity(){
@@ -78,10 +87,13 @@ class Ml_model : AppCompatActivity(){
     private var device = Device.GPU
 
     //windu
+    private lateinit var id_ejercicio: String
     private lateinit var namefile: String
     private lateinit var vid_path: String
     private lateinit var videoPip: Intent
     private var init: Boolean = false
+
+    private val db = FirebaseFirestore.getInstance()
 
     //receiver
     private var serviceUpdateReceiver: ServiceUpdateReceiver? = null
@@ -166,6 +178,7 @@ class Ml_model : AppCompatActivity(){
 
         //windu
         val b = intent.extras
+        id_ejercicio = b!!.getString("id_ejercicio").toString()
         namefile = b!!.getString("namefile").toString()
         vid_path = b!!.getString("vid_path").toString()
 
@@ -293,6 +306,14 @@ class Ml_model : AppCompatActivity(){
             vid_path
         )
         startService( videoPip )
+
+        //Consulta a Bd para obtener antScore
+        val userReference = Objects.requireNonNull(FirebaseAuth.getInstance().currentUser!!.email)?.let { db.collection("Users").document(it) }
+
+        userReference?.get()?.addOnSuccessListener(OnSuccessListener { command: DocumentSnapshot ->
+            antScore = command.get("score") as List<*>
+            //antScore = user.score as List<*>
+        })
 
 
         //Service listener
@@ -537,6 +558,7 @@ class Ml_model : AppCompatActivity(){
     private var showed = false
     private var alphaFactor = 1f
     private var total = 0
+    private var divisor = 0
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun updateUI() {
@@ -553,7 +575,14 @@ class Ml_model : AppCompatActivity(){
             if( showed ){
                 cameraSource?.tootgleDrawOnScreen( true )
                 alphaFactor =  1f
+                total /= 3
+                total = if (divisor == 0) 0 else total/divisor
+
+                //Corro función que envía el puntaje a BD
+                putScoreBD(total)
+
                 cameraSource?.setDrawOnScreen("Bien Hecho!! \n $total", 48f, alphaFactor )
+                //keepAsking = false
                 counterTime++
             } else {
                 val text = if (textIndex == 1) " Bien Hecho"
@@ -601,6 +630,7 @@ class Ml_model : AppCompatActivity(){
             if( showed ){
                 var score = cameraSource?.scorePose(current.toString())
                 total += if( Objects.isNull(score) ) 0 else score!!
+                divisor++
             }else{
                 var result = cameraSource?.checkPose(current.toString())
                 if ( result == true ) {
@@ -616,6 +646,30 @@ class Ml_model : AppCompatActivity(){
         /*if ( current -1 == mService.videoDuration) {
             timer!!.cancel()
         }*/
+    }
+
+
+    private var antScore: List<*>? = null
+    private var aux:List<Map<String,*>>? = null
+
+
+
+    private fun putScoreBD(total: Int) {
+        var timestamp = Timestamp.now()
+        antScore?.forEachIndexed { index, any ->
+            if(antScore!![index] == id_ejercicio) {
+
+                aux = antScore!![index+1] as List<Map<String,*>>
+                return@forEachIndexed
+            }
+        }
+
+        aux!!.toMutableList().add(mapOf("timestamp" to timestamp, "score" to total))
+
+        val userReference = Objects.requireNonNull(FirebaseAuth.getInstance().currentUser!!.email)?.let { db.collection("Users").document(it) }
+
+        userReference?.update("score", antScore)
+
     }
 
     /**
@@ -643,3 +697,5 @@ class Ml_model : AppCompatActivity(){
         }
     }
 }
+
+

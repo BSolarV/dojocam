@@ -3,15 +3,18 @@ package com.pinneapple.dojocam_app.objets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class UserData {
+
     private String firstName;
     private String lastName;
     private int sex;
     private Date birthDate;
     private Integer height;
     private Integer weight;
-    private Integer score;
+    // <ID_ejercicio: <Fecha, Score>>
+    //private List score;
     private List<String> exercisesDone;
 
     public UserData(){}
@@ -23,7 +26,7 @@ public class UserData {
         this.birthDate = birthDate;
         this.height = height;
         this.weight = weight;
-        score = 0;
+        //score = null;
         exercisesDone = new ArrayList<String>();
     }
 
@@ -75,13 +78,18 @@ public class UserData {
         this.weight = weight;
     }
 
-    public Integer getScore() {
+
+
+
+    /*
+    public List getScore() {
         return score;
     }
 
-    public void setScore(Integer score) {
+    public void setScore(List score) {
         this.score = score;
-    }
+    }*/
+
 
     public List<String> getExercisesDone() {
         return exercisesDone;
