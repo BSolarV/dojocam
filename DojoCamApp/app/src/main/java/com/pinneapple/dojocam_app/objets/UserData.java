@@ -13,7 +13,7 @@ public class UserData {
     private Integer height;
     private Integer weight;
     // <ID_ejercicio: <Fecha, Score>>
-    private List score;
+    //private List score;
     private List<String> exercisesDone;
 
     public UserData(){}
@@ -25,7 +25,7 @@ public class UserData {
         this.birthDate = birthDate;
         this.height = height;
         this.weight = weight;
-        score = null;
+        //score = null;
         exercisesDone = new ArrayList<String>();
     }
 
@@ -77,13 +77,13 @@ public class UserData {
         this.weight = weight;
     }
 
-    public List getScore() {
+    /*public List getScore() {
         return score;
     }
 
     public void setScore(List score) {
         this.score = score;
-    }
+    }*/
 
     public List<String> getExercisesDone() {
         return exercisesDone;

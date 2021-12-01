@@ -57,10 +57,15 @@ import android.content.ServiceConnection
 import android.media.MediaPlayer
 import android.os.*
 import androidx.annotation.RequiresApi
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.pinneapple.dojocam_app.objets.UserData
 import kotlinx.serialization.descriptors.StructureKind
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 
 class Ml_model : AppCompatActivity(){
@@ -301,6 +306,14 @@ class Ml_model : AppCompatActivity(){
             vid_path
         )
         startService( videoPip )
+
+        //Consulta a Bd para obtener antScore
+        val userReference = Objects.requireNonNull(FirebaseAuth.getInstance().currentUser!!.email)?.let { db.collection("Users").document(it) }
+
+        userReference?.get()?.addOnSuccessListener(OnSuccessListener { command: DocumentSnapshot ->
+            antScore = command.get("score") as List<*>
+            //antScore = user.score as List<*>
+        })
 
 
         //Service listener
@@ -569,7 +582,7 @@ class Ml_model : AppCompatActivity(){
                 putScoreBD(total)
 
                 cameraSource?.setDrawOnScreen("Bien Hecho!! \n $total", 48f, alphaFactor )
-                keepAsking = false
+                //keepAsking = false
                 counterTime++
             } else {
                 val text = if (textIndex == 1) " Bien Hecho"
@@ -636,7 +649,7 @@ class Ml_model : AppCompatActivity(){
     }
 
 
-    private val antScore: List<*>? = null
+    private var antScore: List<*>? = null
     private var aux:List<Map<String,*>>? = null
 
 
@@ -644,9 +657,9 @@ class Ml_model : AppCompatActivity(){
     private fun putScoreBD(total: Int) {
         var timestamp = Timestamp.now()
         antScore?.forEachIndexed { index, any ->
-            if(antScore[index] == id_ejercicio) {
+            if(antScore!![index] == id_ejercicio) {
 
-                aux = antScore[index+1] as List<Map<String,*>>
+                aux = antScore!![index+1] as List<Map<String,*>>
                 return@forEachIndexed
             }
         }

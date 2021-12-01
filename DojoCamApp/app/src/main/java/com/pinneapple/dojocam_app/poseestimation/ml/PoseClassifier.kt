@@ -50,7 +50,7 @@ class PoseClassifier(
                 setNumThreads(CPU_NUM_THREADS)
             }
             MODEL_FILENAME = "tflite-models/$namefile.tflite"
-            LABELS_FILENAME = "tflite-models/$namefile-labels.txt"
+            LABELS_FILENAME = "models-data/$namefile-labels.txt"
             EXPECTED_POSE_FILENAME = "models-data/$namefile.csv"
 
             try {
