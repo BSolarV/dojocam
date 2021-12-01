@@ -43,7 +43,7 @@ import java.util.List;
  * Use the {@link addfriend#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class addfriend extends Fragment implements AdapterView.OnItemClickListener,SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
+public class addfriend extends ListFragment implements AdapterView.OnItemClickListener,SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -101,7 +101,7 @@ public class addfriend extends Fragment implements AdapterView.OnItemClickListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        // setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_addfriends, container, false);
     }
     @Override

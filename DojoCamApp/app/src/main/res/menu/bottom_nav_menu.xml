@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_dashboard"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/AddFriend"
         android:icon="@drawable/baseline_accessibility_new_24"
-        android:title="@string/title_dashboard" />
+        android:title="Amigos" />
 
     <item
         android:id="@+id/navigation_notifications"
