@@ -71,12 +71,18 @@
     <fragment
         android:id="@+id/AddFriend"
         android:name="com.pinneapple.dojocam_app.addfriend"
-        android:label="Agregar Amigos"
+        android:label="Seguir Amigos"
         tools:layout="@layout/fragment_addfriends" >
         <action
             android:id="@+id/action_addFriend_to_perfil_publico"
             app:destination="@id/perfil_publico" />
     </fragment>
+    <fragment
+        android:id="@+id/Seguidos"
+        android:name="com.pinneapple.dojocam_app.Seguidos"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_seguidos" />
+
     <fragment
         android:id="@+id/practice"
         android:name="com.pinneapple.dojocam_app.Practice"
