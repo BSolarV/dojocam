@@ -642,8 +642,8 @@ class Ml_model : AppCompatActivity(){
 
                 alphaFactor =
                         when {
-                            counterTime < NUM_DURATION / 3 + NUM_DURATION * (textIndex-1) -> ((counterTime -  NUM_DURATION * (textIndex-1)).toFloat())/(NUM_DURATION / 3)
-                            counterTime < (NUM_DURATION * 2 / 3 + NUM_DURATION * (textIndex-1)) -> 1f
+                            counterTime < ((NUM_DURATION / 3) + (NUM_DURATION * (textIndex-1))) -> ((counterTime -  NUM_DURATION * (textIndex-1)).toFloat())/(NUM_DURATION / 3)
+                            counterTime < ((NUM_DURATION * 2 / 3) + (NUM_DURATION * (textIndex-1))) -> 1f
                             else -> (((NUM_DURATION * textIndex) - counterTime) / (NUM_DURATION / 3)).toFloat()
                         }
                 cameraSource?.setDrawOnScreen(text, 48f, alphaFactor)
@@ -670,15 +670,15 @@ class Ml_model : AppCompatActivity(){
             cameraSource?.enableFeedbackPose()
         }
 
-        if( learning == 0 && floatingVideoVideo.isPlaying && labels[index] - 100 < currentTime && currentTime < labels[index] + 300 ) {
+        if( index < labels.size && learning == 0 && floatingVideoVideo.isPlaying && labels[index] - 100 < currentTime && currentTime < labels[index] + 300 ) {
             if( labels[index] != lastSec ){
                 floatingVideoVideo.pause()
                 keepAsking = true
-                Log.wtf("PAUSED: ", "At "+ labels[index].toString())
+                Log.wtf("PAUSED: ", "At "+ currentTime)
                 lastSec = labels[index]
             }
         }
-        if ( keepAsking ){
+        if ( keepAsking && index < labels.size ){
             if( learning != 0 && labels[index] - 100 < currentTime && currentTime < labels[index] + 300 ) {
                 total += cameraSource?.scorePose(labels[index].toString()) ?: 0
                 divisor++
