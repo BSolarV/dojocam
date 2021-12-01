@@ -144,7 +144,7 @@ public class Perfil_publico extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        loadingDialog.startLoadingDialog();
+        //loadingDialog.startLoadingDialog();
     }
 
     @Override
@@ -238,31 +238,59 @@ public class Perfil_publico extends Fragment {
 
     private void saveFriend() {
 
-        Map<String, Object> amiwo = new HashMap<>();
+        Friends follower = new Friends();
 
-        ArrayList<String> aList = new ArrayList<String>();
+        //System.out.println("Hola2");
+        //System.out.println(follower.getClass().getName());
 
-        aList.add(weonId.toString());
-        aList.add(weonId.toString());
+        DocumentReference userReference = db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        userReference.get().addOnSuccessListener(command -> {
+            Friends followers = command.toObject(Friends.class);
+            System.out.println(followers.getFollowers());
+            if (followers.contains(weonId.toString())){
+                Toast.makeText(getActivity(),
+                                "Ya sigues a este samurai",
+                                Toast.LENGTH_SHORT)
+                        .show();
+            }
+            else {
+                followers.add(weonId.toString());
+                db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                        .set(followers)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "Siguiendo");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
+                            }
+                        });}
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                follower.add(weonId.toString());
+                db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                        .set(follower)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "Siguiendo");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
+                            }
+                        });
 
-        amiwo.put("Amigo", aList);
+            }
+        });
 
-        //DocumentReference userReference = db.collection("Friends").document(weonId);
-
-        db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
-                .set(amiwo)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Siguiendo");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
-                    }
-                });
     }
 
     private Bitmap getImageBitmap(String url) {
