@@ -19,7 +19,6 @@ package com.pinneapple.dojocam_app
 import android.Manifest
 import android.app.AlertDialog
 import android.app.Dialog
-import android.app.Service
 import android.content.*
 import android.content.pm.PackageManager
 import android.provider.Settings
@@ -35,8 +34,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.pinneapple.dojocam_app.poseestimation.FloatingVideo
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
 import org.tensorflow.lite.examples.poseestimation.data.Device
@@ -45,29 +42,28 @@ import org.tensorflow.lite.examples.poseestimation.ml.MoveNet
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
 import java.util.*
-import androidx.appcompat.widget.AppCompatImageButton
 
-import com.pinneapple.dojocam_app.objets.LocalBinder
-
-import kotlin.properties.Delegates
-import android.view.MotionEvent
 import android.content.ComponentName
 
 import android.content.ServiceConnection
+import android.graphics.PointF
 import android.media.MediaPlayer
 import android.os.*
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pinneapple.dojocam_app.objets.UserData
-import kotlinx.serialization.descriptors.StructureKind
+import org.tensorflow.lite.examples.poseestimation.data.BodyPart
+import org.tensorflow.lite.examples.poseestimation.data.KeyPoint
+import org.tensorflow.lite.examples.poseestimation.data.Person
 import java.io.File
 import java.io.FileNotFoundException
-import java.text.DateFormat
 import java.text.SimpleDateFormat
+import kotlin.math.floor
 
 
 class Ml_model : AppCompatActivity(){
@@ -121,7 +117,7 @@ class Ml_model : AppCompatActivity(){
     private lateinit var forwardBtn: androidx.appcompat.widget.AppCompatImageButton
     private lateinit var pauseBtn: androidx.appcompat.widget.AppCompatImageButton
 
-
+    private var fbUser : FirebaseUser? = null
 
     private var cameraSource: CameraSource? = null
     private var isClassifyPose = true
@@ -179,6 +175,8 @@ class Ml_model : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_ml)
 
+        fbUser = FirebaseAuth.getInstance().currentUser
+        if( fbUser == null ) finish()
 
         //windu
         val b = intent.extras
@@ -313,6 +311,7 @@ class Ml_model : AppCompatActivity(){
         )
         startService( videoPip )
 
+        /*
         //Consulta a Bd para obtener antScore
         val userReference = Objects.requireNonNull(FirebaseAuth.getInstance().currentUser!!.email)?.let { db.collection("Users").document(it) }
 
@@ -320,6 +319,7 @@ class Ml_model : AppCompatActivity(){
             antScore = command.get("score") as List<*>
             //antScore = user.score as List<*>
         })
+        */
 
 
         //Service listener
@@ -545,6 +545,7 @@ class Ml_model : AppCompatActivity(){
     private fun timerCounter() {
         timer = Timer()
         val task: TimerTask = object : TimerTask() {
+            @RequiresApi(Build.VERSION_CODES.N)
             override fun run() {
                 runOnUiThread { updateUI() }
             }
@@ -555,7 +556,7 @@ class Ml_model : AppCompatActivity(){
 
     private var videoDuration = 99999
     private var currentTime = 0
-    private var lastSec: Int? = null
+    //private var lastSec: Int? = null
     private var keepAsking: Boolean = false
     private var counterTime = 0
     private val NUM_DURATION = 10
@@ -566,35 +567,47 @@ class Ml_model : AppCompatActivity(){
     private var total = 0
     private var divisor = 0
 
-    private var labels: List<Int>? = null
+    private var labels: MutableList<Int> = mutableListOf()
 
 
     private fun read() {
+        /*
         try {
+            Log.wtf("READ: ", LABELS_FILENAME)
             val myObj = File(LABELS_FILENAME)
             val myReader = Scanner(myObj)
             while (myReader.hasNextLine()) {
                 val data = myReader.nextLine()
-                labels!!.toMutableList().add(data.toInt())
+                labels.add(data.toInt())
             }
             myReader.close()
+            Log.wtf("READ: ", labels.toString())
         } catch (e: FileNotFoundException) {
             println("An error occurred.")
             e.printStackTrace()
+        }*/
+        try{
+            val bufferReader = this.assets.open(LABELS_FILENAME).bufferedReader()
+            while (bufferReader.ready()) {
+                val line: String = bufferReader.readLine()
+                labels.add(line.toInt())
+            }
+            bufferReader.close()
+            Log.wtf("READ: ", labels.toString())
+        } catch (e: Exception) {
+            e.message?.let { Log.i("Error", it) }
         }
     }
-
 
     private var index = 0
 
 
-
-    @RequiresApi(Build.VERSION_CODES.N)
     fun updateUI() {
+        if( labels.isEmpty() ) return;
+
         //sendBroadcast(Intent("RefreshTask.PAUSE_VIDEO"))
         currentTime = floatingVideoVideo.currentPosition
         //current = currentTime / 1000
-        current = currentTime
 
         if( currentTime + 20 >= videoDuration ){
 
@@ -602,7 +615,7 @@ class Ml_model : AppCompatActivity(){
                 cameraSource?.tootgleDrawOnScreen( true )
                 learning++
             }
-            if( showed ){
+            if( learning != 0 ){
                 cameraSource?.tootgleDrawOnScreen( true )
                 alphaFactor =  1f
                 total /= 3
@@ -615,16 +628,22 @@ class Ml_model : AppCompatActivity(){
                 keepAsking = false
                 counterTime++
             } else {
-                val text = if (textIndex == 1) " Bien Hecho"
-                else if (textIndex == 2) "Ahora todo junto"
-                else if (textIndex == 3) "¿Listo?"
-                else if (textIndex == 4) "3"
-                else if (textIndex == 5) "2"
-                else if (textIndex == 6) "1"
-                else "¡Vamos!"
+                val text = when (textIndex) {
+                    1 -> " Bien Hecho"
+                    2 -> "Ahora todo junto"
+                    3 -> "¿Listo?"
+                    4 -> "3"
+                    5 -> "2"
+                    6 -> "1"
+                    else -> "¡Vamos!"
+                }
 
                 alphaFactor =
-                    if (counterTime < NUM_DURATION * textIndex / 3) (counterTime % NUM_DURATION) / (NUM_DURATION / 3).toFloat() else if (counterTime < NUM_DURATION * textIndex * 2 / 3f) 1f else (NUM_DURATION - counterTime % (NUM_DURATION * textIndex * 2 / 3f)) / (NUM_DURATION / 3)
+                        when {
+                            counterTime < NUM_DURATION / 3 + NUM_DURATION * (textIndex-1) -> ((counterTime -  NUM_DURATION * (textIndex-1)).toFloat())/(NUM_DURATION / 3)
+                            counterTime < (NUM_DURATION * 2 / 3 + NUM_DURATION * (textIndex-1)) -> 1f
+                            else -> (((NUM_DURATION * textIndex) - counterTime) / (NUM_DURATION / 3)).toFloat()
+                        }
                 cameraSource?.setDrawOnScreen(text, 48f, alphaFactor)
 
                 if (counterTime >= NUM_DURATION * (1 + textIndex)) {
@@ -649,40 +668,33 @@ class Ml_model : AppCompatActivity(){
             cameraSource?.enableFeedbackPose()
         }
 
-        if( learning == 0 && floatingVideoVideo.isPlaying && current % 2 == 0 ){
-            if (lastSec != current){
-                floatingVideoVideo.pause()
-                lastSec = current
-                keepAsking = true
-            }
+        if( learning == 0 && floatingVideoVideo.isPlaying && currentTime == labels[index]) {
+            floatingVideoVideo.pause()
+            keepAsking = true
+            Log.wtf("PAUSED: ", "At "+ labels[index].toString())
         }
-        if (labels != null){
-            if( keepAsking  && (labels!![index] <= current) ){
-                if( showed ){
-                    var score = cameraSource?.scorePose(current.toString())
-                    total += if( Objects.isNull(score) ) 0 else score!!
-                    divisor++
-                }else{
-                    var result = cameraSource?.checkPose(current.toString())
-                    if ( result == true ) {
-                        //sendBroadcast(Intent("RefreshTask.START_VIDEO"))
-                        floatingVideoVideo.start()
-                        keepAsking = false
-                        index++
-                    }
+        if ( keepAsking ){
+            if( learning != 0 && labels[index] - 100 < currentTime && currentTime < labels[index] + 300 ) {
+                total += cameraSource?.scorePose(labels[index].toString()) ?: 0
+                divisor++
+                if (currentTime > labels[index]) {
+                    index++
+                }
+            }else{
+                val result = cameraSource?.checkPose(labels[index].toString())
+                if ( result == true ) {
+                    //sendBroadcast(Intent("RefreshTask.START_VIDEO"))
+                    floatingVideoVideo.start()
+                    keepAsking = false
+                    index++
                 }
             }
         }
-
-            //Teminar con el timer
-
-            /*if ( current -1 == mService.videoDuration) {
-                timer!!.cancel()
-            }*/
     }
 
 
-    private var antScore: List<*>? = null
+    private lateinit var user: UserData;
+    private var added = false
     private var aux:List<Map<String,*>>? = null
     private var ind = 0
 
@@ -690,7 +702,50 @@ class Ml_model : AppCompatActivity(){
 
     private fun putScoreBD(total: Int) {
 
-        var timestamp = Timestamp.now()
+        if( added ) return
+        added = true
+
+        val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        val dateNow = simpleDateFormat.format(Date())
+
+        //Consulta a Bd para obtener Scores actuales
+        if( fbUser?.email == null ) finish()
+
+        val userReference = fbUser?.email.let {
+            if (it != null) {
+                db.collection("Users").document(it)
+            } else null
+        }
+
+        if (userReference != null) {
+            userReference.get().addOnSuccessListener(OnSuccessListener { command: DocumentSnapshot ->
+                try {
+                    user = command.toObject(UserData::class.java)!!
+                    var scores = user.scores
+                    if( scores == null ) {
+                        scores = hashMapOf<String, HashMap<String, List<Int>>>()
+                    }
+                    if( !scores.containsKey(this.id_ejercicio) ){
+                        scores[id_ejercicio] = hashMapOf<String, List<Int>>()
+                    }
+                    if( !scores[id_ejercicio]?.containsKey(dateNow)!! ){
+                        scores[id_ejercicio]!![dateNow] = mutableListOf();
+                    }
+                    scores[id_ejercicio]!![dateNow]!!.add(total)
+
+                    userReference.update("scores", scores)
+                    Toast.makeText(this, "done",Toast.LENGTH_SHORT).show()
+
+                } catch (e: java.lang.Exception) {
+                    Log.wtf("PUT DB", e.message)
+                }
+            })
+        } else {
+            finish()
+        }
+
+        /*
+        val timestamp = Timestamp.now()
         antScore?.forEachIndexed { index, any ->
             if(antScore!![index] == id_ejercicio) {
 
@@ -699,14 +754,13 @@ class Ml_model : AppCompatActivity(){
                 return@forEachIndexed
             }
         }
+
         var none = true
         if(aux == null){
             aux = listOf()
             none = false
         }
         aux!!.toMutableList().add(mapOf("timestamp" to timestamp, "score" to total))
-
-        val userReference = Objects.requireNonNull(FirebaseAuth.getInstance().currentUser!!.email)?.let { db.collection("Users").document(it) }
 
         if(!none) {
 
@@ -717,7 +771,7 @@ class Ml_model : AppCompatActivity(){
         }
 
         userReference?.update("score", antScore)
-        Toast.makeText(this, "done",Toast.LENGTH_SHORT).show()
+        */
 
     }
 
