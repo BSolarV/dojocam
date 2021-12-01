@@ -1,23 +1,27 @@
 package com.pinneapple.dojocam_app.objets;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class Friends {
 
-    private List<String> List_friends;
-
+    private ArrayList<String> List_friends;
 
     public Friends() {
         List_friends = new ArrayList<String>();
     }
 
-    public List<String> getExercisesDone() {
+    public ArrayList<String> getFollowers() {
         return List_friends;
     }
 
-    public void setExercisesDone(List<String> exercisesDone) {
+    public void setFollowers(ArrayList<String> exercisesDone) {
         this.List_friends = exercisesDone;
+    }
+    public void add(String exercisesDone2) {
+        List_friends.add(exercisesDone2);
+    }
+    public boolean contains(String exercisesDone2) {
+        boolean existe = List_friends.contains(exercisesDone2);
+        return existe;
     }
 }
