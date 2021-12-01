@@ -556,7 +556,7 @@ class Ml_model : AppCompatActivity(){
 
     private var videoDuration = 99999
     private var currentTime = 0
-    //private var lastSec: Int? = null
+    private var lastSec: Int? = null
     private var keepAsking: Boolean = false
     private var counterTime = 0
     private val NUM_DURATION = 10
@@ -593,6 +593,8 @@ class Ml_model : AppCompatActivity(){
                 labels.add(line.toInt())
             }
             bufferReader.close()
+            labels.sort()
+            labels.removeAt(0)
             Log.wtf("READ: ", labels.toString())
         } catch (e: Exception) {
             e.message?.let { Log.i("Error", it) }
@@ -615,7 +617,7 @@ class Ml_model : AppCompatActivity(){
                 cameraSource?.tootgleDrawOnScreen( true )
                 learning++
             }
-            if( learning != 0 ){
+            if( learning == 2 ){
                 cameraSource?.tootgleDrawOnScreen( true )
                 alphaFactor =  1f
                 total /= 3
@@ -668,10 +670,13 @@ class Ml_model : AppCompatActivity(){
             cameraSource?.enableFeedbackPose()
         }
 
-        if( learning == 0 && floatingVideoVideo.isPlaying && currentTime == labels[index]) {
-            floatingVideoVideo.pause()
-            keepAsking = true
-            Log.wtf("PAUSED: ", "At "+ labels[index].toString())
+        if( learning == 0 && floatingVideoVideo.isPlaying && labels[index] - 100 < currentTime && currentTime < labels[index] + 300 ) {
+            if( labels[index] != lastSec ){
+                floatingVideoVideo.pause()
+                keepAsking = true
+                Log.wtf("PAUSED: ", "At "+ labels[index].toString())
+                lastSec = labels[index]
+            }
         }
         if ( keepAsking ){
             if( learning != 0 && labels[index] - 100 < currentTime && currentTime < labels[index] + 300 ) {
