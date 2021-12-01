@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UserData {
+
     private String firstName;
     private String lastName;
     private int sex;
@@ -77,12 +78,17 @@ public class UserData {
         this.weight = weight;
     }
 
-    /*public List getScore() {
+
+
+    /*
+    public List getScore() {
+
         return score;
     }
 
     public void setScore(List score) {
         this.score = score;
+
     }*/
 
     public List<String> getExercisesDone() {
