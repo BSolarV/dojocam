@@ -82,11 +82,11 @@ public class ChatActivity extends AppCompatActivity {
         CometChat.addMessageListener(listenerID, new CometChat.MessageListener() {
             @Override
             public void onTextMessageReceived(TextMessage textMessage) {
-<<<<<<< HEAD
+
                 fetchPreviousMessages();
-=======
+
                 adapter.addToStart(new MessageWrapper(textMessage), true);
->>>>>>> 2287079057295a80715d60a9b79f4fc6c65b03e4
+
             }
             @Override
             public void onMediaMessageReceived(MediaMessage mediaMessage) {

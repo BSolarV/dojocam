@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (CometChat.getLoggedInUser() == null) {
-            CometChat.login("superhero1", authKey, new CometChat.CallbackListener<User>() {
+            CometChat.login("superhero3", authKey, new CometChat.CallbackListener<User>() {
                 @Override
                 public void onSuccess(User user) {
                     Log.d("das", "Login Successful : " + user.toString());

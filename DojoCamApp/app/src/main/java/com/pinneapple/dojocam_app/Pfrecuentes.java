@@ -3,6 +3,8 @@ package com.pinneapple.dojocam_app;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
@@ -15,8 +17,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.pinneapple.dojocam_app.objets.UserData;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,12 +40,14 @@ public class Pfrecuentes extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private List<String> bdQuestions = new ArrayList<>();
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference mDatabaseReference = mDatabase.getReference("FAQ");
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public Pfrecuentes() {
         // Required empty public constructor
@@ -67,6 +79,8 @@ public class Pfrecuentes extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
@@ -79,9 +93,8 @@ public class Pfrecuentes extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         String tuString = "<b>¿Que es necesario para usar la Dojcam?</b>";
         TextView tv1 = (TextView)getView().findViewById(R.id.Preg1);
         tv1.setText(Html.fromHtml(tuString));
@@ -122,8 +135,11 @@ public class Pfrecuentes extends Fragment {
                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         Editable value = input.getText();
-                        mDatabaseReference = mDatabase.getReference().child("BDQuestions");
-                        mDatabaseReference.setValue(value.toString());
+                        //DocumentReference ref = mDatabase.getReference("BDQuestions");
+                        DocumentReference userReference = db.collection("FAQ").document("BDQuestions");
+                        bdQuestions.add(value.toString());
+                        userReference.update("data",bdQuestions);
+
                         // Do something with value!
                     }
                 });
@@ -137,5 +153,21 @@ public class Pfrecuentes extends Fragment {
                 alert.show();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        //consulta a bd
+        DocumentReference userReference = db.collection("FAQ").document("BDQuestions");
+
+        if (userReference != null) {
+            userReference.get().addOnSuccessListener(command -> {
+                bdQuestions = (List<String>) command.get("data");
+            });
+        }
+
+
     }
 }
