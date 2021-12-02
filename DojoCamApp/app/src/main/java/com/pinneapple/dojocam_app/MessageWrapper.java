@@ -23,7 +23,7 @@ public class MessageWrapper implements IMessage {
 
     @Override
     public String getText() {
-        return getText();
+        return message.getText();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.pinneapple.dojocam_app;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.GroupViewHolde
 
         public void bind(Group group){
             groupNameTextView.setText(group.getName());
+            Log.d("suce", group.getGuid());
             containerLayout.setOnClickListener(view -> ChatActivity.start(context, group.getGuid()));
         }
     }
