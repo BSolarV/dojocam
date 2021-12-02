@@ -61,5 +61,14 @@ public class Pfrecuentes extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_pfrecuentes, container, false);
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
     }
 }
