@@ -1,5 +1,6 @@
 package com.pinneapple.dojocam_app.ui.dashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import com.pinneapple.dojocam_app.GroupList;
 import com.pinneapple.dojocam_app.R;
 import com.pinneapple.dojocam_app.databinding.FragmentDashboardBinding;
 
@@ -71,6 +73,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         ImageView three = (ImageView) getView().findViewById(R.id.imageView6);
 
         Button btn = (Button) getView().findViewById(R.id.button2);
+        Button chat = (Button) getView().findViewById(R.id.button6);
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getContext(), GroupList.class);
+                startActivity(i);
+            }
+        });
 
 
         btn.setOnClickListener(new View.OnClickListener() {
