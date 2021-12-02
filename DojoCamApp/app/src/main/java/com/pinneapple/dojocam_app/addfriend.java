@@ -62,7 +62,6 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
     private ArrayAdapter adapter2;
     private LoadingDialog loadingDialog = new LoadingDialog(this);
 
-    private String search_txt;
     public addfriend() {
         // Required empty public constructor
     }
@@ -110,7 +109,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
         //search_txt = getArguments().getString("difficulty");
 
         adapter2 = new ArrayAdapter(getContext(), R.layout.list_vid, user_list );
-        ListView lv = (ListView) getView().findViewById(R.id.user_list);
+        ListView lv = (ListView) getView().findViewById(R.id.user_list3);
         lv.setAdapter(adapter2);
         lv.setOnItemClickListener(this);
 
@@ -171,6 +170,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
 
     @Override
     public void onResume() {
+        //System.out.println("Penecitos");
 
         super.onResume();
 
@@ -188,6 +188,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
                 for (UserData UserData:
                         docList) {
                     String aux =UserData.getFirstName();
+                    System.out.println(aux);
                     user_list.add(aux);
                     id_list.add(command.getDocuments().get(i).getId());
                     i++;
@@ -213,6 +214,9 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
         });
         data.addOnFailureListener(command -> {
             loadingDialog.dismissDialog();
+            System.out.println("ashjgdkjasgd");
+
+
             //Toast.makeText(getContext(), "No te veo compare, avispateeee", Toast.LENGTH_SHORT).show();
 
             // 1. Instantiate an <code><a href="/reference/android/app/AlertDialog.Builder.html">AlertDialog.Builder</a></code> with its constructor

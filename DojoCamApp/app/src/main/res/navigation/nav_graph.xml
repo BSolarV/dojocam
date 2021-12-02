@@ -28,10 +28,18 @@
             app:destination="@id/RegisterDetailsFragment" />
     </fragment>
     <fragment
+        android:id="@+id/Seguidos"
+        android:name="com.pinneapple.dojocam_app.Seguidos"
+        android:label="@string/register_detail_label"
+        tools:layout="@layout/fragment_seguidos">
+        <action
+            android:id="@+id/action_Seguidos_to_addFriiend"
+            app:destination="@id/RegisterDetailsFragment" />
+    </fragment>
+    <fragment
         android:id="@+id/RegisterDetailsFragment"
         android:name="com.pinneapple.dojocam_app.Login.RegisterDetailsFragment"
         android:label="@string/register_detail_label"
         tools:layout="@layout/fragment_register_details"/>
-
 
 </navigation>

@@ -1,15 +1,19 @@
 package com.pinneapple.dojocam_app.ui.notifications;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -24,17 +28,41 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.pinneapple.dojocam_app.R;
 import com.pinneapple.dojocam_app.databinding.FragmentNotificationsBinding;
+import com.pinneapple.dojocam_app.objets.UserData;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class NotificationsFragment extends Fragment {
 
     private NotificationsViewModel notificationsViewModel;
     private FragmentNotificationsBinding binding;
+
+    private List<Integer> day_scores = new ArrayList<Integer>();
+    private List<Integer> week_scores= new ArrayList<Integer>();
+    private List<Integer> month_scores= new ArrayList<Integer>();
+    private List<String> exercises_done= new ArrayList<String>();
+    private Integer index_key = 0;
+
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -48,6 +76,104 @@ public class NotificationsFragment extends Fragment {
         return root;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        consultScores();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void consultScores() {
+        day_scores = null;
+        week_scores = null;
+        month_scores = null;
+        exercises_done = null;
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        String today = formatter.format(date);
+
+        DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+
+        //Consulta a BD por los Scores
+        if (userReference != null) {
+            userReference.get().addOnSuccessListener(command -> {
+                UserData user = command.toObject(UserData.class);
+                assert user != null;
+
+                HashMap<String, HashMap<String, List<Integer>>> scores =  user.getScores();
+                HashMap <String, List<Integer>> exercise_scores;
+
+                //Parseo de los scores en las distintas listas
+                for ( String key : scores.keySet() ) {
+                    exercises_done.add(key.toString());
+                }
+
+
+
+                //scores de el ejercicio
+                exercise_scores = scores.get(exercises_done.get(index_key));
+
+                day_scores = exercise_scores.get(today);
+
+
+                for ( String key : exercise_scores.keySet() ) {
+                    exercises_done.add(key.toString());
+                }
+                int aux = date.getDay();
+
+                Calendar c = Calendar.getInstance();
+                try {
+                    c.setTime(formatter.parse(today));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                //sumar o restar días
+                if(aux != 0){
+                    c.add(Calendar.DATE, -(aux-1));  // number of days to add
+                }else { //Domingo le resto 6
+                    c.add(Calendar.DATE, -6);
+                }
+                String monday = formatter.format(c.getTime());  // dt is now the new date
+
+                //creo una lista de los dias
+                List<String> week_days = new ArrayList<String>();
+                week_days.add(monday);
+                for (int i = 1; i<7; i++ ) {
+                    try {
+                        c.setTime(formatter.parse(monday));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    c.add(Calendar.DATE, i);
+                    String aux3 = formatter.format(c.getTime());
+                    week_days.add(aux3);
+                }
+
+                //obtengo del exercises_scores
+                for (int i = 0; i<7; i++ ) {
+                    List<Integer> day_s = exercise_scores.get(week_days.get(i));
+                    int prom = 0 ;
+                    if(day_s.size() != 0){
+                        prom = day_s.stream().mapToInt(Integer::intValue).sum();
+                        prom /= day_s.size();
+                    }
+                    day_scores.add(prom);
+                }
+
+                int aux4 = date.getMonth();
+                int aux5 = date.getYear();
+                String first_day = "01-"+aux4 +"-"+ aux5;
+
+
+
+                //loadingDialog.dismissDialog();
+            });
+        } else {
+            Toast.makeText(getContext(), "aaa", Toast.LENGTH_SHORT).show();
+        }
+
+    }
 
     @Override
     public void onDestroyView() {

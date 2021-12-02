@@ -145,33 +145,6 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
         Bundle bundle = new Bundle();
         Task<QuerySnapshot> data = db.collection("Users").get();
 
-        data.addOnSuccessListener(command -> {
-            List<UserData> docList = command.toObjects(UserData.class);
-            if ( data.isComplete() ){
-                int i = 0;
-                for (UserData UserData:
-                        docList) {
-                    String aux =UserData.getFirstName();
-                    user_list2.add(aux);
-                    id_list2.add(command.getDocuments().get(i).getId());
-                    i++;
-                }
-                //Toast.makeText(getContext(), "Wena", Toast.LENGTH_LONG).show();
-                adapter.notifyDataSetChanged();
-                loadingDialog.dismissDialog();
-                if(i == 0) {
-                    // 1. Instantiate an <code><a href="/reference/android/app/AlertDialog.Builder.html">AlertDialog.Builder</a></code> with its constructor
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setMessage("Tiempo de espera excedido")
-                            .setTitle("Error de Conexión");
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                }
-            }
-            //title.setText(command.get("nombre").toString());
-            //desc.setText(command.get("descripcion").toString());
-        });
-
 
         DocumentReference userReference = db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         userReference.get().addOnSuccessListener(command -> {
@@ -219,14 +192,6 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
-            }
-        });
-
-        Button add_friend = (Button) getView().findViewById(R.id.AddFriend);
-        add_friend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.AddFriend);
             }
         });
 

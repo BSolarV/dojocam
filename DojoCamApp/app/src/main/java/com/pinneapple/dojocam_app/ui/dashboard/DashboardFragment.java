@@ -1,11 +1,15 @@
 package com.pinneapple.dojocam_app.ui.dashboard;
 
+
 import static android.content.ContentValues.TAG;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+
+import android.content.Intent;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,9 +23,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,6 +48,14 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 import java.util.Objects;
+
+import com.pinneapple.dojocam_app.GroupList;
+import com.pinneapple.dojocam_app.R;
+import com.pinneapple.dojocam_app.databinding.FragmentDashboardBinding;
+import com.pinneapple.dojocam_app.tip;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Random;
 
 public class DashboardFragment extends Fragment implements View.OnClickListener {
@@ -125,7 +139,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        Random r = new Random();
+        int il = r.nextInt(100);
+        if(il > 70){
+            FragmentManager manager = getActivity().getSupportFragmentManager();
+            tip dialog = new tip();
+            dialog.show(manager,"message dialog");
+        }
         TextView tec = (TextView) getView().findViewById(R.id.textView11);
         ImageView tec_img = (ImageView) getView().findViewById(R.id.imageView7);
 
@@ -144,6 +164,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         ImageView three = (ImageView) getView().findViewById(R.id.imageView6);
 
         Button btn = (Button) getView().findViewById(R.id.button2);
+        Button chat = (Button) getView().findViewById(R.id.button6);
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getContext(), GroupList.class);
+                startActivity(i);
+            }
+        });
 
 
         btn.setOnClickListener(new View.OnClickListener() {

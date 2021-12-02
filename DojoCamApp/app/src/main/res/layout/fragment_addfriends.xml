@@ -26,18 +26,13 @@
                 android:orientation="vertical" >
 
                 <ListView
-                    android:id="@+id/user_list"
+                    android:id="@+id/user_list3"
                     android:layout_width="match_parent"
                     android:layout_height="681dp" />
 
             </LinearLayout>
         </ScrollView>
 
-        <FrameLayout
-            android:id="@+id/contentFragment2"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1" />
     </LinearLayout>
 
 </FrameLayout>
