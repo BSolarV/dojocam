@@ -34,15 +34,11 @@ data class Person(val keyPoints: List<KeyPoint>, val score: Float){
         // Scaling
         val distanceX = ( (leftShoulder.x-rightShoulder.x).toDouble().pow(2) + (leftShoulder.y-rightShoulder.y).toDouble().pow(2) ).pow(0.5)
         val distancePersonX = ( (leftShoulderPerson.x-rightShoulderPerson.x).toDouble().pow(2) + (leftShoulderPerson.y-rightShoulderPerson.y).toDouble().pow(2) ).pow(0.5)
-        var factorX = distancePersonX/distanceX
+        val factorX = distancePersonX/distanceX
 
         val distanceY = ( (leftShoulder.x-leftHip.x).toDouble().pow(2) + (leftShoulder.y-leftHip.y).toDouble().pow(2) ).pow(0.5)
         val distancePersonY = ( (leftShoulderPerson.x-leftHipPerson.x).toDouble().pow(2) + (leftShoulderPerson.y-leftHipPerson.y).toDouble().pow(2) ).pow(0.5)
         val factorY = distancePersonY/distanceY
-
-        if( distanceX < 50 ){
-            factorX = factorY
-        }
 
         leftShoulder.x = (leftShoulder.x * factorX).toFloat()
         leftShoulder.y = (leftShoulder.y * factorY).toFloat()

@@ -124,5 +124,4 @@ class PoseClassifier(
         }
         return outputBitmap
     }
-
 }
