@@ -76,6 +76,7 @@ public class NotificationsFragment extends Fragment {
         return root;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onResume() {
         super.onResume();
@@ -84,10 +85,10 @@ public class NotificationsFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void consultScores() {
-        day_scores = null;
-        week_scores = null;
-        month_scores = null;
-        exercises_done = null;
+        day_scores.clear();
+        week_scores.clear();
+        month_scores.clear();
+        exercises_done.clear();
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
@@ -106,7 +107,7 @@ public class NotificationsFragment extends Fragment {
 
                 //Parseo de los scores en las distintas listas
                 for ( String key : scores.keySet() ) {
-                    exercises_done.add(key.toString());
+                    exercises_done.add(key);
                 }
 
 
@@ -154,25 +155,59 @@ public class NotificationsFragment extends Fragment {
                 for (int i = 0; i<7; i++ ) {
                     List<Integer> day_s = exercise_scores.get(week_days.get(i));
                     int prom = 0 ;
-                    if(day_s.size() != 0){
+                    if(day_s != null){
                         prom = day_s.stream().mapToInt(Integer::intValue).sum();
                         prom /= day_s.size();
                     }
-                    day_scores.add(prom);
+                    week_scores.add(prom);
                 }
 
                 int aux4 = date.getMonth();
                 int aux5 = date.getYear();
-                String first_day = "01-"+aux4 +"-"+ aux5;
 
+                int daysInMonth = 0;
 
+                List<String> month_days = printDatesInMonth(aux5, aux4, daysInMonth);
 
+                for (int i = 0; i < 4; i++ ) {
+                    int weekprom = 0;
+                    int div = 0;
+                    for (int j = 0; j < 7; j++ ){
+                        List<Integer> day_s = exercise_scores.get(week_days.get(j));
+                        int prom = 0 ;
+                        if(day_s != null){
+                            prom = day_s.stream().mapToInt(Integer::intValue).sum();
+                            prom /= day_s.size();
+                            div++;
+                        }
+                        weekprom += prom;
+                    }
+                    if (div != 0) {
+                        weekprom /= div;
+                    }
+
+                    month_scores.add(weekprom);
+
+                }
                 //loadingDialog.dismissDialog();
             });
         } else {
             Toast.makeText(getContext(), "aaa", Toast.LENGTH_SHORT).show();
         }
 
+    }
+    private List<String> printDatesInMonth(int year, int month, int daysInMonth) {
+        List<String> array = new ArrayList<String>();
+        SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar cal = Calendar.getInstance();
+        cal.clear();
+        cal.set(year, month - 1, 1);
+        daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        for (int i = 0; i < daysInMonth; i++) {
+            array.add(fmt.format(cal.getTime()));
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        return array;
     }
 
     @Override
@@ -186,9 +221,9 @@ public class NotificationsFragment extends Fragment {
 
         BarChart barChart = (BarChart) getView().findViewById(R.id.barChart);
         ArrayList<BarEntry> dias = new ArrayList<>();
+        /*dias.add(new BarEntry(1, 25));
         dias.add(new BarEntry(2, 75));
         dias.add(new BarEntry(3, 22));
-        dias.add(new BarEntry(1, 25));
         dias.add(new BarEntry(4, 31));
         dias.add(new BarEntry(5, 124));
         dias.add(new BarEntry(6, 25));
@@ -196,7 +231,14 @@ public class NotificationsFragment extends Fragment {
         dias.add(new BarEntry(8, 29));
         dias.add(new BarEntry(9, 40));
         dias.add(new BarEntry(10, 21));
-        dias.add(new BarEntry(11, 67));
+        dias.add(new BarEntry(11, 67));*/
+
+        if(day_scores != null) {
+            for (int i = 0; i < day_scores.size(); i++) {
+                dias.add(new BarEntry (i+1,day_scores.get(i)));
+            }
+        }
+
 
         BarDataSet barDataSet = new BarDataSet(dias, "Dia");
 
@@ -335,4 +377,5 @@ public class NotificationsFragment extends Fragment {
             }
         });
     }
+
 }

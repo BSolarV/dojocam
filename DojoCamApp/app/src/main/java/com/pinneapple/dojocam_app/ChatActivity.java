@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.cometchat.pro.constants.CometChatConstants;
@@ -28,12 +29,12 @@ import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private static String groupIDint = "supergroup";
+    public static String groupIDint;
     private MessagesListAdapter<IMessage> adapter;
 
     public static void start(Context context, String groupID) {
         Intent starter = new Intent(context, ChatActivity.class);
-        groupIDint = groupID;
+        //groupIDint = groupID;
         context.startActivity(starter);
     }
 
@@ -43,7 +44,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         Intent intent = getIntent();
-        if (intent != null){
+        if (intent != null) {
             groupIDint = intent.getStringExtra(groupIDint);
         }
 
@@ -71,9 +72,7 @@ public class ChatActivity extends AppCompatActivity {
     private void addMessages(List<BaseMessage> baseMessages) {
         List<IMessage> list = new ArrayList<>();
         for (BaseMessage message : baseMessages) {
-            if (message instanceof TextMessage){
-                list.add(new MessageWrapper((TextMessage) message));
-            }
+            list.add(new MessageWrapper((TextMessage) message));
         }
         adapter.addToEnd(list, true);
     }
@@ -103,6 +102,7 @@ public class ChatActivity extends AppCompatActivity {
                return true;
            }
         });
+
         String senderId = CometChat.getLoggedInUser().getUid();
         ImageLoader imageLoader = new ImageLoader() {
             @Override
@@ -110,21 +110,23 @@ public class ChatActivity extends AppCompatActivity {
                 Picasso.get().load(url).into(imageView);
             }
         };
+
         adapter = new MessagesListAdapter<>(senderId, imageLoader);
         messagesList.setAdapter(adapter);
     }
 
-    private void sendMessage(String toString) {
-
-        TextMessage textMessage = new TextMessage(groupIDint, CometChatConstants.MESSAGE_TYPE_TEXT, CometChatConstants.RECEIVER_TYPE_GROUP);
-
+    private void sendMessage(String message) {
+        String groupIDint = "supergroup";
+        TextMessage textMessage = new TextMessage(groupIDint, message, CometChatConstants.RECEIVER_TYPE_GROUP);
         CometChat.sendMessage(textMessage, new CometChat.CallbackListener<TextMessage>() {
             @Override
             public void onSuccess(TextMessage textMessage) {
+                Log.d("suce", "SIRVEEEE");
                 addMessage(textMessage);
             }
             @Override
             public void onError(CometChatException e) {
+                Log.d("suce", "No SIRVEEEE");
             }
         });
     }
