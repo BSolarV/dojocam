@@ -619,10 +619,11 @@ class Ml_model : AppCompatActivity(){
                 cameraSource?.tootgleDrawOnScreen( true )
                 learning++
             }
-            if( learning >= 2 ){
+            if( learning == 2 ){
                 cameraSource?.tootgleDrawOnScreen( true )
                 alphaFactor =  1f
-                total /= 3
+                //total /= 3
+                divisor = 1
                 total = if (divisor == 0) 0 else total/divisor
 
                 //Corro función que envía el puntaje a BD
@@ -651,6 +652,7 @@ class Ml_model : AppCompatActivity(){
                         textIndex = 0
                         showed = true
                         keepAsking = true
+                        learning++
                         index = 0
                         cameraSource?.tootgleDrawOnScreen(false)
                         floatingVideoVideo.resume()
