@@ -1,5 +1,6 @@
 package com.pinneapple.dojocam_app.ui.notifications;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -7,7 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,9 +33,12 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.pinneapple.dojocam_app.GroupList;
 import com.pinneapple.dojocam_app.LoadingDialog;
 import com.pinneapple.dojocam_app.R;
 import com.pinneapple.dojocam_app.databinding.FragmentNotificationsBinding;
@@ -51,6 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 
 public class NotificationsFragment extends Fragment {
 
@@ -62,7 +70,12 @@ public class NotificationsFragment extends Fragment {
     private List<Integer> week_scores= new ArrayList<Integer>();
     private List<Integer> month_scores= new ArrayList<Integer>();
     private List<String> exercises_done= new ArrayList<String>();
+    private List<String> exercises_done_names= new ArrayList<String>();
+    private ArrayAdapter arrayAdapter;
+
     private Integer index_key = 0;
+
+    private ArrayList<String> xLabel = new ArrayList<>();
 
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -111,8 +124,32 @@ public class NotificationsFragment extends Fragment {
 
                 //Parseo de los scores en las distintas listas
                 for ( String key : scores.keySet() ) {
-                    exercises_done.add(key);
+                    if(key.length() ==  20){
+                        exercises_done.add(key);
+                    }
                 }
+
+                //Exercises_done_names
+                Task<QuerySnapshot> data = db.collection("ejercicios").get();
+
+                data.addOnSuccessListener(command2 -> {
+
+                    List<com.pinneapple.dojocam_app.objects.VideoInfo> docList = command2.toObjects(com.pinneapple.dojocam_app.objects.VideoInfo.class);
+                    if ( data.isComplete() ) {
+                        int i = 0;
+                        for (com.pinneapple.dojocam_app.objects.VideoInfo videoInfo :
+                                docList) {
+                            if(exercises_done.contains(command2.getDocuments().get(i).getId().toString())) {
+                                  exercises_done_names.add(videoInfo.getNombre().toString());
+                            }
+                            i++;
+                        }
+                    }
+                    arrayAdapter.notifyDataSetChanged();
+
+                });
+
+
 
 
 
@@ -168,8 +205,8 @@ public class NotificationsFragment extends Fragment {
                     week_scores.add(prom);
                 }
 
-                int aux4 = date.getMonth();
-                int aux5 = date.getYear();
+                int aux4 = date.getMonth() + 1;
+                int aux5 = date.getYear() + 1900;
 
                 int daysInMonth = 0;
 
@@ -179,14 +216,15 @@ public class NotificationsFragment extends Fragment {
                     int weekprom = 0;
                     int div = 0;
                     for (int j = 0; j < 7; j++ ){
-                        List<Integer> day_s = exercise_scores.get(week_days.get(j));
                         int prom = 0 ;
+                        List<Integer> day_s = exercise_scores.get(month_days.get(j+i*7));
                         if(day_s != null){
                             prom = day_s.stream().mapToInt(Integer::intValue).sum();
                             prom /= day_s.size();
                             div++;
                         }
                         weekprom += prom;
+
                     }
                     if (div != 0) {
                         weekprom /= div;
@@ -231,6 +269,10 @@ public class NotificationsFragment extends Fragment {
     }
 
     public void setAll(){
+
+        arrayAdapter = new ArrayAdapter(getContext(), R.layout.dropdown_item, exercises_done_names );
+        binding.autoCompleteTextView.setAdapter(arrayAdapter);
+
         BarChart barChart = (BarChart) getView().findViewById(R.id.barChart);
         ArrayList<BarEntry> dias = new ArrayList<>();
         /*dias.add(new BarEntry(1, 25));
@@ -248,7 +290,7 @@ public class NotificationsFragment extends Fragment {
         if(day_scores != null) {
             for (int i = 0; i < day_scores.size(); i++) {
                 dias.add(new BarEntry (i+1,day_scores.get(i)));
-                Log.wtf("aa",i + ":" + day_scores.get(i).toString());
+                //Log.wtf("aa",i + ":" + day_scores.get(i).toString());
             }
             //Toast.makeText(getContext(),day_scores.get(0).toString(), Toast.LENGTH_SHORT).show();
         }else {
@@ -271,7 +313,7 @@ public class NotificationsFragment extends Fragment {
         RadioButton radio_day = (RadioButton) getView().findViewById(R.id.radio_day);
         RadioButton radio_week = (RadioButton) getView().findViewById(R.id.radio_week);
         RadioButton radio_month = (RadioButton) getView().findViewById(R.id.radio_month);
-        RadioButton radio_year = (RadioButton) getView().findViewById(R.id.radio_year);
+
 
         radio_day.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -306,13 +348,21 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 ArrayList<BarEntry> semana = new ArrayList<>();
-                semana.add(new BarEntry(1, 61));
+                /*semana.add(new BarEntry(1, 61));
                 semana.add(new BarEntry(2, 22));
                 semana.add(new BarEntry(3, 25));
                 semana.add(new BarEntry(4, 31));
                 semana.add(new BarEntry(5, 58));
                 semana.add(new BarEntry(6, 25));
-                semana.add(new BarEntry(7, 28));
+                semana.add(new BarEntry(7, 28));*/
+
+                if(week_scores != null) {
+                    for (int i = 0; i < week_scores.size(); i++) {
+                        semana.add(new BarEntry (i+1,week_scores.get(i)));
+                        //Log.wtf("aa",i + ":" + day_scores.get(i).toString());
+                    }
+                    //Toast.makeText(getContext(),day_scores.get(0).toString(), Toast.LENGTH_SHORT).show();
+                }
 
 
                 BarDataSet barDataSet = new BarDataSet(semana, "Puntajes Semanales");
@@ -324,7 +374,8 @@ public class NotificationsFragment extends Fragment {
                 BarData barDataweek = new BarData(barDataSet);
                 barChart.setFitBars(true);
                 barChart.setData(barDataweek);
-                ArrayList<String> xLabel = new ArrayList<>();
+
+                xLabel.clear();
                 xLabel.add("Lunes");
                 xLabel.add("Martes");
                 xLabel.add("Miercoles");
@@ -351,29 +402,27 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 ArrayList<BarEntry> mes = new ArrayList<>();
-                ArrayList<String> xLabel = new ArrayList<>();
-                xLabel.add("Enero");
-                xLabel.add("Febrero");
-                xLabel.add("Marzo");
-                xLabel.add("Abril");
-                xLabel.add("Mayo");
-                xLabel.add("Junio");
-                xLabel.add("Julio");
-                xLabel.add("Agosto");
-                xLabel.add("Septiembre");
-                xLabel.add("Octubre");
-                xLabel.add("Noviembre");
-                xLabel.add("Diciembre");
+                //List<String> xxLabel = new ArrayList<>();
+
+                xLabel.clear();
+                //xLabel.add("");
+                xLabel.add("Semana 1");
+                xLabel.add("Semana 2");
+                xLabel.add("Semana 3");
+                xLabel.add("Semana 4");
                 XAxis xAxis = barChart.getXAxis();
                 xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
                 xAxis.setDrawGridLines(false);
                 xAxis.setValueFormatter(new ValueFormatter() {
                     @Override
                     public String getAxisLabel(float value, AxisBase axis) {
-                        return xLabel.get((int)value-1);
+                        if(value >= 4.0) {
+                            return "";
+                        }
+                        return xLabel.get((int)value);
                     }
                 });
-                mes.add(new BarEntry(1, 61));
+                /*mes.add(new BarEntry(1, 61));
                 mes.add(new BarEntry(2, 22));
                 mes.add(new BarEntry(3, 25));
                 mes.add(new BarEntry(4, 31));
@@ -384,7 +433,16 @@ public class NotificationsFragment extends Fragment {
                 mes.add(new BarEntry(9, 50));
                 mes.add(new BarEntry(10, 28));
                 mes.add(new BarEntry(11, 18));
-                mes.add(new BarEntry(12, 30));
+                mes.add(new BarEntry(12, 30));*/
+
+                if(month_scores != null) {
+                    for (int i = 0; i < month_scores.size(); i++) {
+                        mes.add(new BarEntry (i+1,month_scores.get(i)));
+                        //Toast.makeText(getContext(),month_scores.get(2).toString(), Toast.LENGTH_SHORT).show();
+                        //Log.wtf("aa",i + ":" + day_scores.get(i).toString());
+                    }
+                    //Toast.makeText(getContext(),day_scores.get(0).toString(), Toast.LENGTH_SHORT).show();
+                }
 
 
 
@@ -402,26 +460,7 @@ public class NotificationsFragment extends Fragment {
 
             }
         });
-        radio_year.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ArrayList<BarEntry> mes = new ArrayList<>();
-                mes.add(new BarEntry(2014, 61));
-                mes.add(new BarEntry(2015, 22));
-                mes.add(new BarEntry(3, 25));
 
-                BarDataSet barDataSet = new BarDataSet(mes, "Puntajes Mensuales");
-
-                barDataSet.setColor(Color.RED);
-                barDataSet.setValueTextColor(Color.BLACK);
-                barDataSet.setValueTextSize(16f);
-
-                BarData barDataweek = new BarData(barDataSet);
-                barChart.setFitBars(true);
-                barChart.setData(barDataweek);
-                barChart.animateY(2000);
-            }
-        });
     }
 
 
