@@ -160,21 +160,27 @@ public class Perfil extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
-
-        inflater.inflate(R.menu.perfil_menu, menu);
-        //MenuItem searchItem = menu.findItem(R.id.action_search);
-        super.onCreateOptionsMenu(menu, inflater);
-
-    }
-
-    @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
         binding = FragmentPerfilBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+    @Override
+    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
+
+        inflater.inflate(R.menu.perfil_menu, menu);
+        MenuItem s = menu.findItem(R.id.menuNavigation);
+        s.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                Navigation.findNavController(getView()).navigate(R.id.pfrecuentes);
+                return true;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
+
     }
 
     void setUp(){
