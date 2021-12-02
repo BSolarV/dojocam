@@ -11,14 +11,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.pinneapple.dojocam_app.R;
 import com.pinneapple.dojocam_app.databinding.FragmentDashboardBinding;
+import com.pinneapple.dojocam_app.tip;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Random;
 
 public class DashboardFragment extends Fragment implements View.OnClickListener {
 
@@ -52,7 +56,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        Random r = new Random();
+        int il = r.nextInt(100);
+        if(il > 70){
+            FragmentManager manager = getActivity().getSupportFragmentManager();
+            tip dialog = new tip();
+            dialog.show(manager,"message dialog");
+        }
         TextView tec = (TextView) getView().findViewById(R.id.textView11);
         ImageView tec_img = (ImageView) getView().findViewById(R.id.imageView7);
 
