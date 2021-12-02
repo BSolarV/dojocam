@@ -32,7 +32,7 @@
                 android:layout_marginBottom="5dp"
                 android:gravity="center"
                 android:text="¿Porqué existe Dojocam?"/>
-                android:layout_marginHorizontal="20dp"/>
+
             <TextView
                 android:id="@+id/Res1"
                 android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                 android:ems="10"
                 android:textSize="18sp"
                 android:gravity="center"
-                android:text="porque Dojocam se parece a dojoCUM"/>
+                android:text=""/>
 
 
             <Space
@@ -65,7 +65,7 @@
                 android:ems="10"
                 android:textSize="18sp"
                 android:gravity="center"
-                android:text="porque Dojocam se parece a dojoCUM"/>
+                android:text=""/>
 
 
             <Space
@@ -90,7 +90,7 @@
                 android:ems="10"
                 android:textSize="18sp"
                 android:gravity="center"
-                android:text="porque Dojocam se parece a dojoCUM"/>
+                android:text=""/>
 
 
             <Space
@@ -115,7 +115,7 @@
                 android:ems="10"
                 android:textSize="18sp"
                 android:gravity="center"
-                android:text="porque Dojocam se parece a dojoCUM"/>
+                android:text=""/>
 
             <Button
                 android:id="@+id/Prop_preg"

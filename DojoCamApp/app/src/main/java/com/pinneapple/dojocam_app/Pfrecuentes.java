@@ -76,15 +76,26 @@ public class Pfrecuentes extends Fragment {
     public void onResume() {
         super.onResume();
 
-        String tuString = "<b>¿Porqué existe Dojocam?</b>";
+        String tuString = "<b>¿Que es necesario para usar la Dojcam?</b>";
         TextView tv1 = (TextView)getView().findViewById(R.id.Preg1);
         tv1.setText(Html.fromHtml(tuString));
 
+        String tuString2 = "<i>Poseer tu dispositivo movil en la posicion adecuada y tener al menos tu metro cuadrado libre, no queremos generar accidentes infortuitos</i>";
+        TextView tv11 = (TextView)getView().findViewById(R.id.Res1);
+        tv11.setText(Html.fromHtml(tuString2));
 
-        String tuString2 = "<b>¿Porqué existe Dojocam?</b>";
+
+        String tuString3 = "<b>¿Porqué existe Dojocam?</b>";
         TextView tv2 = (TextView)getView().findViewById(R.id.Preg2);
         tv2.setText(Html.fromHtml(tuString2));
 
+        String tuString31 = "<i>Porque Dojomom comio DojoCUM</i>";
+        TextView tv21 = (TextView)getView().findViewById(R.id.Res2);
+        tv21.setText(Html.fromHtml(tuString31));
+
+        String tuString5 = "<b>¿Porqué existe Dojocam?</b>";
+        TextView tv3 = (TextView)getView().findViewById(R.id.Preg3);
+        tv2.setText(Html.fromHtml(tuString3));
         Button btn = (Button) getView().findViewById(R.id.Prop_preg);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
