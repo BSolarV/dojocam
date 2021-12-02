@@ -85,17 +85,22 @@ public class Pfrecuentes extends Fragment {
         tv11.setText(Html.fromHtml(tuString2));
 
 
-        String tuString3 = "<b>¿Porqué existe Dojocam?</b>";
+        String tuString3 = "<b>¿Por qué existe Dojocam?</b>";
         TextView tv2 = (TextView)getView().findViewById(R.id.Preg2);
-        tv2.setText(Html.fromHtml(tuString2));
+        tv2.setText(Html.fromHtml(tuString3));
 
-        String tuString31 = "<i>Porque Dojomom comio DojoCUM</i>";
+        String tuString31 = "<i>Porque necesitamos dar frente a los abusos</i>";
         TextView tv21 = (TextView)getView().findViewById(R.id.Res2);
         tv21.setText(Html.fromHtml(tuString31));
 
-        String tuString5 = "<b>¿Porqué existe Dojocam?</b>";
+        String tuString4 = "<b>¿Como funciona el sistema de entrenamiento?</b>";
         TextView tv3 = (TextView)getView().findViewById(R.id.Preg3);
-        tv2.setText(Html.fromHtml(tuString3));
+        tv3.setText(Html.fromHtml(tuString4));
+
+        String tuString5 = "<i>A traves del video previo practico te demostramos que debes realizar, donde deberas seguir el esqueleto celeste </i>";
+        TextView tv51 = (TextView)getView().findViewById(R.id.Res3);
+        tv51.setText(Html.fromHtml(tuString5));
+
         Button btn = (Button) getView().findViewById(R.id.Prop_preg);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
