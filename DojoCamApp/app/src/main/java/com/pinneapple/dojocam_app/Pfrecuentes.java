@@ -4,9 +4,11 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,6 +71,14 @@ public class Pfrecuentes extends Fragment {
     public void onResume() {
         super.onResume();
 
+        String tuString = "<b>¿Porqué existe Dojocam?</b>";
+        TextView tv1 = (TextView)getView().findViewById(R.id.Preg1);
+        tv1.setText(Html.fromHtml(tuString));
+
+
+        String tuString2 = "<b>¿Porqué existe Dojocam?</b>";
+        TextView tv2 = (TextView)getView().findViewById(R.id.Preg2);
+        tv2.setText(Html.fromHtml(tuString2));
 
     }
 }

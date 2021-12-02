@@ -18,9 +18,21 @@ public class UserData {
     //new {ID_ejercicio: {Fecha: [Score1, Score2, Score3, ...]}}
     private HashMap<String, HashMap<String, List<Integer>>> scores;
     //private List<String> exercisesDone;
+    private String lastExercise;
 
     public UserData(){}
 
+    public UserData(String firstName, String lastName, int sex, Date birthDate, Integer height, Integer weight, String lastExercise) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.sex = sex;
+        this.birthDate = birthDate;
+        this.height = height;
+        this.weight = weight;
+        this.lastExercise = lastExercise;
+        //score = null;
+        //exercisesDone = new ArrayList<String>();
+    }
     public UserData(String firstName, String lastName, int sex, Date birthDate, Integer height, Integer weight) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -28,10 +40,10 @@ public class UserData {
         this.birthDate = birthDate;
         this.height = height;
         this.weight = weight;
+        this.lastExercise = "basico";
         //score = null;
         //exercisesDone = new ArrayList<String>();
     }
-
     public String getFirstName() {
         return firstName;
     }
@@ -97,5 +109,11 @@ public class UserData {
 
     public void setScores(HashMap<String, HashMap<String, List<Integer>>> scores) {
         this.scores = scores;
+    }
+    public String getLastExercise() {
+        return lastExercise;
+    }
+    public void setLastExercise(String lastExercise){
+        this.lastExercise = lastExercise;
     }
 }
