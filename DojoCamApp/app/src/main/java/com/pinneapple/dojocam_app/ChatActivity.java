@@ -26,6 +26,7 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -44,17 +45,14 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         Intent intent = getIntent();
-        if (intent != null) {
-            groupIDint = intent.getStringExtra(groupIDint);
-        }
 
         initViews();
         addListener();
         fetchPreviousMessages();
-
     }
 
     private void fetchPreviousMessages() {
+        String groupIDint = "supergroup";
         MessagesRequest messagesRequest = new MessagesRequest.MessagesRequestBuilder().setGUID(groupIDint).build();
         messagesRequest.fetchPrevious(new CometChat.CallbackListener<List<BaseMessage>>() {
             @Override
@@ -82,6 +80,7 @@ public class ChatActivity extends AppCompatActivity {
         CometChat.addMessageListener(listenerID, new CometChat.MessageListener() {
             @Override
             public void onTextMessageReceived(TextMessage textMessage) {
+                fetchPreviousMessages();
             }
             @Override
             public void onMediaMessageReceived(MediaMessage mediaMessage) {
