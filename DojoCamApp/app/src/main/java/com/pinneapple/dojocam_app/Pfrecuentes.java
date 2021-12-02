@@ -123,7 +123,7 @@ public class Pfrecuentes extends Fragment {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         Editable value = input.getText();
                         mDatabaseReference = mDatabase.getReference().child("BDQuestions");
-                        mDatabaseReference.setValue(value);
+                        mDatabaseReference.setValue(value.toString());
                         // Do something with value!
                     }
                 });
