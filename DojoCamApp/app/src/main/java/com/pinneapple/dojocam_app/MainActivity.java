@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         //setSupportActionBar(binding.appBarMain.toolbar);
+        initCometChat();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -66,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
-        initCometChat();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void initCometChat(){
+    public void initCometChat(){
 
         String appID = "1985642356a8baff"; // Replace with your App ID
         String region = "us"; // Replace with your App Region ("eu" or "us")
@@ -139,6 +139,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } else {
+            CometChat.login("superhero1", authKey, new CometChat.CallbackListener<User>() {
+                @Override
+                public void onSuccess(User user) {
+                    Log.d("das", "Login Successful : " + user.toString());
+                }
+
+                @Override
+                public void onError(CometChatException e) {
+                    Log.d("error", "Login failed with exception: " + e.getMessage());
+                }
+            });
         }
     }
 

@@ -5,7 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ChatActivity">
-
+    <com.stfalcon.chatkit.messages.MessagesList
+        android:id="@+id/messagesList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/input" />
     <com.stfalcon.chatkit.messages.MessageInput
         android:id="@+id/input"
         android:layout_width="match_parent"
@@ -14,11 +19,4 @@
         app:inputHint="Escribe un mensaje!!"
         tools:ignore="MissingConstraints" />
 
-    <com.stfalcon.chatkit.messages.MessagesList
-        android:id="@+id/messagesList"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/input"
-/>
 </androidx.constraintlayout.widget.ConstraintLayout>
