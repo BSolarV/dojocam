@@ -247,6 +247,10 @@ public class Perfil_publico extends Fragment {
         userReference.get().addOnSuccessListener(command -> {
             Friends followers = command.toObject(Friends.class);
 
+            if( followers == null ){
+                followers = new Friends();
+            }
+
             if (followers.contains(weonId.toString())){
                 Toast.makeText(getActivity(),
                                 "Ya sigues a este samurai",
