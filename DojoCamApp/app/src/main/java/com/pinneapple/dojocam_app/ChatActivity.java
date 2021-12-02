@@ -20,12 +20,15 @@ import com.cometchat.pro.models.TextMessage;
 import com.squareup.picasso.Picasso;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.commons.models.IMessage;
+import com.stfalcon.chatkit.commons.models.IUser;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -44,17 +47,14 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         Intent intent = getIntent();
-        if (intent != null) {
-            groupIDint = intent.getStringExtra(groupIDint);
-        }
 
         initViews();
         addListener();
         fetchPreviousMessages();
-
     }
 
     private void fetchPreviousMessages() {
+        String groupIDint = "supergroup";
         MessagesRequest messagesRequest = new MessagesRequest.MessagesRequestBuilder().setGUID(groupIDint).build();
         messagesRequest.fetchPrevious(new CometChat.CallbackListener<List<BaseMessage>>() {
             @Override
@@ -82,6 +82,11 @@ public class ChatActivity extends AppCompatActivity {
         CometChat.addMessageListener(listenerID, new CometChat.MessageListener() {
             @Override
             public void onTextMessageReceived(TextMessage textMessage) {
+<<<<<<< HEAD
+                fetchPreviousMessages();
+=======
+                adapter.addToStart(new MessageWrapper(textMessage), true);
+>>>>>>> 2287079057295a80715d60a9b79f4fc6c65b03e4
             }
             @Override
             public void onMediaMessageReceived(MediaMessage mediaMessage) {
@@ -133,5 +138,6 @@ public class ChatActivity extends AppCompatActivity {
 
     private void addMessage(TextMessage textMessage) {
         adapter.addToStart(new MessageWrapper(textMessage), true);
+        //adapter.notifyItemInserted(0);
     }
 }

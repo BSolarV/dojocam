@@ -299,6 +299,7 @@ class Ml_model : AppCompatActivity(){
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         openCamera()
         cameraSource?.resume()
@@ -403,6 +404,7 @@ class Ml_model : AppCompatActivity(){
     }
 
     // open camera
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun openCamera() {
         if (isCameraPermissionGranted()) {
             if (cameraSource == null) {
@@ -617,7 +619,7 @@ class Ml_model : AppCompatActivity(){
                 cameraSource?.tootgleDrawOnScreen( true )
                 learning++
             }
-            if( learning == 2 ){
+            if( learning >= 2 ){
                 cameraSource?.tootgleDrawOnScreen( true )
                 alphaFactor =  1f
                 total /= 3
@@ -640,12 +642,7 @@ class Ml_model : AppCompatActivity(){
                     else -> "¡Vamos!"
                 }
 
-                alphaFactor =
-                        when {
-                            counterTime < ((NUM_DURATION / 3) + (NUM_DURATION * (textIndex-1))) -> ((counterTime -  NUM_DURATION * (textIndex-1)).toFloat())/(NUM_DURATION / 3)
-                            counterTime < ((NUM_DURATION * 2 / 3) + (NUM_DURATION * (textIndex-1))) -> 1f
-                            else -> (((NUM_DURATION * textIndex) - counterTime) / (NUM_DURATION / 3)).toFloat()
-                        }
+                alphaFactor = 1f
                 cameraSource?.setDrawOnScreen(text, 48f, alphaFactor)
 
                 if (counterTime >= NUM_DURATION * (1 + textIndex)) {
@@ -679,11 +676,13 @@ class Ml_model : AppCompatActivity(){
             }
         }
         if ( keepAsking && index < labels.size ){
-            if( learning != 0 && labels[index] - 100 < currentTime && currentTime < labels[index] + 300 ) {
-                total += cameraSource?.scorePose(labels[index].toString()) ?: 0
-                divisor++
-                if (currentTime > labels[index]) {
-                    index++
+            if( learning != 0 ) {
+                if( labels[index] - 100 < currentTime && currentTime < labels[index] + 300  ){
+                    total += cameraSource?.scorePose(labels[index].toString()) ?: 0
+                    divisor++
+                    if (currentTime > labels[index]) {
+                        index++
+                    }
                 }
             }else{
                 val result = cameraSource?.checkPose(labels[index].toString())
