@@ -59,10 +59,9 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
 
     private List<String> user_list = new ArrayList();
     private List<String> id_list = new ArrayList();
-    private ArrayAdapter adapter;
+    private ArrayAdapter adapter2;
     private LoadingDialog loadingDialog = new LoadingDialog(this);
 
-    private String search_txt;
     public addfriend() {
         // Required empty public constructor
     }
@@ -109,9 +108,9 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
 
         //search_txt = getArguments().getString("difficulty");
 
-        adapter = new ArrayAdapter(getContext(), R.layout.list_vid, user_list );
-        ListView lv = (ListView) getView().findViewById(R.id.user_list);
-        lv.setAdapter(adapter);
+        adapter2 = new ArrayAdapter(getContext(), R.layout.list_vid, user_list );
+        ListView lv = (ListView) getView().findViewById(R.id.user_list3);
+        lv.setAdapter(adapter2);
         lv.setOnItemClickListener(this);
 
         loadingDialog.startLoadingDialog();
@@ -149,7 +148,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
                     i++;
                 }
                 //Toast.makeText(getContext(), "Wena", Toast.LENGTH_LONG).show();
-                adapter.notifyDataSetChanged();
+                adapter2.notifyDataSetChanged();
                 loadingDialog.dismissDialog();
                 if(i == 0) {
                     // 1. Instantiate an <code><a href="/reference/android/app/AlertDialog.Builder.html">AlertDialog.Builder</a></code> with its constructor
@@ -171,6 +170,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
 
     @Override
     public void onResume() {
+        //System.out.println("Penecitos");
 
         super.onResume();
 
@@ -188,12 +188,13 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
                 for (UserData UserData:
                         docList) {
                     String aux =UserData.getFirstName();
+                    System.out.println(aux);
                     user_list.add(aux);
                     id_list.add(command.getDocuments().get(i).getId());
                     i++;
                 }
                 //Toast.makeText(getContext(), "Wena", Toast.LENGTH_LONG).show();
-                adapter.notifyDataSetChanged();
+                adapter2.notifyDataSetChanged();
                 loadingDialog.dismissDialog();
                 //Toast.makeText(getContext(), "No te veo compare, avispate", Toast.LENGTH_SHORT).show();
 
@@ -213,6 +214,9 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
         });
         data.addOnFailureListener(command -> {
             loadingDialog.dismissDialog();
+            System.out.println("ashjgdkjasgd");
+
+
             //Toast.makeText(getContext(), "No te veo compare, avispateeee", Toast.LENGTH_SHORT).show();
 
             // 1. Instantiate an <code><a href="/reference/android/app/AlertDialog.Builder.html">AlertDialog.Builder</a></code> with its constructor
@@ -246,7 +250,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        adapter.getFilter().filter(newText);
+        adapter2.getFilter().filter(newText);
         return true;
     }
 }

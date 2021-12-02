@@ -21,12 +21,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.ListFragment;
 import androidx.navigation.Navigation;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.pinneapple.dojocam_app.objects.VideoInfo;
 
@@ -34,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -103,7 +107,13 @@ public class Ejercicios extends ListFragment implements AdapterView.OnItemClickL
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
         //super.onViewCreated(view, savedInstanceState);
-
+        Random r = new Random();
+        int il = r.nextInt(100);
+        if(il > 70){
+            FragmentManager manager = getActivity().getSupportFragmentManager();
+            tip dialog = new tip();
+            dialog.show(manager,"message dialog");
+        }
         difficulty = getArguments().getString("difficulty");
 
         /*TextView pri = (TextView) getView().findViewById(R.id.textView);

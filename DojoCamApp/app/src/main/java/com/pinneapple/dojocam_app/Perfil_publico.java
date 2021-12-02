@@ -214,7 +214,7 @@ public class Perfil_publico extends Fragment {
             tv5.setText(user.getHeight().toString());
 
             TextView tv6 = (TextView)getView().findViewById(R.id.ProfileWeight_p);
-            tv6.setText(user.getHeight().toString());
+            tv6.setText(user.getWeight().toString());
 
         /*
             DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
