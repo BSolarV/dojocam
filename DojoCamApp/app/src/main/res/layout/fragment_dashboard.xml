@@ -141,6 +141,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="179dp"
                                     android:src="@drawable/tecnica" />
+
                             </LinearLayout>
 
                         </RelativeLayout>
@@ -166,6 +167,12 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="179dp"
                                     android:src="@drawable/fisico" />
+
+                                <Button
+                                    android:id="@+id/button6"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="CHAT" />
                             </LinearLayout>
 
                         </RelativeLayout>
