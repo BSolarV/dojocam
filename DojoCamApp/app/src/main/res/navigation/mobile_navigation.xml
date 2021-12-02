@@ -95,6 +95,6 @@
     <fragment
         android:id="@+id/pfrecuentes"
         android:name="com.pinneapple.dojocam_app.Pfrecuentes"
-        android:label="fragment_pfrecuentes"
+        android:label="Preguntas Frecuentes"
         tools:layout="@layout/fragment_pfrecuentes" />
 </navigation>

@@ -246,7 +246,7 @@ public class Perfil_publico extends Fragment {
         DocumentReference userReference = db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         userReference.get().addOnSuccessListener(command -> {
             Friends followers = command.toObject(Friends.class);
-            System.out.println(followers.getFollowers());
+
             if (followers.contains(weonId.toString())){
                 Toast.makeText(getActivity(),
                                 "Ya sigues a este samurai",
