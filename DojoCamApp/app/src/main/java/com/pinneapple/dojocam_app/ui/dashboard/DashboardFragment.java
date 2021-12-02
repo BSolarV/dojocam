@@ -114,9 +114,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                     break;
             }
             dificultad.setText("Dificultad: " + diffName);
-            Resources res = getResources();
+            /*Resources res = getResources();
             Drawable drawable = ResourcesCompat.getDrawable(res, R.drawable.default_recomendado, null);
-            img.setImageDrawable(drawable);
+            img.setImageDrawable(drawable);*/
 
         });
 
