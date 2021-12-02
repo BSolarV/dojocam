@@ -238,7 +238,7 @@ class CameraSource(
             detector?.estimateSinglePose(bitmap)?.let {
                 person = it
                 classifier?.run {
-                    classificationResult = classify(person)
+                    //classificationResult = classify(person)
                     outputBitmap = drawExpectedBody(bitmap, current, person!!)
                 }
             }

@@ -174,6 +174,11 @@ public class Perfil extends Fragment {
                 Bitmap bm = getImageBitmap(uri.toString());
                 imageViewProfilePicture.setImageBitmap(bm);
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "No posee Foto de Perfil", Toast.LENGTH_SHORT).show();
+            }
         });
 
 
@@ -228,14 +233,6 @@ public class Perfil extends Fragment {
             }
         });
 
-        Button add_friend = (Button) getView().findViewById(R.id.AddFriend);
-        add_friend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.AddFriend);
-
-            }
-        });
         imageViewProfilePicture = getView().findViewById(R.id.ProfileImage);
         imageViewProfilePicture.setOnClickListener(new View.OnClickListener() {
             @Override

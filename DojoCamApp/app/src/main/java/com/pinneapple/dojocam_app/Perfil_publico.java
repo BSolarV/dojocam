@@ -72,6 +72,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -92,7 +94,6 @@ public class Perfil_publico extends Fragment {
     private String image_path;
 
     private String weonId;
-
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -143,7 +144,7 @@ public class Perfil_publico extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        loadingDialog.startLoadingDialog();
+        //loadingDialog.startLoadingDialog();
     }
 
     @Override
@@ -160,6 +161,7 @@ public class Perfil_publico extends Fragment {
         }
         setUp();
     }
+
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -232,29 +234,65 @@ public class Perfil_publico extends Fragment {
 
             }
         });
-
-
     }
+
     private void saveFriend() {
-        Map<String, Object> amiwo = new HashMap<>();
-        amiwo.put("Amigo", weonId.toString());
 
-        db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
-                .set(amiwo)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Siguiendo");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
-                    }
-                });
+        Friends follower = new Friends();
+
+        //System.out.println("Hola2");
+        //System.out.println(follower.getClass().getName());
+
+        DocumentReference userReference = db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        userReference.get().addOnSuccessListener(command -> {
+            Friends followers = command.toObject(Friends.class);
+            System.out.println(followers.getFollowers());
+            if (followers.contains(weonId.toString())){
+                Toast.makeText(getActivity(),
+                                "Ya sigues a este samurai",
+                                Toast.LENGTH_SHORT)
+                        .show();
+            }
+            else {
+                followers.add(weonId.toString());
+                db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                        .set(followers)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "Siguiendo");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
+                            }
+                        });}
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                follower.add(weonId.toString());
+                db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                        .set(follower)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "Siguiendo");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
+                            }
+                        });
+
+            }
+        });
 
     }
+
     private Bitmap getImageBitmap(String url) {
         Bitmap bm = null;
         try {
@@ -271,7 +309,6 @@ public class Perfil_publico extends Fragment {
         }
         return bm;
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

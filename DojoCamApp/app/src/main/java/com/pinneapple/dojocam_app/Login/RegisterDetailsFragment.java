@@ -3,13 +3,16 @@ package com.pinneapple.dojocam_app.Login;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +23,16 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.pinneapple.dojocam_app.LoadingDialog;
@@ -37,6 +48,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -51,10 +65,16 @@ public class RegisterDetailsFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    public static final String GSINGIN = "GSINGIN";
+    public static final String GCREDENTIAL= "GCREDENTIAL";
+    public static final String EMAIL = "EMAIL";
+    public static final String PASSWORD = "PASSWORD";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private Boolean GSingIn = false;
+    private AuthCredential GCredential;
+    private String mEMAIL;
+    private String mPASSWORD;
 
     // Attributes
     private final LoadingDialog loadingDialog = new LoadingDialog(this);
@@ -73,17 +93,31 @@ public class RegisterDetailsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static RegisterDetailsFragment newInstance(String param1) {
+    public static RegisterDetailsFragment newInstance(Boolean GSingIn, AuthCredential GCredential, String  email, String password) {
         RegisterDetailsFragment fragment = new RegisterDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putBoolean(GSINGIN, GSingIn);
+        args.putParcelable(GCREDENTIAL, GCredential);
+        args.putString(EMAIL, email);
+        args.putString(PASSWORD, password);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static RegisterDetailsFragment newInstance(String  email, String password) {
+        return newInstance(false, null, email, password);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            Log.wtf("REG:", String.valueOf(getArguments().getBoolean(GSINGIN)));
+            GSingIn = getArguments().getBoolean(GSINGIN);
+            GCredential = getArguments().getParcelable(GCREDENTIAL);
+            mEMAIL = getArguments().getString(EMAIL);
+            mPASSWORD = getArguments().getString(PASSWORD);
+        }
     }
 
     @Override
@@ -139,7 +173,7 @@ public class RegisterDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 saveInformation();
-                toMainActivity();
+
             }
         });
 
@@ -153,9 +187,55 @@ public class RegisterDetailsFragment extends Fragment {
                 birthDateValue,
                 Integer.valueOf(height.getText().toString()),
                 Integer.valueOf(weight.getText().toString()));
+
         loadingDialog.startLoadingDialog();
-        db.collection("Users").document(Objects.requireNonNull(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail())).set(user);
-        loadingDialog.dismissDialog();
+
+        if( GSingIn ){
+            FirebaseAuth.getInstance().signInWithCredential(GCredential)
+                    .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                FirebaseUser FBUser = task.getResult().getUser();
+                                assert FBUser != null;
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(name.getText().toString() + lastname.getText().toString())
+                                        .build();
+                                FBUser.updateProfile(profileUpdates);
+                                db.collection("Users").document(Objects.requireNonNull(FBUser.getEmail())).set(user);
+                                loadingDialog.dismissDialog();
+                                toMainActivity();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Toast.makeText(requireContext(), Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();
+                                loadingDialog.dismissDialog();
+                            }
+                        }
+                    });
+        } else {
+            FirebaseAuth.getInstance().createUserWithEmailAndPassword(mEMAIL, mPASSWORD)
+                    .addOnSuccessListener(command -> {
+                        if( command.getUser() == null || command.getUser().getEmail() == null ){
+                            loadingDialog.dismissDialog();
+                            Toast.makeText(requireContext(), "Error: No se pudo crear su cuenta. Por favor intente nuevamente", Toast.LENGTH_LONG).show();
+                        } else {
+                            FirebaseUser FBUser = command.getUser();
+                            assert FBUser != null;
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(name.getText().toString() + lastname.getText().toString())
+                                    .build();
+                            FBUser.updateProfile(profileUpdates);
+                            db.collection("Users").document(Objects.requireNonNull(FBUser.getEmail())).set(user);
+                            loadingDialog.dismissDialog();
+                            toMainActivity();
+                        }
+                    })
+                    .addOnFailureListener(command -> {
+                        loadingDialog.dismissDialog();
+                        Toast.makeText(requireContext(), "Error: "+command.getMessage(), Toast.LENGTH_LONG).show();
+                    });
+        }
     }
 
     @Override
@@ -167,40 +247,51 @@ public class RegisterDetailsFragment extends Fragment {
 
 
     public void showDatePickerDialog(View v) {
+        TextView birthdate = requireView().findViewById( R.id.RegisterBirthDate );
         DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                TextView birthdate = requireView().findViewById( R.id.RegisterBirthDate );
                 Calendar calendar = new GregorianCalendar(year, month, dayOfMonth);
                 DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                 birthdate.setText( formatter.format(calendar.getTime()) );
                 birthDateValue = calendar.getTime();
             }
         });
-        newFragment.show(requireActivity().getSupportFragmentManager(), String.valueOf(R.string.RegisterBirthDateLabel));
-        birthDateValue = newFragment.getBirthDateValue();
+        if( birthdate.getText().toString() == getResources().getString(R.string.RegisterDefaultDate) ){
+            newFragment.show(requireActivity().getSupportFragmentManager(), String.valueOf(R.string.RegisterBirthDateLabel));
+            Date dateNow = new Date();
+            DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            birthdate.setText( formatter.format( dateNow ));
+            birthDateValue = dateNow;
+        }
     }
 
     public void showHeightPickerDialog(View v) {
+        TextView height = requireView().findViewById(R.id.RegisterHeight);
         DialogFragment newFragment = HeightPickerFragment.newInstance(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                TextView height = requireView().findViewById(R.id.RegisterHeight);
                 height.setText(String.valueOf(newVal));
             }
         });
         newFragment.show(requireActivity().getSupportFragmentManager(), String.valueOf(R.string.RegisterHeightLabel));
+        if(height.getText().toString().equals(getResources().getString(R.string.DefaultNumber))){
+            height.setText(String.valueOf(HeightPickerFragment.DEFAULT_VALUE));
+        }
     }
 
     public void showWeightPickerDialog(View v) {
+        TextView weight = requireView().findViewById(R.id.RegisterWeight);
         DialogFragment newFragment = WeightPickerFragment.newInstance(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                TextView weight = requireView().findViewById(R.id.RegisterWeight);
                 weight.setText(String.valueOf(newVal));
             }
         });
         newFragment.show(requireActivity().getSupportFragmentManager(), String.valueOf(R.string.RetgisterWeightLabel));
+        if(weight.getText().toString().equals(getResources().getString(R.string.DefaultNumber))){
+            weight.setText(String.valueOf(WeightPickerFragment.DEFAULT_VALUE));
+        }
     }
 
 

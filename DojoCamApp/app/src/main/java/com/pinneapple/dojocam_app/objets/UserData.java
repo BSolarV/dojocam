@@ -2,17 +2,22 @@ package com.pinneapple.dojocam_app.objets;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserData {
+
     private String firstName;
     private String lastName;
     private int sex;
     private Date birthDate;
     private Integer height;
     private Integer weight;
-    private Integer score;
-    private List<String> exercisesDone;
+    //old {ID_ejercicio: {Fecha: Score}}
+    //new {ID_ejercicio: {Fecha: [Score1, Score2, Score3, ...]}}
+    private HashMap<String, HashMap<String, List<Integer>>> scores;
+    //private List<String> exercisesDone;
 
     public UserData(){}
 
@@ -23,8 +28,8 @@ public class UserData {
         this.birthDate = birthDate;
         this.height = height;
         this.weight = weight;
-        score = 0;
-        exercisesDone = new ArrayList<String>();
+        //score = null;
+        //exercisesDone = new ArrayList<String>();
     }
 
     public String getFirstName() {
@@ -75,19 +80,22 @@ public class UserData {
         this.weight = weight;
     }
 
-    public Integer getScore() {
-        return score;
-    }
-
-    public void setScore(Integer score) {
-        this.score = score;
-    }
-
+    /*
     public List<String> getExercisesDone() {
         return exercisesDone;
     }
 
     public void setExercisesDone(List<String> exercisesDone) {
         this.exercisesDone = exercisesDone;
+    }
+     */
+
+    public HashMap<String, HashMap<String, List<Integer>>> getScores() {
+
+        return scores;
+    }
+
+    public void setScores(HashMap<String, HashMap<String, List<Integer>>> scores) {
+        this.scores = scores;
     }
 }

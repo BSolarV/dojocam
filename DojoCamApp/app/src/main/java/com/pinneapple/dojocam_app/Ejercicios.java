@@ -63,9 +63,6 @@ public class Ejercicios extends ListFragment implements AdapterView.OnItemClickL
     private ArrayAdapter adapter;
     private LoadingDialog loadingDialog = new LoadingDialog(this);
 
-
-
-
     private String difficulty;
     public Ejercicios() {
         // Required empty public constructor
@@ -140,8 +137,6 @@ public class Ejercicios extends ListFragment implements AdapterView.OnItemClickL
 
         loadingDialog.startLoadingDialog();
 
-
-
     }
     @Override
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
@@ -151,11 +146,10 @@ public class Ejercicios extends ListFragment implements AdapterView.OnItemClickL
         searchView.setOnQueryTextListener(this);
         searchView.setQueryHint("Buscar");
 
-
         super.onCreateOptionsMenu(menu, inflater);
 
-
     }
+
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
         Bundle bundle = new Bundle();
@@ -185,7 +179,6 @@ public class Ejercicios extends ListFragment implements AdapterView.OnItemClickL
                 int i = 0;
                 for (VideoInfo videoInfo:
                         docList) {
-
 
                     String aux =videoInfo.getNombre();
                     vid_list.add(aux);

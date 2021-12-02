@@ -50,7 +50,7 @@ class PoseClassifier(
                 setNumThreads(CPU_NUM_THREADS)
             }
             MODEL_FILENAME = "tflite-models/$namefile.tflite"
-            LABELS_FILENAME = "tflite-models/$namefile-labels.txt"
+            LABELS_FILENAME = "models-data/$namefile-labels.txt"
             EXPECTED_POSE_FILENAME = "models-data/$namefile.csv"
 
             try {
@@ -80,7 +80,7 @@ class PoseClassifier(
                         context, MODEL_FILENAME
                     ), options
                 ),
-                FileUtil.loadLabels(context, LABELS_FILENAME)
+                FileUtil.loadLabels(context, LABELS_FILENAME).sorted()
             )
         }
         fun getExpectedBody(target: String) : Person? {
@@ -103,6 +103,8 @@ class PoseClassifier(
         val output = mutableListOf<Pair<String, Float>>()
         outputTensor.forEachIndexed { index, score ->
             output.add(Pair(labels[index], score))
+            Log.wtf("aaaaa", outputTensor[index].toString())
+            Log.wtf("bbbbb", labels[index].toString())
         }
         return output
     }

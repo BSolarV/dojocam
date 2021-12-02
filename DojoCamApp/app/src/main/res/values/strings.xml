@@ -8,6 +8,12 @@
     <string name="ConectionError">Ha ocurrido un error de conexión.</string>
     <string name="preference_file_key">VIDEO_STORAGE</string>
 
+    <!-- Login Activity Strings -->
+    <string name="requiredEmail">El email es requerido</string>
+    <string name="emailInUse">El email ya esta en uso</string>
+    <string name="weekPass">Su contraseña es muy débil</string>
+    <string name="passDontMatch">Sus contraseñas no coinciden</string>
+
     <!-- Login Strins -->
     <string name="email">Email</string>
     <string name="password">Contraseña</string>
@@ -21,7 +27,7 @@
     <string name="LoginEmailNotify">Se ha enviado un link a su correo para restablecer su contraseña.</string>
     <string name="NoUser">No se han encontrado credenciales.</string>
 
-    <string name="AppClientId">127635168063-cfv1ckf3a19eihr4jn81ft28rhe7tcv0.apps.googleusercontent.com</string>
+    <string name="AppClientId">127635168063-rhklqv0nkingflqob0r5vijqi8sn6rla.apps.googleusercontent.com</string>
 
 
     <!-- register Strings -->
