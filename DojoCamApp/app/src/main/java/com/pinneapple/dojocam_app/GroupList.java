@@ -54,42 +54,32 @@ public class GroupList extends AppCompatActivity {
         String region = "us"; // Replace with your App Region ("eu" or "us")
         String authKey = "8d0188e55822c22f0d2f20cdcd8601c694b6780f"; //Replace with your Auth Key.
         FirebaseUser user_email = FirebaseAuth.getInstance().getCurrentUser();
+        assert user_email != null;
         String UID = user_email.getEmail(); // Replace with the UID of the user to login
         AppSettings appSettings=new AppSettings.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region).build();
 
         CometChat.init(this, appID,appSettings, new CometChat.CallbackListener<String>() {
             @Override
             public void onSuccess(String successMessage) {
+                if (CometChat.getLoggedInUser() == null) {
+
+                    CometChat.login(UID, authKey, new CometChat.CallbackListener<User>() {
+                        @Override
+                        public void onSuccess(User user) {
+                            Log.d("das", "Login Successful : " + user.toString());
+                        }
+
+                        @Override
+                        public void onError(CometChatException e) {
+                            Log.d("error", "Login failed with exception: " + e.getMessage());
+                        }
+                    });
+                }
+
             }
             @Override
             public void onError(CometChatException e) {
             }
         });
-
-        if (CometChat.getLoggedInUser() == null) {
-            CometChat.login("superhero1", authKey, new CometChat.CallbackListener<User>() {
-                @Override
-                public void onSuccess(User user) {
-                    Log.d("das", "Login Successful : " + user.toString());
-                }
-
-                @Override
-                public void onError(CometChatException e) {
-                    Log.d("error", "Login failed with exception: " + e.getMessage());
-                }
-            });
-        } else {
-            CometChat.login("superhero2", authKey, new CometChat.CallbackListener<User>() {
-                @Override
-                public void onSuccess(User user) {
-                    Log.d("das", "Login Successful : " + user.toString());
-                }
-
-                @Override
-                public void onError(CometChatException e) {
-                    Log.d("error", "Login failed with exception: " + e.getMessage());
-                }
-            });
-        }
     }
 }

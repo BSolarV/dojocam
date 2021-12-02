@@ -193,7 +193,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
                     id_list.add(command.getDocuments().get(i).getId());
                     i++;
                 }
-                //Toast.makeText(getContext(), "Wena", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Wena", Toast.LENGTH_LONG).show();
                 adapter2.notifyDataSetChanged();
                 loadingDialog.dismissDialog();
                 //Toast.makeText(getContext(), "No te veo compare, avispate", Toast.LENGTH_SHORT).show();

@@ -1,14 +1,22 @@
 package com.pinneapple.dojocam_app;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +33,9 @@ public class Pfrecuentes extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference mDatabaseReference = mDatabase.getReference("FAQ");
 
     public Pfrecuentes() {
         // Required empty public constructor
@@ -71,14 +82,60 @@ public class Pfrecuentes extends Fragment {
     public void onResume() {
         super.onResume();
 
-        String tuString = "<b>¿Porqué existe Dojocam?</b>";
+        String tuString = "<b>¿Que es necesario para usar la Dojcam?</b>";
         TextView tv1 = (TextView)getView().findViewById(R.id.Preg1);
         tv1.setText(Html.fromHtml(tuString));
 
+        String tuString2 = "<i>Poseer tu dispositivo movil en la posicion adecuada y tener al menos tu metro cuadrado libre, no queremos generar accidentes infortuitos</i>";
+        TextView tv11 = (TextView)getView().findViewById(R.id.Res1);
+        tv11.setText(Html.fromHtml(tuString2));
 
-        String tuString2 = "<b>¿Porqué existe Dojocam?</b>";
+
+        String tuString3 = "<b>¿Por qué existe Dojocam?</b>";
         TextView tv2 = (TextView)getView().findViewById(R.id.Preg2);
-        tv2.setText(Html.fromHtml(tuString2));
+        tv2.setText(Html.fromHtml(tuString3));
 
+        String tuString31 = "<i>Porque necesitamos dar frente a los abusos</i>";
+        TextView tv21 = (TextView)getView().findViewById(R.id.Res2);
+        tv21.setText(Html.fromHtml(tuString31));
+
+        String tuString4 = "<b>¿Como funciona el sistema de entrenamiento?</b>";
+        TextView tv3 = (TextView)getView().findViewById(R.id.Preg3);
+        tv3.setText(Html.fromHtml(tuString4));
+
+        String tuString5 = "<i>A traves del video previo practico te demostramos que debes realizar, donde deberas seguir el esqueleto celeste </i>";
+        TextView tv51 = (TextView)getView().findViewById(R.id.Res3);
+        tv51.setText(Html.fromHtml(tuString5));
+
+        Button btn = (Button) getView().findViewById(R.id.Prop_preg);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+                alert.setTitle("Enviar Pregunta");
+                alert.setMessage("");
+
+                final EditText input = new EditText(getActivity());
+                alert.setView(input);
+
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Editable value = input.getText();
+                        mDatabaseReference = mDatabase.getReference().child("BDQuestions");
+                        mDatabaseReference.setValue(value);
+                        // Do something with value!
+                    }
+                });
+
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                    }
+                });
+
+                alert.show();
+            }
+        });
     }
 }

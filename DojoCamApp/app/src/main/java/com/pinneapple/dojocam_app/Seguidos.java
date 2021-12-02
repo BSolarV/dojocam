@@ -180,14 +180,23 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
 
         DocumentReference userReference = db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         userReference.get().addOnSuccessListener(command -> {
+            boolean bo = false;
             Friends followers = command.toObject(Friends.class);
-            System.out.println(followers.getFollowers());
-            for(String amiwo : followers.getFollowers()) {
-                System.out.println(amiwo);
-                user_list2.add(amiwo);
+            if(followers != null) {
+                System.out.println(followers.getFollowers());
+                for (String amiwo : followers.getFollowers()) {
+                    System.out.println(amiwo);
+                    user_list2.add(amiwo);
+                }
+            }else{
+                Toast.makeText(getContext(),"Busca Amigos en Perfil", Toast.LENGTH_SHORT).show();
+                bo = true;
             }
             adapter.notifyDataSetChanged();
             loadingDialog.dismissDialog();
+            /*if (bo) {
+                Navigation.findNavController(getView()).navigate(R.id.AddFriend);
+            }*/
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {

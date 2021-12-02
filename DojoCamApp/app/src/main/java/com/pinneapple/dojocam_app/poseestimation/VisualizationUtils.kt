@@ -80,7 +80,7 @@ object VisualizationUtils {
             style = Paint.Style.FILL
         }
         val paintLine = Paint().apply {
-            strokeWidth = 2f
+            strokeWidth = 8f
             color = Color.BLUE
             style = Paint.Style.FILL
         }
