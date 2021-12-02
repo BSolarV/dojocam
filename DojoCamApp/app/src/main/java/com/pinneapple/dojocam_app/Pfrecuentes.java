@@ -92,7 +92,7 @@ public class Pfrecuentes extends Fragment {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
 
                 alert.setTitle("Enviar Pregunta");
-                alert.setMessage("Mensaje");
+                alert.setMessage("");
 
                 final EditText input = new EditText(getActivity());
                 alert.setView(input);
