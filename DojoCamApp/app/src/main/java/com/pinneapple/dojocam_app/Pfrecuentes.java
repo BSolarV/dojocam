@@ -7,6 +7,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,6 +26,7 @@ public class Pfrecuentes extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -61,5 +68,20 @@ public class Pfrecuentes extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_pfrecuentes, container, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        
+        DocumentReference qReference = db.collection("FAQ").document("Questions");
+        qReference.get().addOnSuccessListener(command -> {
+            List<String> ip = (List<String>) command.get("Data");
+        });
+
+        DocumentReference aReference = db.collection("FAQ").document("Answers");
+        aReference.get().addOnSuccessListener(command -> {
+            List<String> ip = (List<String>) command.get("Data");
+        });
     }
 }
