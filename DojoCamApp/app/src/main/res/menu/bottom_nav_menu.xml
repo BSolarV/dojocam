@@ -7,7 +7,7 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/Seguidos"
+        android:id="@+id/AddFriend"
         android:icon="@drawable/baseline_accessibility_new_24"
         android:title="Amigos" />
 

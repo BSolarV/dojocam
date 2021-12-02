@@ -34,6 +34,9 @@
         <action
             android:id="@+id/action_perfil_to_AddFriend"
             app:destination="@id/AddFriend" />
+        <action
+            android:id="@+id/action_perfil_to_pfrecuentes"
+            app:destination="@id/pfrecuentes" />
     </fragment>
     <fragment
         android:id="@+id/exerciseDetail"
@@ -88,4 +91,10 @@
         android:name="com.pinneapple.dojocam_app.Practice"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_practice" />
+
+    <fragment
+        android:id="@+id/pfrecuentes"
+        android:name="com.pinneapple.dojocam_app.Pfrecuentes"
+        android:label="fragment_pfrecuentes"
+        tools:layout="@layout/fragment_pfrecuentes" />
 </navigation>
