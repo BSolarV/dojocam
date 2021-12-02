@@ -3,6 +3,7 @@ package com.pinneapple.dojocam_app.ui.notifications;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.pinneapple.dojocam_app.LoadingDialog;
 import com.pinneapple.dojocam_app.R;
 import com.pinneapple.dojocam_app.databinding.FragmentNotificationsBinding;
 import com.pinneapple.dojocam_app.objets.UserData;
@@ -54,6 +56,7 @@ public class NotificationsFragment extends Fragment {
 
     private NotificationsViewModel notificationsViewModel;
     private FragmentNotificationsBinding binding;
+    private LoadingDialog loadingDialog = new LoadingDialog(this);
 
     private List<Integer> day_scores = new ArrayList<Integer>();
     private List<Integer> week_scores= new ArrayList<Integer>();
@@ -102,8 +105,9 @@ public class NotificationsFragment extends Fragment {
                 UserData user = command.toObject(UserData.class);
                 assert user != null;
 
-                HashMap<String, HashMap<String, List<Integer>>> scores =  user.getScores();
-                HashMap <String, List<Integer>> exercise_scores;
+                HashMap<String, HashMap<String, List<Integer>>> scores =  new HashMap<>();
+                scores =  user.getScores();
+                HashMap <String, List<Integer>> exercise_scores = new HashMap<>();
 
                 //Parseo de los scores en las distintas listas
                 for ( String key : scores.keySet() ) {
@@ -116,6 +120,8 @@ public class NotificationsFragment extends Fragment {
                 exercise_scores = scores.get(exercises_done.get(index_key));
 
                 day_scores = exercise_scores.get(today);
+
+                //Toast.makeText(getContext(),day_scores.get(0).toString(), Toast.LENGTH_SHORT).show();
 
 
                 for ( String key : exercise_scores.keySet() ) {
@@ -189,7 +195,8 @@ public class NotificationsFragment extends Fragment {
                     month_scores.add(weekprom);
 
                 }
-                //loadingDialog.dismissDialog();
+                setAll();
+                loadingDialog.dismissDialog();
             });
         } else {
             Toast.makeText(getContext(), "aaa", Toast.LENGTH_SHORT).show();
@@ -219,6 +226,11 @@ public class NotificationsFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        loadingDialog.startLoadingDialog();
+
+    }
+
+    public void setAll(){
         BarChart barChart = (BarChart) getView().findViewById(R.id.barChart);
         ArrayList<BarEntry> dias = new ArrayList<>();
         /*dias.add(new BarEntry(1, 25));
@@ -236,7 +248,11 @@ public class NotificationsFragment extends Fragment {
         if(day_scores != null) {
             for (int i = 0; i < day_scores.size(); i++) {
                 dias.add(new BarEntry (i+1,day_scores.get(i)));
+                Log.wtf("aa",i + ":" + day_scores.get(i).toString());
             }
+            //Toast.makeText(getContext(),day_scores.get(0).toString(), Toast.LENGTH_SHORT).show();
+        }else {
+            //Toast.makeText(getContext(),"???",Toast.LENGTH_SHORT).show();
         }
 
 
@@ -256,6 +272,36 @@ public class NotificationsFragment extends Fragment {
         RadioButton radio_week = (RadioButton) getView().findViewById(R.id.radio_week);
         RadioButton radio_month = (RadioButton) getView().findViewById(R.id.radio_month);
         RadioButton radio_year = (RadioButton) getView().findViewById(R.id.radio_year);
+
+        radio_day.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BarChart barChart = (BarChart) getView().findViewById(R.id.barChart);
+                ArrayList<BarEntry> dias = new ArrayList<>();
+
+
+                if(day_scores != null) {
+                    for (int i = 0; i < day_scores.size(); i++) {
+                        dias.add(new BarEntry (i+1,day_scores.get(i)));
+                    }
+                }
+
+
+                BarDataSet barDataSet = new BarDataSet(dias, "Dia");
+
+                barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+                barDataSet.setValueTextColor(Color.BLACK);
+                barDataSet.setValueTextSize(16f);
+
+                BarData barData = new BarData(barDataSet);
+                barChart.setFitBars(true);
+                barChart.setData(barData);
+                barChart.getDescription().setText("Puntajes Diarios");
+                barChart.animateY(2000);
+            }
+
+        });
+
         radio_week.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -377,5 +423,6 @@ public class NotificationsFragment extends Fragment {
             }
         });
     }
+
 
 }
