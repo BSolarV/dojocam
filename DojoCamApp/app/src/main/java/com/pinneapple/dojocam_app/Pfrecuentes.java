@@ -15,6 +15,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link Pfrecuentes#newInstance} factory method to
@@ -30,6 +33,9 @@ public class Pfrecuentes extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference mDatabaseReference = mDatabase.getReference("FAQ");
 
     public Pfrecuentes() {
         // Required empty public constructor
@@ -116,6 +122,8 @@ public class Pfrecuentes extends Fragment {
                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         Editable value = input.getText();
+                        mDatabaseReference = mDatabase.getReference().child("BDQuestions");
+                        mDatabaseReference.setValue(value);
                         // Do something with value!
                     }
                 });
