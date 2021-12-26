@@ -57,6 +57,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
     private String videoId;
     private String namefile;
     private String vid_path;
+    private String difficulty;
 
 
 
@@ -111,6 +112,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
             dialog.show(manager,"message dialog");
         }
         videoId = getArguments().getString("videoId");
+        difficulty = getArguments().getString("difficulty");
         title = (TextView) getView().findViewById(R.id.excersiceTitle);
         desc = (TextView)  getView().findViewById(R.id.textView10);
 
@@ -163,6 +165,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
             bundle.putString("id_ejercicio",videoId);
             bundle.putString("namefile", namefile);
             bundle.putString("vid_path", vid_path);
+            bundle.putString("difficulty" , difficulty);
             Intent mainActivity = new Intent(getContext(), Ml_model.class);
             mainActivity.putExtras(bundle);
             startActivity(mainActivity);

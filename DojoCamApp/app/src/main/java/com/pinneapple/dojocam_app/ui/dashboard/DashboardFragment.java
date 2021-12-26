@@ -69,7 +69,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private TextView name, dificultad;
     private ImageView img;
-    String whereQ = "basico";
+    private String whereQ = "basico";
+    private String last_exercise;
     private int number;
     private VideoInfo exercise;
     private List<String> id_list = new ArrayList();
@@ -79,6 +80,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     private ImageView three;
     private Button btn;
     private Button chat;
+    private Button btnLastExercise;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -157,6 +159,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
             } else {
                 whereQ = user.getLastExercise();
             }
+
+            if( user.getLastExercisePath() == null ) {
+                last_exercise = "";
+            } else {
+                last_exercise = user.getLastExercisePath();
+            }
+
 
         });
 
@@ -271,6 +280,44 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
 
                 }
             });
+            btnLastExercise = (Button) getView().findViewById(R.id.Retomar);
+            if(last_exercise == "") {
+                btnLastExercise.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(getContext(),"No hay ejercicios Pendientes", Toast.LENGTH_SHORT ).show();
+
+                    }
+                });
+            }
+            else {
+                Task<DocumentSnapshot> data2 = db.collection("ejercicios").document(last_exercise).get();
+                data2.addOnSuccessListener(command2 -> {
+                    btnLastExercise.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Bundle bundle = new Bundle();
+
+                            bundle.putString("difficulty" , command2.get("dificultad").toString());
+                            bundle.putString("videoId", last_exercise);
+                            bundle.putString("name", command2.get("nombre").toString());
+
+                            Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
+
+                        }
+                    });
+
+
+                });
+                /*data2.addOnFailureListener(error ->{
+                    Toast.makeText(getContext(),"No hay ejercicios Pendientes", Toast.LENGTH_SHORT ).show();
+                });*/
+
+            }
+
+
+
+
 
 
         });
