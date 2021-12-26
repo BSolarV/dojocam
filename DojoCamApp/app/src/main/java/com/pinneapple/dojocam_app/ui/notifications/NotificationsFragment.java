@@ -46,6 +46,7 @@ import com.pinneapple.dojocam_app.databinding.FragmentNotificationsBinding;
 import com.pinneapple.dojocam_app.objets.UserData;
 
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -54,6 +55,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -73,6 +76,11 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
     private List<String> exercises_done= new ArrayList<String>();
     private List<String> exercises_done_names= new ArrayList<String>();
     private List<String> exercises_done_nindex= new ArrayList<String>();
+    private Integer best_score = 0;
+    private Integer times_done = 0;
+    private Boolean firstTime = true;
+
+
     private ArrayAdapter arrayAdapter;
 
     private Integer index_key = 0;
@@ -103,12 +111,38 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void consultScores() {
-        day_scores.clear();
-        week_scores.clear();
-        month_scores.clear();
-        exercises_done.clear();
-        exercises_done_nindex.clear();
-        exercises_done_names.clear();
+        //Borrando dayScores
+        try {
+            day_scores.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //Borrando weekScores
+        try {
+            week_scores.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //Borrando monthScores
+        try {
+            month_scores.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //Borrando exercisesDone
+        try {
+            exercises_done.clear();
+            exercises_done_nindex.clear();
+            exercises_done_names.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        best_score = 0;
+        times_done = 0;
+
+
 
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -153,12 +187,15 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                             }
                             i++;
                         }
+
                     }
 
                     //scores de el ejercicio
                     exercise_scores = scores.get(exercises_done_nindex.get(index_key));
 
                     day_scores = exercise_scores.get(today);
+
+
 
                     //Toast.makeText(getContext(),day_scores.get(0).toString(), Toast.LENGTH_SHORT).show();
 
@@ -223,6 +260,12 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                             if(day_s != null){
                                 prom = day_s.stream().mapToInt(Integer::intValue).sum();
                                 prom /= day_s.size();
+
+                                times_done += day_s.size();
+                                if ((Integer) Collections.max(day_s) > best_score) {
+                                    best_score = (Integer) Collections.max(day_s);
+                                }
+
                                 div++;
                             }
                             weekprom += prom;
@@ -279,9 +322,15 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
     public void setAll(){
 
         arrayAdapter = new ArrayAdapter(getContext(), R.layout.dropdown_item, exercises_done_names );
+
+        if (firstTime) {
+            binding.autoCompleteTextView.setText(exercises_done_names.get(index_key));
+            firstTime = false;
+        }
         binding.autoCompleteTextView.setAdapter(arrayAdapter);
 
         binding.autoCompleteTextView.setOnItemClickListener(this);
+
 
         BarChart barChart = (BarChart) getView().findViewById(R.id.barChart);
         ArrayList<BarEntry> dias = new ArrayList<>();
@@ -323,6 +372,14 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
         RadioButton radio_day = (RadioButton) getView().findViewById(R.id.radio_day);
         RadioButton radio_week = (RadioButton) getView().findViewById(R.id.radio_week);
         RadioButton radio_month = (RadioButton) getView().findViewById(R.id.radio_month);
+
+        TextView bestScore = (TextView) getView().findViewById(R.id.bestScore);
+        TextView timesDone = (TextView) getView().findViewById(R.id.timesDone);
+
+        bestScore.setText(best_score.toString());
+        timesDone.setText(times_done.toString());
+
+
 
 
         radio_day.setOnClickListener(new View.OnClickListener() {
