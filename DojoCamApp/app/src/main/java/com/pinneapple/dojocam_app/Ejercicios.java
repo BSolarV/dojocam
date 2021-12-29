@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.ListFragment;
 import androidx.navigation.Navigation;
 
@@ -34,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -106,6 +108,14 @@ public class Ejercicios extends ListFragment implements AdapterView.OnItemClickL
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
         //super.onViewCreated(view, savedInstanceState);
+
+        Random r = new Random();
+        int il = r.nextInt(100);
+        if(il > 70){
+            FragmentManager manager = getActivity().getSupportFragmentManager();
+            tip dialog = new tip();
+            dialog.show(manager,"message dialog");
+        }
 
         difficulty = getArguments().getString("difficulty");
 
