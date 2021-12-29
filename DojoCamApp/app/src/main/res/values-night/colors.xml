@@ -10,10 +10,17 @@
 
     <color name="danger">#d74338</color>
 
+
+
     <color name="main_bg">#334257</color>
+    <color name="textOnMainBg">#FFFFFFFF</color>
     <color name="second_bg">#738399</color>
+    <color name="textOnSecondBg">#FF000000</color>
+
     <color name="colorSecondary">#FFB078</color>
     <color name="colorSecondaryVariant">#FFCBA8</color>
+    <color name="textOnSecondary">#FF000000</color>
     <color name="colorPrimary">#C89AF3</color>
     <color name="colorPrimaryVariant">#BEACE1</color>
+    <color name="textOnPrimary">#FF000000</color>
 </resources>

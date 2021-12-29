@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,6 +34,7 @@ import com.google.firebase.storage.StorageReference;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.Random;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,6 +57,7 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
     private String videoId;
     private String namefile;
     private String vid_path;
+    private String difficulty;
 
 
 
@@ -101,7 +104,15 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Random r = new Random();
+        int il = r.nextInt(100);
+        if(il > 70){
+            FragmentManager manager = getActivity().getSupportFragmentManager();
+            tip dialog = new tip();
+            dialog.show(manager,"message dialog");
+        }
         videoId = getArguments().getString("videoId");
+        difficulty = getArguments().getString("difficulty");
         title = (TextView) getView().findViewById(R.id.excersiceTitle);
         desc = (TextView)  getView().findViewById(R.id.textView10);
 
@@ -151,8 +162,10 @@ public class ExerciseDetail extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         if( vid_path != null ){
             Bundle bundle = new Bundle();
+            bundle.putString("id_ejercicio",videoId);
             bundle.putString("namefile", namefile);
             bundle.putString("vid_path", vid_path);
+            bundle.putString("difficulty" , difficulty);
             Intent mainActivity = new Intent(getContext(), Ml_model.class);
             mainActivity.putExtras(bundle);
             startActivity(mainActivity);

@@ -25,9 +25,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.ListFragment;
 import androidx.navigation.Navigation;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.pinneapple.dojocam_app.objects.VideoInfo;
 
@@ -60,9 +62,6 @@ public class Ejercicios extends ListFragment implements AdapterView.OnItemClickL
     private List<String> id_list = new ArrayList();
     private ArrayAdapter adapter;
     private LoadingDialog loadingDialog = new LoadingDialog(this);
-
-
-
 
     private String difficulty;
     public Ejercicios() {
@@ -116,7 +115,6 @@ public class Ejercicios extends ListFragment implements AdapterView.OnItemClickL
             tip dialog = new tip();
             dialog.show(manager,"message dialog");
         }
-
         difficulty = getArguments().getString("difficulty");
 
         /*TextView pri = (TextView) getView().findViewById(R.id.textView);
@@ -140,8 +138,6 @@ public class Ejercicios extends ListFragment implements AdapterView.OnItemClickL
 
         loadingDialog.startLoadingDialog();
 
-
-
     }
     @Override
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
@@ -151,11 +147,10 @@ public class Ejercicios extends ListFragment implements AdapterView.OnItemClickL
         searchView.setOnQueryTextListener(this);
         searchView.setQueryHint("Buscar");
 
-
         super.onCreateOptionsMenu(menu, inflater);
 
-
     }
+
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
         Bundle bundle = new Bundle();
@@ -185,7 +180,6 @@ public class Ejercicios extends ListFragment implements AdapterView.OnItemClickL
                 int i = 0;
                 for (VideoInfo videoInfo:
                         docList) {
-
 
                     String aux =videoInfo.getNombre();
                     vid_list.add(aux);

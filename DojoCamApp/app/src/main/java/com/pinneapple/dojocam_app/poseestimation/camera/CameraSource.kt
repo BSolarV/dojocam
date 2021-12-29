@@ -84,6 +84,7 @@ class CameraSource(
     /** feedback for training process **/
     private var feedbackPose: Int = 0
 
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun initCamera() {
         camera = openCamera(cameraManager, cameraId)
         imageReader =
@@ -236,10 +237,10 @@ class CameraSource(
 
         synchronized(lock) {
             detector?.estimateSinglePose(bitmap)?.let {
-                person = it
                 classifier?.run {
-                    classificationResult = classify(person)
-                    outputBitmap = drawExpectedBody(bitmap, current, person!!)
+                    person = it
+                    //classificationResult = classify(person)
+                    outputBitmap = drawExpectedBody(bitmap, current, it)
                 }
             }
         }

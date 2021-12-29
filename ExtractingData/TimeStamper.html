@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+
+  <!-- Bootstrap -->
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css"
+    integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+
+  <title>Data</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+  <script src="src/ml5.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+
+<body>
+  <div class="container" id="top" style="text-align: center; margin-bottom: 50px;">
+
+    <div class="row">
+      <div class="col-md-3">
+        <p id="videoTimeLabel" style="display: inline-block;"></p>
+      </div>
+      <div class="col-md-9">
+        <div class="container">
+          <div class="col-md-4">
+            <div class="row">
+              <select id="video-dd"></select>
+            </div>
+
+            <div class="row">
+              <button id="playButton" style="display: inline-block; margin: 10px;">Play</button>
+            </div>
+
+            <div class="row">
+              <button id="saveButton" style="display: inline-block; margin: 10px;">Save</button>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            
+            <div class="row">
+              <p style="margin-bottom: 0px; margin-right: 50px; margin-left: 50px;" id="savedTimes"></p>
+            </div>
+
+          </div>
+
+          <div class="col-md-4">
+
+            <div class="row">
+              <button id="toggleDimensionsButton" style="display: inline-block; margin: 10px;">Change Dimensions</button>
+            </div>
+
+            <div class="row">
+              <button id="minusSpeedButton" style="display: inline-block; margin: 10px;"><<</button>
+              <button id="plusSpeedButton" style="display: inline-block; margin: 10px;">>></button>
+            </div>
+
+            <div class="row">
+              <button id="restartButton" style="display: inline-block; margin: 10px;">Restart</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="align-items: center; align-content: center;">
+    <script src="scketch-timeStamper.js"></script>
+  </div>
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+    integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+    crossorigin="anonymous"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

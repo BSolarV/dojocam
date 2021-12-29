@@ -11,9 +11,14 @@
     <color name="danger">#d74338</color>
 
     <color name="main_bg">#EEEEEE</color>
+    <color name="textOnMainBg">#FF000000</color>
     <color name="second_bg">#D0D9E5</color>
+    <color name="textOnSecondBg">#FFFFFFFF</color>
+
     <color name="colorSecondary">#FFB078</color>
     <color name="colorSecondaryVariant">#FFCBA8</color>
+    <color name="textOnSecondary">#FFFFFFFF</color>
     <color name="colorPrimary">#8674AA</color>
     <color name="colorPrimaryVariant">#CDA5F3</color>
+    <color name="textOnPrimary">#FFFFFFFF</color>
 </resources>

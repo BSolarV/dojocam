@@ -2,20 +2,39 @@ package com.pinneapple.dojocam_app.objets;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserData {
+
     private String firstName;
     private String lastName;
     private int sex;
     private Date birthDate;
     private Integer height;
     private Integer weight;
-    private Integer score;
-    private List<String> exercisesDone;
+    //old {ID_ejercicio: {Fecha: Score}}
+    //new {ID_ejercicio: {Fecha: [Score1, Score2, Score3, ...]}}
+    private HashMap<String, HashMap<String, List<Integer>>> scores;
+    //private List<String> exercisesDone;
+    private String lastExercise;
+    private String lastExercisePath;
 
     public UserData(){}
 
+    public UserData(String firstName, String lastName, int sex, Date birthDate, Integer height, Integer weight, String lastExercise, String lastExercisePath) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.sex = sex;
+        this.birthDate = birthDate;
+        this.height = height;
+        this.weight = weight;
+        this.lastExercise = lastExercise;
+        this.lastExercisePath = lastExercisePath;
+        //score = null;
+        //exercisesDone = new ArrayList<String>();
+    }
     public UserData(String firstName, String lastName, int sex, Date birthDate, Integer height, Integer weight) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -23,10 +42,11 @@ public class UserData {
         this.birthDate = birthDate;
         this.height = height;
         this.weight = weight;
-        score = 0;
-        exercisesDone = new ArrayList<String>();
+        this.lastExercise = "basico";
+        this.lastExercisePath = "";
+        //score = null;
+        //exercisesDone = new ArrayList<String>();
     }
-
     public String getFirstName() {
         return firstName;
     }
@@ -75,14 +95,7 @@ public class UserData {
         this.weight = weight;
     }
 
-    public Integer getScore() {
-        return score;
-    }
-
-    public void setScore(Integer score) {
-        this.score = score;
-    }
-
+    /*
     public List<String> getExercisesDone() {
         return exercisesDone;
     }
@@ -90,4 +103,25 @@ public class UserData {
     public void setExercisesDone(List<String> exercisesDone) {
         this.exercisesDone = exercisesDone;
     }
+     */
+
+    public HashMap<String, HashMap<String, List<Integer>>> getScores() {
+
+        return scores;
+    }
+
+    public void setScores(HashMap<String, HashMap<String, List<Integer>>> scores) {
+        this.scores = scores;
+    }
+    public String getLastExercise() {
+        return lastExercise;
+    }
+    public void setLastExercise(String lastExercise){
+        this.lastExercise = lastExercise;
+    }
+
+    public String getLastExercisePath() {
+        return lastExercisePath;
+    }
+    public void setLastExercisePath(String lastExercisePath){ this.lastExercisePath = lastExercisePath; }
 }

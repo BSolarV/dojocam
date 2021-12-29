@@ -43,7 +43,7 @@ import java.util.List;
  * Use the {@link addfriend#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class addfriend extends Fragment implements AdapterView.OnItemClickListener,SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
+public class addfriend extends ListFragment implements AdapterView.OnItemClickListener,SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,10 +59,9 @@ public class addfriend extends Fragment implements AdapterView.OnItemClickListen
 
     private List<String> user_list = new ArrayList();
     private List<String> id_list = new ArrayList();
-    private ArrayAdapter adapter;
+    private ArrayAdapter adapter2;
     private LoadingDialog loadingDialog = new LoadingDialog(this);
 
-    private String difficulty;
     public addfriend() {
         // Required empty public constructor
     }
@@ -90,28 +89,28 @@ public class addfriend extends Fragment implements AdapterView.OnItemClickListen
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        //setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_addfriends, container, false);
     }
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
 
-        adapter = new ArrayAdapter(getContext(), R.layout.list_vid, user_list );
-        ListView lv = (ListView) getView().findViewById(R.id.user_list);
-        lv.setAdapter(adapter);
+        //search_txt = getArguments().getString("difficulty");
+
+        adapter2 = new ArrayAdapter(getContext(), R.layout.list_vid, user_list );
+        ListView lv = (ListView) getView().findViewById(R.id.user_list3);
+        lv.setAdapter(adapter2);
         lv.setOnItemClickListener(this);
 
         loadingDialog.startLoadingDialog();
@@ -149,7 +148,7 @@ public class addfriend extends Fragment implements AdapterView.OnItemClickListen
                     i++;
                 }
                 //Toast.makeText(getContext(), "Wena", Toast.LENGTH_LONG).show();
-                adapter.notifyDataSetChanged();
+                adapter2.notifyDataSetChanged();
                 loadingDialog.dismissDialog();
                 if(i == 0) {
                     // 1. Instantiate an <code><a href="/reference/android/app/AlertDialog.Builder.html">AlertDialog.Builder</a></code> with its constructor
@@ -163,13 +162,15 @@ public class addfriend extends Fragment implements AdapterView.OnItemClickListen
             //title.setText(command.get("nombre").toString());
             //desc.setText(command.get("descripcion").toString());
         });
-        bundle.putString("weonId",  id_list.get(pos));
 
+        bundle.putString("weonId",  id_list.get(pos));
         Navigation.findNavController(view).navigate(R.id.perfil_publico, bundle);
+
     }
 
     @Override
     public void onResume() {
+        //System.out.println("Penecitos");
 
         super.onResume();
 
@@ -186,14 +187,14 @@ public class addfriend extends Fragment implements AdapterView.OnItemClickListen
                 int i = 0;
                 for (UserData UserData:
                         docList) {
-
                     String aux =UserData.getFirstName();
+                    System.out.println(aux);
                     user_list.add(aux);
                     id_list.add(command.getDocuments().get(i).getId());
                     i++;
                 }
-                //Toast.makeText(getContext(), "Wena", Toast.LENGTH_LONG).show();
-                adapter.notifyDataSetChanged();
+                Toast.makeText(getContext(), "Wena", Toast.LENGTH_LONG).show();
+                adapter2.notifyDataSetChanged();
                 loadingDialog.dismissDialog();
                 //Toast.makeText(getContext(), "No te veo compare, avispate", Toast.LENGTH_SHORT).show();
 
@@ -210,10 +211,12 @@ public class addfriend extends Fragment implements AdapterView.OnItemClickListen
             //title.setText(command.get("nombre").toString());
             //desc.setText(command.get("descripcion").toString());
 
-
         });
         data.addOnFailureListener(command -> {
             loadingDialog.dismissDialog();
+            System.out.println("ashjgdkjasgd");
+
+
             //Toast.makeText(getContext(), "No te veo compare, avispateeee", Toast.LENGTH_SHORT).show();
 
             // 1. Instantiate an <code><a href="/reference/android/app/AlertDialog.Builder.html">AlertDialog.Builder</a></code> with its constructor
@@ -247,7 +250,7 @@ public class addfriend extends Fragment implements AdapterView.OnItemClickListen
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        adapter.getFilter().filter(newText);
+        adapter2.getFilter().filter(newText);
         return true;
     }
 }

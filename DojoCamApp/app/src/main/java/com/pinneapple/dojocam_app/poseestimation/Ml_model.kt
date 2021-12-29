@@ -19,7 +19,6 @@ package com.pinneapple.dojocam_app
 import android.Manifest
 import android.app.AlertDialog
 import android.app.Dialog
-import android.app.Service
 import android.content.*
 import android.content.pm.PackageManager
 import android.provider.Settings
@@ -35,8 +34,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.pinneapple.dojocam_app.poseestimation.FloatingVideo
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
 import org.tensorflow.lite.examples.poseestimation.data.Device
@@ -45,18 +42,28 @@ import org.tensorflow.lite.examples.poseestimation.ml.MoveNet
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
 import java.util.*
-import androidx.appcompat.widget.AppCompatImageButton
 
-import com.pinneapple.dojocam_app.objets.LocalBinder
-
-import kotlin.properties.Delegates
-import android.view.MotionEvent
 import android.content.ComponentName
 
 import android.content.ServiceConnection
+import android.graphics.PointF
 import android.media.MediaPlayer
 import android.os.*
+import android.util.Log
 import androidx.annotation.RequiresApi
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
+import com.pinneapple.dojocam_app.objets.UserData
+import org.tensorflow.lite.examples.poseestimation.data.BodyPart
+import org.tensorflow.lite.examples.poseestimation.data.KeyPoint
+import org.tensorflow.lite.examples.poseestimation.data.Person
+import java.io.File
+import java.io.FileNotFoundException
+import java.text.SimpleDateFormat
+import kotlin.math.floor
 
 
 class Ml_model : AppCompatActivity(){
@@ -78,16 +85,23 @@ class Ml_model : AppCompatActivity(){
     private var device = Device.GPU
 
     //windu
+    private lateinit var id_ejercicio: String
+    private lateinit var difficulty: String
     private lateinit var namefile: String
     private lateinit var vid_path: String
     private lateinit var videoPip: Intent
+
     private var init: Boolean = false
+
+    private val db = FirebaseFirestore.getInstance()
 
     //receiver
     private var serviceUpdateReceiver: ServiceUpdateReceiver? = null
 
     private var current  = 0
     private lateinit var floatingVideoVideo: VideoView
+
+    private var LABELS_FILENAME = ""
 
 
     private lateinit var tvScore: TextView
@@ -105,7 +119,7 @@ class Ml_model : AppCompatActivity(){
     private lateinit var forwardBtn: androidx.appcompat.widget.AppCompatImageButton
     private lateinit var pauseBtn: androidx.appcompat.widget.AppCompatImageButton
 
-
+    private var fbUser : FirebaseUser? = null
 
     private var cameraSource: CameraSource? = null
     private var isClassifyPose = true
@@ -163,11 +177,17 @@ class Ml_model : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_ml)
 
+        fbUser = FirebaseAuth.getInstance().currentUser
+        if( fbUser == null ) finish()
 
         //windu
         val b = intent.extras
+        id_ejercicio = b!!.getString("id_ejercicio").toString()
         namefile = b!!.getString("namefile").toString()
         vid_path = b!!.getString("vid_path").toString()
+        difficulty = b!!.getString("difficulty").toString()
+
+        putLastExercise()
 
         //kuro
         videoPip = Intent(this, FloatingVideo::class.java)
@@ -183,6 +203,8 @@ class Ml_model : AppCompatActivity(){
         }
 
         // keep screen on while app is running
+        LABELS_FILENAME = "models-data/$namefile-labels.txt"
+        read()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         tvScore = findViewById(R.id.tvScore)
         tvFPS = findViewById(R.id.tvFps)
@@ -282,6 +304,7 @@ class Ml_model : AppCompatActivity(){
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         openCamera()
         cameraSource?.resume()
@@ -293,6 +316,16 @@ class Ml_model : AppCompatActivity(){
             vid_path
         )
         startService( videoPip )
+
+        /*
+        //Consulta a Bd para obtener antScore
+        val userReference = Objects.requireNonNull(FirebaseAuth.getInstance().currentUser!!.email)?.let { db.collection("Users").document(it) }
+
+        userReference?.get()?.addOnSuccessListener(OnSuccessListener { command: DocumentSnapshot ->
+            antScore = command.get("score") as List<*>
+            //antScore = user.score as List<*>
+        })
+        */
 
 
         //Service listener
@@ -376,6 +409,7 @@ class Ml_model : AppCompatActivity(){
     }
 
     // open camera
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun openCamera() {
         if (isCameraPermissionGranted()) {
             if (cameraSource == null) {
@@ -518,6 +552,7 @@ class Ml_model : AppCompatActivity(){
     private fun timerCounter() {
         timer = Timer()
         val task: TimerTask = object : TimerTask() {
+            @RequiresApi(Build.VERSION_CODES.N)
             override fun run() {
                 runOnUiThread { updateUI() }
             }
@@ -537,12 +572,51 @@ class Ml_model : AppCompatActivity(){
     private var showed = false
     private var alphaFactor = 1f
     private var total = 0
+    private var divisor = 0
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    private var labels: MutableList<Int> = mutableListOf()
+
+
+    private fun read() {
+        /*
+        try {
+            Log.wtf("READ: ", LABELS_FILENAME)
+            val myObj = File(LABELS_FILENAME)
+            val myReader = Scanner(myObj)
+            while (myReader.hasNextLine()) {
+                val data = myReader.nextLine()
+                labels.add(data.toInt())
+            }
+            myReader.close()
+            Log.wtf("READ: ", labels.toString())
+        } catch (e: FileNotFoundException) {
+            println("An error occurred.")
+            e.printStackTrace()
+        }*/
+        try{
+            val bufferReader = this.assets.open(LABELS_FILENAME).bufferedReader()
+            while (bufferReader.ready()) {
+                val line: String = bufferReader.readLine()
+                labels.add(line.toInt())
+            }
+            bufferReader.close()
+            labels.sort()
+            labels.removeAt(0)
+            Log.wtf("READ: ", labels.toString())
+        } catch (e: Exception) {
+            e.message?.let { Log.i("Error", it) }
+        }
+    }
+
+    private var index = 0
+
+
     fun updateUI() {
+        if( labels.isEmpty() ) return;
+
         //sendBroadcast(Intent("RefreshTask.PAUSE_VIDEO"))
         currentTime = floatingVideoVideo.currentPosition
-        current = currentTime / 1000
+        //current = currentTime / 1000
 
         if( currentTime + 20 >= videoDuration ){
 
@@ -550,22 +624,31 @@ class Ml_model : AppCompatActivity(){
                 cameraSource?.tootgleDrawOnScreen( true )
                 learning++
             }
-            if( showed ){
+            if( learning == 2 ){
                 cameraSource?.tootgleDrawOnScreen( true )
                 alphaFactor =  1f
+                //total /= 3
+                divisor = 1
+                total = if (divisor == 0) 0 else total/divisor
+
+                //Corro función que envía el puntaje a BD
+                putScoreBD(total)
+
                 cameraSource?.setDrawOnScreen("Bien Hecho!! \n $total", 48f, alphaFactor )
+                keepAsking = false
                 counterTime++
             } else {
-                val text = if (textIndex == 1) " Bien Hecho"
-                else if (textIndex == 2) "Ahora todo junto"
-                else if (textIndex == 3) "¿Listo?"
-                else if (textIndex == 4) "3"
-                else if (textIndex == 5) "2"
-                else if (textIndex == 6) "1"
-                else "¡Vamos!"
+                val text = when (textIndex) {
+                    1 -> " Bien Hecho"
+                    2 -> "Ahora todo junto"
+                    3 -> "¿Listo?"
+                    4 -> "3"
+                    5 -> "2"
+                    6 -> "1"
+                    else -> "¡Vamos!"
+                }
 
-                alphaFactor =
-                    if (counterTime < NUM_DURATION * textIndex / 3) (counterTime % NUM_DURATION) / (NUM_DURATION / 3).toFloat() else if (counterTime < NUM_DURATION * textIndex * 2 / 3f) 1f else (NUM_DURATION - counterTime % (NUM_DURATION * textIndex * 2 / 3f)) / (NUM_DURATION / 3)
+                alphaFactor = 1f
                 cameraSource?.setDrawOnScreen(text, 48f, alphaFactor)
 
                 if (counterTime >= NUM_DURATION * (1 + textIndex)) {
@@ -574,6 +657,8 @@ class Ml_model : AppCompatActivity(){
                         textIndex = 0
                         showed = true
                         keepAsking = true
+                        learning++
+                        index = 0
                         cameraSource?.tootgleDrawOnScreen(false)
                         floatingVideoVideo.resume()
                     } else {
@@ -589,33 +674,142 @@ class Ml_model : AppCompatActivity(){
             cameraSource?.enableFeedbackPose()
         }
 
-        if( learning == 0 && floatingVideoVideo.isPlaying && current % 2 == 0 ){
-            if (lastSec != current){
+        if( index < labels.size && learning == 0 && floatingVideoVideo.isPlaying && labels[index] - 100 < currentTime && currentTime < labels[index] + 300 ) {
+            if( labels[index] != lastSec ){
                 floatingVideoVideo.pause()
-                lastSec = current
                 keepAsking = true
+                Log.wtf("PAUSED: ", "At "+ currentTime)
+                lastSec = labels[index]
             }
         }
-
-        if( keepAsking ){
-            if( showed ){
-                var score = cameraSource?.scorePose(current.toString())
-                total += if( Objects.isNull(score) ) 0 else score!!
+        if ( keepAsking && index < labels.size ){
+            if( learning != 0 ) {
+                if( labels[index] - 100 < currentTime && currentTime < labels[index] + 300  ){
+                    total += cameraSource?.scorePose(labels[index].toString()) ?: 0
+                    divisor++
+                    if (currentTime > labels[index]) {
+                        index++
+                    }
+                }
             }else{
-                var result = cameraSource?.checkPose(current.toString())
+                val result = cameraSource?.checkPose(labels[index].toString())
                 if ( result == true ) {
                     //sendBroadcast(Intent("RefreshTask.START_VIDEO"))
                     floatingVideoVideo.start()
                     keepAsking = false
+                    index++
                 }
             }
         }
+    }
 
-        //Teminar con el timer
 
-        /*if ( current -1 == mService.videoDuration) {
-            timer!!.cancel()
-        }*/
+    private lateinit var user: UserData;
+    private var added = false
+    private var aux:List<Map<String,*>>? = null
+    private var ind = 0
+
+    private fun putLastExercise(){
+        val userReference = fbUser?.email.let {
+            if (it != null) {
+                db.collection("Users").document(it)
+            } else null
+        }
+
+        if (userReference != null) {
+            userReference.get().addOnSuccessListener(OnSuccessListener { command: DocumentSnapshot ->
+                try {
+                    user = command.toObject(UserData::class.java)!!
+
+                    userReference.update("lastExercisePath", id_ejercicio)
+                    userReference.update("lastExercise", difficulty)
+
+                    Toast.makeText(this, "done2",Toast.LENGTH_SHORT).show()
+
+                } catch (e: java.lang.Exception) {
+                    Log.wtf("PUT DB", e.message)
+                }
+            })
+        } else {
+            finish()
+        }
+    }
+
+    private fun putScoreBD(total: Int) {
+
+
+        if( added ) return
+        added = true
+
+        val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        val dateNow = simpleDateFormat.format(Date())
+
+        //Consulta a Bd para obtener Scores actuales
+        if( fbUser?.email == null ) finish()
+
+        val userReference = fbUser?.email.let {
+            if (it != null) {
+                db.collection("Users").document(it)
+            } else null
+        }
+
+        if (userReference != null) {
+            userReference.get().addOnSuccessListener(OnSuccessListener { command: DocumentSnapshot ->
+                try {
+                    user = command.toObject(UserData::class.java)!!
+                    var scores = user.scores
+                    if( scores == null ) {
+                        scores = hashMapOf<String, HashMap<String, List<Int>>>()
+                    }
+                    if( !scores.containsKey(this.id_ejercicio) ){
+                        scores[id_ejercicio] = hashMapOf<String, List<Int>>()
+                    }
+                    if( !scores[id_ejercicio]?.containsKey(dateNow)!! ){
+                        scores[id_ejercicio]!![dateNow] = mutableListOf();
+                    }
+                    scores[id_ejercicio]!![dateNow]!!.add(total)
+
+                    userReference.update("scores", scores)
+                    userReference.update("lastExercisePath", "")
+                    Toast.makeText(this, "done",Toast.LENGTH_SHORT).show()
+
+                } catch (e: java.lang.Exception) {
+                    Log.wtf("PUT DB", e.message)
+                }
+            })
+        } else {
+            finish()
+        }
+
+        /*
+        val timestamp = Timestamp.now()
+        antScore?.forEachIndexed { index, any ->
+            if(antScore!![index] == id_ejercicio) {
+
+                aux = antScore!![index+1] as List<Map<String,*>>
+                ind = index+1
+                return@forEachIndexed
+            }
+        }
+
+        var none = true
+        if(aux == null){
+            aux = listOf()
+            none = false
+        }
+        aux!!.toMutableList().add(mapOf("timestamp" to timestamp, "score" to total))
+
+        if(!none) {
+
+            antScore!!.toMutableList().add(id_ejercicio)
+            antScore!!.toMutableList().add(aux)
+        } else{
+           antScore!!.toMutableList()[ind] = aux
+        }
+
+        userReference?.update("score", antScore)
+        */
+
     }
 
     /**
@@ -643,3 +837,5 @@ class Ml_model : AppCompatActivity(){
         }
     }
 }
+
+

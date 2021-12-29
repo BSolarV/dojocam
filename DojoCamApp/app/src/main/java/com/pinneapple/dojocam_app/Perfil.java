@@ -19,6 +19,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -31,6 +32,9 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -154,16 +158,32 @@ public class Perfil extends Fragment {
         }
         setUp();
     }
+
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        setHasOptionsMenu(true);
         binding = FragmentPerfilBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
+    @Override
+    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
+
+        inflater.inflate(R.menu.perfil_menu, menu);
+        MenuItem s = menu.findItem(R.id.menuNavigation);
+        s.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                Navigation.findNavController(getView()).navigate(R.id.pfrecuentes);
+                return true;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
+
+    }
 
     void setUp(){
-
         DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
         //Uri downloadURI = sref.child(Objects.requireNonNull("images/"+FirebaseAuth.getInstance().getCurrentUser().getEmail())+".jpg").getDownloadUrl().getResult();
 
@@ -174,6 +194,11 @@ public class Perfil extends Fragment {
                 System.out.println(uri);
                 Bitmap bm = getImageBitmap(uri.toString());
                 imageViewProfilePicture.setImageBitmap(bm);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "No posee Foto de Perfil", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -228,22 +253,14 @@ public class Perfil extends Fragment {
                 UpdateData(height,weight,firstName,lastName);
             }
         });
-
         Button add_friend = (Button) getView().findViewById(R.id.AddFriend);
         add_friend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(v).navigate(R.id.AddFriend);
-/*
-                Fragment fragment = new addfriend();
-
-                FragmentManager fm = getFragmentManager();
-                FragmentTransaction transaction = fm.beginTransaction();
-                transaction.replace(R.id.contentFragment, fragment);
-                transaction.commit();
-*/
             }
         });
+
         imageViewProfilePicture = getView().findViewById(R.id.ProfileImage);
         imageViewProfilePicture.setOnClickListener(new View.OnClickListener() {
             @Override
