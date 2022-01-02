@@ -47,7 +47,7 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link addfriend#newInstance} factory method to
+ * Use the {@link Seguidos #newInstance} factory method to
  * create an instance of this fragment.
  */
 public class Seguidos extends ListFragment implements AdapterView.OnItemClickListener,SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {

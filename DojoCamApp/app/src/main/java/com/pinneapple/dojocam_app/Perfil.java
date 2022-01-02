@@ -208,7 +208,6 @@ public class Perfil extends Fragment {
             assert user != null;
 
 
-
             binding.ProfileFirstName.setText( user.getFirstName() );
             binding.ProfileLastName.setText( user.getLastName());
             // Sex Spinner

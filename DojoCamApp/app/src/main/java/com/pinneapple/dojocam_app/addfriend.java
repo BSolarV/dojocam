@@ -36,6 +36,7 @@ import com.pinneapple.dojocam_app.objets.UserData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -170,7 +171,6 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
 
     @Override
     public void onResume() {
-        //System.out.println("Penecitos");
 
         super.onResume();
 
@@ -182,7 +182,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
         Task<QuerySnapshot> data = db.collection("Users").get();
         data.addOnSuccessListener(command -> {
             List<UserData> docList = command.toObjects(UserData.class);
-
+            //HashMap<List , UserData> docList = command.toObjects(UserData.class);
             if ( data.isComplete() ){
                 int i = 0;
                 for (UserData UserData:
