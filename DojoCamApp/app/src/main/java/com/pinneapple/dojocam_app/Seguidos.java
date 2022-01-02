@@ -2,6 +2,7 @@ package com.pinneapple.dojocam_app;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -162,7 +163,6 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
                 Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
             }
         });
-
         bundle.putString("weonId", user_list2.get(pos));
         Navigation.findNavController(view).navigate(R.id.perfil_publico, bundle);
 

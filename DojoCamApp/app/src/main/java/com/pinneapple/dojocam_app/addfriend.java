@@ -78,7 +78,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Ejercicios.
+     * @return A new instance of fragment addFriend.
      */
 
     // TODO: Rename and change types and number of parameters
@@ -218,14 +218,14 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 //Log.d(TAG, document.getId() + " => " + document.getData());
-
                                 String aux = document.getId();
-                                System.out.println(aux);
+                                //System.out.println(aux);
                                 user_list.add(aux);
                                 //id_list.add(aux);
-                                adapter.notifyDataSetChanged();
-
+                                System.out.println(user_list);
                             }
+                            adapter.notifyDataSetChanged();
+                            loadingDialog.dismissDialog();
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
@@ -235,7 +235,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
         //adapter.notifyDataSetChanged();
         System.out.println("Holaa");
         System.out.println(user_list);
-        loadingDialog.dismissDialog();
+        //loadingDialog.dismissDialog();
 
         // Get post and answers from database
 /*

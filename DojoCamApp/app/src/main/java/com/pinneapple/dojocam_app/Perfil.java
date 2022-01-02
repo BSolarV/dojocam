@@ -253,6 +253,14 @@ public class Perfil extends Fragment {
             }
         });
 
+        Button addamigo = (Button) getView().findViewById(R.id.AddFriend2);
+        addamigo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.AddFriend);
+            }
+        });
+
 
         imageViewProfilePicture = getView().findViewById(R.id.ProfileImage);
         imageViewProfilePicture.setOnClickListener(new View.OnClickListener() {

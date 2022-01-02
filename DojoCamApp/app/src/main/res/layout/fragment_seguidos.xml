@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        !-->                 <Button
+        <Button
         android:id="@+id/AddFriend"
         android:layout_width="360dp"
         android:layout_height="69dp"
