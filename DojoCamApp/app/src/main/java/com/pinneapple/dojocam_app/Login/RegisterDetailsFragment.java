@@ -1,5 +1,7 @@
 package com.pinneapple.dojocam_app.Login;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -26,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -42,6 +45,7 @@ import com.pinneapple.dojocam_app.R;
 import com.pinneapple.dojocam_app.dialogs.DatePickerFragment;
 import com.pinneapple.dojocam_app.dialogs.HeightPickerFragment;
 import com.pinneapple.dojocam_app.dialogs.WeightPickerFragment;
+import com.pinneapple.dojocam_app.objets.Friends;
 import com.pinneapple.dojocam_app.objets.UserData;
 
 import org.jetbrains.annotations.NotNull;
@@ -190,6 +194,8 @@ public class RegisterDetailsFragment extends Fragment {
 
         loadingDialog.startLoadingDialog();
 
+
+
         if( GSingIn ){
             FirebaseAuth.getInstance().signInWithCredential(GCredential)
                     .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
@@ -199,15 +205,46 @@ public class RegisterDetailsFragment extends Fragment {
                                 // Sign in success, update UI with the signed-in user's information
                                 FirebaseUser FBUser = task.getResult().getUser();
                                 assert FBUser != null;
+
+
+                                TextView email = getView().findViewById( R.id.RegisterEmail );
+                                /*
+                                System.out.println("Hola aqui nos vamos\n");
+                                System.out.println(FBUser);
+                                Friends followers = new Friends();
+                                followers.add("basty@jeje.com");
+                                System.out.println("COmo SHoro\n");
+
+                                System.out.println(Objects.requireNonNull(FBUser.getEmail()));
+                                System.out.println(email);
+
+                                db.collection("Friends").document(Objects.requireNonNull(FBUser.getEmail()))
+                                        .set(followers)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d(TAG, "Guardado la lista de amigos vacia");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "No se logro Guardar", e);
+                                            }
+                                        });
+                                System.out.println("Hola aqui nos vamos");
+                                */
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                         .setDisplayName(name.getText().toString() + lastname.getText().toString())
                                         .build();
                                 FBUser.updateProfile(profileUpdates);
                                 db.collection("Users").document(Objects.requireNonNull(FBUser.getEmail())).set(user);
+
                                 loadingDialog.dismissDialog();
                                 toMainActivity();
                             } else {
                                 // If sign in fails, display a message to the user.
+                                System.out.println("Hola aqui nos vamos error");
                                 Toast.makeText(requireContext(), Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();
                                 loadingDialog.dismissDialog();
                             }
@@ -244,7 +281,6 @@ public class RegisterDetailsFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_register_details, container, false);
     }
-
 
     public void showDatePickerDialog(View v) {
         TextView birthdate = requireView().findViewById( R.id.RegisterBirthDate );

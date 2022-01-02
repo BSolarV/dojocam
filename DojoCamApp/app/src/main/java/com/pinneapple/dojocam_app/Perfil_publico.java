@@ -253,7 +253,7 @@ public class Perfil_publico extends Fragment {
 
             if (followers.contains(weonId.toString())){
                 Toast.makeText(getActivity(),
-                                "Ya sigues a este samurai",
+                                "Ya sigues a este usuario",
                                 Toast.LENGTH_SHORT)
                         .show();
             }
@@ -276,6 +276,7 @@ public class Perfil_publico extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                System.out.println("Excepcion social");
                 follower.add(weonId.toString());
                 db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
                         .set(follower)

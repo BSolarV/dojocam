@@ -1,9 +1,12 @@
 package com.pinneapple.dojocam_app.Login;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +18,17 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.pinneapple.dojocam_app.LoadingDialog;
 import com.pinneapple.dojocam_app.MainActivity;
 import com.pinneapple.dojocam_app.Ml_model;
 import com.pinneapple.dojocam_app.R;
 import com.pinneapple.dojocam_app.databinding.FragmentRegisterBinding;
+import com.pinneapple.dojocam_app.objets.Friends;
 
 import java.util.List;
 import java.util.Objects;
@@ -43,6 +50,8 @@ public class RegisterFragment extends Fragment {
 
     private TextView confirmPassMessage;
     private EditText confirmPassContainer;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     public View onCreateView(
@@ -85,6 +94,33 @@ public class RegisterFragment extends Fragment {
                                                 Bundle bundle = new Bundle();
                                                 bundle.putString(RegisterDetailsFragment.EMAIL, email);
                                                 bundle.putString(RegisterDetailsFragment.PASSWORD, pass); // Serializable Object
+
+                                                System.out.println("Hola aqui nos vamos\n");
+                                                System.out.println(email);
+
+                                                Friends followers = new Friends();
+                                                followers.add("basty@jeje.com");
+                                                System.out.println("COmo SHoro\n");
+
+                                                System.out.println(email);
+
+
+                                                db.collection("Friends").document(email)
+                                                        .set(followers)
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                Log.d(TAG, "Guardado la lista de amigos vacia");
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Log.w(TAG, "No se logro Guardar", e);
+                                                            }
+                                                        });
+                                                System.out.println("Hola aqui nos vamos");
+
                                                 NavHostFragment.findNavController(RegisterFragment.this)
                                                         .navigate(R.id.action_RegisterFragment_to_RegisterDetailsFragment, bundle);
                                                 loadingDialog.dismissDialog();
