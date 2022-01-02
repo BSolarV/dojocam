@@ -174,7 +174,7 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
         super.onResume();
 
         user_list2.clear();
-        id_list2.clear();
+        //id_list2.clear();
 
         // Get post and answers from database
 

@@ -1,7 +1,10 @@
 package com.pinneapple.dojocam_app;
 
+import static android.content.ContentValues.TAG;
+
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -169,13 +172,14 @@ public class Ejercicios extends ListFragment implements AdapterView.OnItemClickL
 
         vid_list.clear();
         id_list.clear();
-
         // Get post and answers from database
+
+
+
 
         Task<QuerySnapshot> data = db.collection("ejercicios").whereEqualTo("dificultad", difficulty).get();
         data.addOnSuccessListener(command -> {
             List<VideoInfo> docList = command.toObjects(VideoInfo.class);
-
             if ( data.isComplete() ){
                 int i = 0;
                 for (VideoInfo videoInfo:
@@ -208,8 +212,6 @@ public class Ejercicios extends ListFragment implements AdapterView.OnItemClickL
             //title.setText(command.get("nombre").toString());
             //desc.setText(command.get("descripcion").toString());
 
-
-
         });
         data.addOnFailureListener(command -> {
             loadingDialog.dismissDialog();
@@ -225,7 +227,6 @@ public class Ejercicios extends ListFragment implements AdapterView.OnItemClickL
 // 3. Get the <code><a href="/reference/android/app/AlertDialog.html">AlertDialog</a></code> from <code><a href="/reference/android/app/AlertDialog.Builder.html#create()">create()</a></code>
             AlertDialog dialog = builder.create();
             dialog.show();
-
 
         });
     }
