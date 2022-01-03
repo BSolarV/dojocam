@@ -47,28 +47,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.GroupViewHolde
 
     }
 
-    private void initViews() {
-        MessageInput inputView = findViewById(R.id.input);
-        MessagesList messagesList = findViewById(R.id.messagesList);
-        inputView.setInputListener(new MessageInput.InputListener() {
-            @Override
-            public boolean onSubmit(CharSequence input){
-                sendMessage(input.toString());
-                return true;
-            }
-        });
-
-        String senderId = CometChat.getLoggedInUser().getUid();
-        ImageLoader imageLoader = new ImageLoader() {
-            @Override
-            public void loadImage(ImageView imageView, @Nullable String url, @Nullable Object payload) {
-                Picasso.get().load(url).into(imageView);
-            }
-        };
-
-        adapter = new MessagesListAdapter<>(senderId, imageLoader);
-        messagesList.setAdapter(adapter);
-    }
     @Override
     public int getItemCount() {
         return groups.size();
