@@ -145,4 +145,10 @@
     <string name="btn_start">Empezar</string>
 
 
+    //Notifications
+    <string name="BestScore">Mejor Puntaje</string>
+    <string name="TimesDone">Veces Hecho</string>
+
+
+
 </resources>

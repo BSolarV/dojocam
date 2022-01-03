@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Login.LoginFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="30dp" />
+
+            <ImageView
+                android:id="@+id/DojoCamLogoLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/app_name"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:maxWidth="150dp"
+                android:maxHeight="150dp"
+                android:src="@drawable/dojocam_transparent" />
+
+            <TextView
+                android:id="@+id/LoginAppName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/app_name"
+                android:textColor="#000000"
+                android:textSize="48sp"
+                android:layout_marginBottom="10dp"/>
+
+            <EditText
+                android:id="@+id/LoginEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/email"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="20dp"
+                android:inputType="textEmailAddress"
+                android:autofillHints="@string/email" />
+
+            <EditText
+                android:id="@+id/LoginPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="5dp"
+                android:ems="10"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:autofillHints="@string/password" />
+
+            <Button
+                android:id="@+id/LoginSubmit"
+                android:backgroundTint="@color/colorPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="50dp"
+                android:text="@string/login"
+                tools:targetApi="lollipop" />
+
+            <TextView
+                android:id="@+id/LoginForgottenLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textSize="14sp"
+                android:text="@string/LoginForgottenLabel" />
+            <TextView
+                android:id="@+id/LoginForgotten"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:text="@string/LoginForgotten" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <TextView
+                android:id="@+id/LoginNoAccountLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textSize="18sp"
+                android:text="@string/noAccount" />
+
+            <Button
+                android:id="@+id/LoginRegister"
+                android:backgroundTint="@color/colorPrimaryVariant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="75dp"
+                android:text="@string/register"
+                tools:targetApi="lollipop" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/GoogleSingIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="40dp"
+                android:paddingStart="50dp"
+                android:text="Iniciar Sesión con Google"
+                android:background="@drawable/btn_google_signin_dark_normal_hdpi"/>
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

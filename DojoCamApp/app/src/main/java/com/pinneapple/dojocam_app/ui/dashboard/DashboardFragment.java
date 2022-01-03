@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +33,7 @@ import androidx.navigation.Navigation;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.pinneapple.dojocam_app.R;
@@ -46,6 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,6 +58,7 @@ import com.pinneapple.dojocam_app.databinding.FragmentDashboardBinding;
 import com.pinneapple.dojocam_app.tip;
 
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Document;
 
 import java.util.Random;
 
@@ -65,7 +69,18 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private TextView name, dificultad;
     private ImageView img;
-    String whereQ = "basico";
+    private String whereQ = "basico";
+    private String last_exercise;
+    private int number;
+    private VideoInfo exercise;
+    private List<String> id_list = new ArrayList();
+
+    private TextView one;
+    private TextView two;
+    private ImageView three;
+    private Button btn;
+    private Button chat;
+    private Button btnLastExercise;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -75,50 +90,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        DocumentReference userReference = db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
-        userReference.get().addOnSuccessListener(command -> {
-                    UserData user = command.toObject(UserData.class);
-                    assert user != null;
-
-                    if( user.getLastExercise() == null ) {
-                        whereQ = "basico";
-                    } else {
-                        whereQ = user.getLastExercise();
-                    }
-
-                });
-
-
-        Task<QuerySnapshot> data = db.collection("ejercicios").whereEqualTo("dificultad", whereQ).get();
-        data.addOnSuccessListener(command -> {
-
-
-            List<VideoInfo> docList = command.toObjects(VideoInfo.class);
-            Random rand = new Random();
-            VideoInfo exercise = docList.get(rand.nextInt(docList.size()));
-            name = (TextView) getView().findViewById(R.id.textView6);
-            dificultad = (TextView) getView().findViewById(R.id.textView7);
-            img = (ImageView) getView().findViewById(R.id.imageView6);
-            name.setText(exercise.getNombre());
-            String diffName="";
-            switch (exercise.getDificultad()) {
-                case "basico":
-                    diffName = "Básico";
-                    break;
-                case "medio":
-                    diffName = "Intermedio";
-                    break;
-                case "avanzado":
-                    diffName = "Avanzado";
-                    break;
-            }
-            dificultad.setText("Dificultad: " + diffName);
-            /*Resources res = getResources();
-            Drawable drawable = ResourcesCompat.getDrawable(res, R.drawable.default_recomendado, null);
-            img.setImageDrawable(drawable);*/
-
-        });
 
         // final TextView textView = binding.textDashboard;
         // dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -158,78 +130,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         fis_img.setOnClickListener((View.OnClickListener) this);
 
 
-        //Esto manda al fragment de exercise detail
-        TextView one = (TextView) getView().findViewById(R.id.textView6);
-        TextView two = (TextView) getView().findViewById(R.id.textView7);
-        ImageView three = (ImageView) getView().findViewById(R.id.imageView6);
-
-        Button btn = (Button) getView().findViewById(R.id.button2);
-        Button chat = (Button) getView().findViewById(R.id.button6);
-        chat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getContext(), GroupList.class);
-                startActivity(i);
-            }
-        });
-
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-
-                bundle.putString("difficulty" , "basico");
-                bundle.putString("videoId", "G4Amg9DogfEr8jbRC6cO");
-                bundle.putString("name", "Defensa alta");
-
-                Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
-
-
-            }
-        });
-
-        one.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-
-                bundle.putString("difficulty" , "basico");
-                bundle.putString("videoId", "G4Amg9DogfEr8jbRC6cO");
-                bundle.putString("name", "Defensa alta");
-
-                Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
-
-            }
-        });
-        two.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-
-                bundle.putString("difficulty" , "basico");
-                bundle.putString("videoId", "G4Amg9DogfEr8jbRC6cO");
-                bundle.putString("name", "Defensa alta");
-
-                Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
-
-            }
-        });
-        three.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-
-                bundle.putString("difficulty" , "basico");
-                bundle.putString("videoId", "G4Amg9DogfEr8jbRC6cO");
-                bundle.putString("name", "Defensa alta");
-
-                Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
-
-            }
-        });
-
-
 
 
     }
@@ -237,5 +137,186 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     public void onClick(View view) {
 
         Navigation.findNavController(view).navigate(R.id.selectDificulty);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        id_list.clear();
+
+        DocumentReference userReference = db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
+        userReference.get().addOnSuccessListener(command -> {
+            UserData user = command.toObject(UserData.class);
+            assert user != null;
+
+            if( user.getLastExercise() == null ) {
+                whereQ = "basico";
+            } else {
+                whereQ = user.getLastExercise();
+            }
+
+            if( user.getLastExercisePath() == null ) {
+                last_exercise = "";
+            } else {
+                last_exercise = user.getLastExercisePath();
+            }
+
+
+        });
+
+
+        Task<QuerySnapshot> data = db.collection("ejercicios").whereEqualTo("dificultad", whereQ).get();
+        data.addOnSuccessListener(command -> {
+
+
+            List<VideoInfo> docList = command.toObjects(VideoInfo.class);
+            if ( data.isComplete() ) {
+                int i = 0;
+                for (VideoInfo videoInfo :
+                        docList) {
+                    id_list.add(command.getDocuments().get(i).getId());
+                    i++;
+                }
+            }
+
+            Random rand = new Random();
+
+            number = rand.nextInt(docList.size());
+
+            exercise = docList.get(number);
+            name = (TextView) getView().findViewById(R.id.textView6);
+            dificultad = (TextView) getView().findViewById(R.id.textView7);
+            img = (ImageView) getView().findViewById(R.id.imageView6);
+            name.setText(exercise.getNombre());
+            String diffName="";
+            switch (exercise.getDificultad()) {
+                case "basico":
+                    diffName = "Básico";
+                    break;
+                case "medio":
+                    diffName = "Intermedio";
+                    break;
+                case "avanzado":
+                    diffName = "Avanzado";
+                    break;
+            }
+            dificultad.setText("Dificultad: " + diffName);
+
+
+            //Toast.makeText(getContext(), exercise.getId(), Toast.LENGTH_SHORT).show();
+
+            //Esto manda al fragment de exercise detail
+            one = (TextView) getView().findViewById(R.id.textView6);
+            two = (TextView) getView().findViewById(R.id.textView7);
+            three = (ImageView) getView().findViewById(R.id.imageView6);
+
+            btn = (Button) getView().findViewById(R.id.button2);
+            chat = (Button) getView().findViewById(R.id.button6);
+            chat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getContext(), GroupList.class);
+                    startActivity(i);
+                }
+            });
+
+
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+
+                    bundle.putString("difficulty" , exercise.getDificultad());
+                    bundle.putString("videoId", id_list.get(number));
+                    bundle.putString("name", exercise.getNombre());
+
+                    Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
+
+
+                }
+            });
+
+            one.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+
+                    bundle.putString("difficulty" , exercise.getDificultad());
+                    bundle.putString("videoId", id_list.get(number));
+                    bundle.putString("name", exercise.getNombre());
+
+                    Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
+
+                }
+            });
+            two.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+
+                    bundle.putString("difficulty" , exercise.getDificultad());
+                    bundle.putString("videoId", id_list.get(number));
+                    bundle.putString("name", exercise.getNombre());
+
+                    Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
+
+                }
+            });
+            three.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+
+                    bundle.putString("difficulty" , exercise.getDificultad());
+                    bundle.putString("videoId", id_list.get(number));
+                    bundle.putString("name", exercise.getNombre());
+
+                    Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
+
+                }
+            });
+            btnLastExercise = (Button) getView().findViewById(R.id.Retomar);
+            if(last_exercise == "") {
+                btnLastExercise.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(getContext(),"No hay ejercicios Pendientes", Toast.LENGTH_SHORT ).show();
+
+                    }
+                });
+            }
+            else {
+                Task<DocumentSnapshot> data2 = db.collection("ejercicios").document(last_exercise).get();
+                data2.addOnSuccessListener(command2 -> {
+                    btnLastExercise.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Bundle bundle = new Bundle();
+
+                            bundle.putString("difficulty" , command2.get("dificultad").toString());
+                            bundle.putString("videoId", last_exercise);
+                            bundle.putString("name", command2.get("nombre").toString());
+
+                            Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
+
+                        }
+                    });
+
+
+                });
+                /*data2.addOnFailureListener(error ->{
+                    Toast.makeText(getContext(),"No hay ejercicios Pendientes", Toast.LENGTH_SHORT ).show();
+                });*/
+
+            }
+
+
+
+
+
+
+        });
     }
 }

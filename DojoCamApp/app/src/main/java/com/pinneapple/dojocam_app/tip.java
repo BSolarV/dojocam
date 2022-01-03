@@ -55,6 +55,7 @@ public class tip extends AppCompatDialogFragment {
             }
         };
         //build alert dialog
+
         return new AlertDialog.Builder(getActivity()).setTitle("Consejo de Dojocam")
                 .setView(v).setPositiveButton(android.R.string.ok,listener).create();
     }

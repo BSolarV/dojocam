@@ -86,9 +86,11 @@ class Ml_model : AppCompatActivity(){
 
     //windu
     private lateinit var id_ejercicio: String
+    private lateinit var difficulty: String
     private lateinit var namefile: String
     private lateinit var vid_path: String
     private lateinit var videoPip: Intent
+
     private var init: Boolean = false
 
     private val db = FirebaseFirestore.getInstance()
@@ -183,6 +185,9 @@ class Ml_model : AppCompatActivity(){
         id_ejercicio = b!!.getString("id_ejercicio").toString()
         namefile = b!!.getString("namefile").toString()
         vid_path = b!!.getString("vid_path").toString()
+        difficulty = b!!.getString("difficulty").toString()
+
+        putLastExercise()
 
         //kuro
         videoPip = Intent(this, FloatingVideo::class.java)
@@ -619,10 +624,11 @@ class Ml_model : AppCompatActivity(){
                 cameraSource?.tootgleDrawOnScreen( true )
                 learning++
             }
-            if( learning >= 2 ){
+            if( learning == 2 ){
                 cameraSource?.tootgleDrawOnScreen( true )
                 alphaFactor =  1f
-                total /= 3
+                //total /= 3
+                divisor = 1
                 total = if (divisor == 0) 0 else total/divisor
 
                 //Corro función que envía el puntaje a BD
@@ -651,6 +657,7 @@ class Ml_model : AppCompatActivity(){
                         textIndex = 0
                         showed = true
                         keepAsking = true
+                        learning++
                         index = 0
                         cameraSource?.tootgleDrawOnScreen(false)
                         floatingVideoVideo.resume()
@@ -702,9 +709,34 @@ class Ml_model : AppCompatActivity(){
     private var aux:List<Map<String,*>>? = null
     private var ind = 0
 
+    private fun putLastExercise(){
+        val userReference = fbUser?.email.let {
+            if (it != null) {
+                db.collection("Users").document(it)
+            } else null
+        }
 
+        if (userReference != null) {
+            userReference.get().addOnSuccessListener(OnSuccessListener { command: DocumentSnapshot ->
+                try {
+                    user = command.toObject(UserData::class.java)!!
+
+                    userReference.update("lastExercisePath", id_ejercicio)
+                    userReference.update("lastExercise", difficulty)
+
+                    Toast.makeText(this, "done2",Toast.LENGTH_SHORT).show()
+
+                } catch (e: java.lang.Exception) {
+                    Log.wtf("PUT DB", e.message)
+                }
+            })
+        } else {
+            finish()
+        }
+    }
 
     private fun putScoreBD(total: Int) {
+
 
         if( added ) return
         added = true
@@ -738,6 +770,7 @@ class Ml_model : AppCompatActivity(){
                     scores[id_ejercicio]!![dateNow]!!.add(total)
 
                     userReference.update("scores", scores)
+                    userReference.update("lastExercisePath", "")
                     Toast.makeText(this, "done",Toast.LENGTH_SHORT).show()
 
                 } catch (e: java.lang.Exception) {

@@ -2,6 +2,7 @@ package com.pinneapple.dojocam_app;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,7 +48,7 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link addfriend#newInstance} factory method to
+ * Use the {@link Seguidos #newInstance} factory method to
  * create an instance of this fragment.
  */
 public class Seguidos extends ListFragment implements AdapterView.OnItemClickListener,SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
@@ -162,7 +163,6 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
                 Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
             }
         });
-
         bundle.putString("weonId", user_list2.get(pos));
         Navigation.findNavController(view).navigate(R.id.perfil_publico, bundle);
 
@@ -174,10 +174,17 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
         super.onResume();
 
         user_list2.clear();
-        id_list2.clear();
+        //id_list2.clear();
 
         // Get post and answers from database
 
+        Button add_friend = (Button) getView().findViewById(R.id.AddFriend);
+        add_friend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.AddFriend);
+            }
+        });
         DocumentReference userReference = db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         userReference.get().addOnSuccessListener(command -> {
             boolean bo = false;

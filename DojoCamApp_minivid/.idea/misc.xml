@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable-xxxhdpi/rounded_edge.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/baseline_accessibility_new_24.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/baseline_account_circle_18.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/baseline_account_circle_24.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/baseline_leaderboard_24.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/cicle_button.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/drawable/splashscreen.xml" value="0.3828125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/activity_main.xml" value="0.2578125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/activity_main_ml.xml" value="0.36666666666666664" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/bottom_sheet_layout.xml" value="0.2578125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/content_login.xml" value="0.2578125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/fragment_dashboard.xml" value="0.2578125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/fragment_ejercicios.xml" value="0.2578125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/fragment_exercise_detail.xml" value="0.36666666666666664" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/fragment_home.xml" value="0.2578125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/fragment_login.xml" value="0.2578125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/fragment_notifications.xml" value="0.2578125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/fragment_perfil.xml" value="0.2578125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/fragment_practice.xml" value="0.2578125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/fragment_register.xml" value="0.2578125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/fragment_select_dificulty.xml" value="0.2625" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/list_vid.xml" value="0.2578125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/DojoCamApp/app/src/main/res/layout/loading_layout.xml" value="0.2578125" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/dojocam/DojoCamApp/app/src/main/res/drawable-xxxhdpi/rounded_edge.xml" value="0.20729166666666668" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/dojocam/DojoCamApp/app/src/main/res/layout/activity_main_ml.xml" value="0.36666666666666664" />
+        <entry key="..\:/Desktop/2021-2/App/dojocam/dojocam/DojoCamApp/app/src/main/res/layout/bottom_sheet_layout.xml" value="0.36666666666666664" />
+        <entry key="..\:/Desktop/2021-2/App_clean/DojoCamApp/app/src/main/res/layout/activity_main_ml.xml" value="0.3109375" />
+        <entry key="..\:/Users/cajal/Documents/USM/SEMESTRE 9-10/II/FDSW/dojocam/DojoCamApp/app/src/main/res/layout/fragment_ejercicios.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/cajal/Documents/USM/SEMESTRE 9-10/II/FDSW/dojocam/DojoCamApp/app/src/main/res/layout/fragment_exercise_detail.xml" value="0.1" />
+        <entry key="..\:/Users/cajal/Documents/USM/SEMESTRE 9-10/II/FDSW/dojocam/DojoCamApp/app/src/main/res/layout/fragment_select_dificulty.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/cajal/Documents/USM/SEMESTRE 9-10/II/FDSW/dojocam/DojoCamApp/app/src/main/res/layout/loading_layout.xml" value="0.16666666666666666" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

@@ -208,7 +208,6 @@ public class Perfil extends Fragment {
             assert user != null;
 
 
-
             binding.ProfileFirstName.setText( user.getFirstName() );
             binding.ProfileLastName.setText( user.getLastName());
             // Sex Spinner
@@ -253,13 +252,15 @@ public class Perfil extends Fragment {
                 UpdateData(height,weight,firstName,lastName);
             }
         });
-        Button add_friend = (Button) getView().findViewById(R.id.AddFriend);
-        add_friend.setOnClickListener(new View.OnClickListener() {
+
+        Button addamigo = (Button) getView().findViewById(R.id.AddFriend2);
+        addamigo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(v).navigate(R.id.AddFriend);
             }
         });
+
 
         imageViewProfilePicture = getView().findViewById(R.id.ProfileImage);
         imageViewProfilePicture.setOnClickListener(new View.OnClickListener() {
