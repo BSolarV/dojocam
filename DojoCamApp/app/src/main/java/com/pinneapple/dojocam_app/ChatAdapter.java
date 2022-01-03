@@ -5,14 +5,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.cometchat.pro.core.CometChat;
 import com.cometchat.pro.models.Group;
+import com.squareup.picasso.Picasso;
+import com.stfalcon.chatkit.commons.ImageLoader;
+import com.stfalcon.chatkit.messages.MessageInput;
+import com.stfalcon.chatkit.messages.MessagesList;
+import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
 import java.util.List;
 
@@ -37,6 +45,29 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.GroupViewHolde
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
         holder.bind(groups.get(position));
 
+    }
+
+    private void initViews() {
+        MessageInput inputView = findViewById(R.id.input);
+        MessagesList messagesList = findViewById(R.id.messagesList);
+        inputView.setInputListener(new MessageInput.InputListener() {
+            @Override
+            public boolean onSubmit(CharSequence input){
+                sendMessage(input.toString());
+                return true;
+            }
+        });
+
+        String senderId = CometChat.getLoggedInUser().getUid();
+        ImageLoader imageLoader = new ImageLoader() {
+            @Override
+            public void loadImage(ImageView imageView, @Nullable String url, @Nullable Object payload) {
+                Picasso.get().load(url).into(imageView);
+            }
+        };
+
+        adapter = new MessagesListAdapter<>(senderId, imageLoader);
+        messagesList.setAdapter(adapter);
     }
     @Override
     public int getItemCount() {
