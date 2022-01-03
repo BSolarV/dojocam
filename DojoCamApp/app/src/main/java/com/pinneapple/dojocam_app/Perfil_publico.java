@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -159,7 +160,7 @@ public class Perfil_publico extends Fragment {
             //your codes here
 
         }
-        setUp();
+        setUp(view);
     }
 
     @Override
@@ -169,7 +170,7 @@ public class Perfil_publico extends Fragment {
         return inflater.inflate(R.layout.fragment_perfilpublico, container, false);
     }
 
-    void setUp(){
+    void setUp(View view){
         weonId = getArguments().getString("weonId");
         System.out.println(weonId);
         DocumentReference userReference = db.collection("Users").document(weonId);
@@ -231,6 +232,16 @@ public class Perfil_publico extends Fragment {
             public void onClick(View v) {
                 saveFriend();
                 System.out.println("Hola");
+
+            }
+        });
+        Button to_stats = (Button) getView().findViewById(R.id.StatsPub);
+        to_stats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("weonId", weonId);
+                Navigation.findNavController(view).navigate(R.id.NotificationsFragment_pub, bundle);
 
             }
         });

@@ -177,13 +177,13 @@
                 android:layout_marginHorizontal="50dp"
                 android:text="Seguir" />
             <Button
-                android:id="@+id/Follow"
+                android:id="@+id/StatsPub"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/purple_200"
                 android:layout_marginTop="30dp"
                 android:layout_marginHorizontal="50dp"
-                android:text="Seguir" />
+                android:text="Ver Estadisticas" />
 
 
         </LinearLayout>
