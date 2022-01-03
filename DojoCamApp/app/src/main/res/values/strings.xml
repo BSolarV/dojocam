@@ -140,6 +140,7 @@
     //ex_de
     <string name="nombre_tecnica">Ejercicio</string>
     <string name="str_descripcion">Descripción</string>
+    <string name="str_respuesta">Respuesta</string>
     <string name="descripcion_tecnica"></string>
     <string name="btn_start">Empezar</string>
 

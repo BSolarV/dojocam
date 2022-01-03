@@ -95,6 +95,15 @@
     <fragment
         android:id="@+id/pfrecuentes"
         android:name="com.pinneapple.dojocam_app.Pfrecuentes"
-        android:label="fragment_pfrecuentes"
-        tools:layout="@layout/fragment_pfrecuentes" />
+        android:label="Foro Preguntas"
+        tools:layout="@layout/fragment_pfrecuentes">
+        <action
+            android:id="@+id/action_pfrecuentes_to_pdetail"
+            app:destination="@id/pdetail" />
+    </fragment>
+    <fragment
+        android:id="@+id/pdetail"
+        android:name="com.pinneapple.dojocam_app.Pdetail"
+        android:label="Pregunta"
+        tools:layout="@layout/fragment_pdetail" />
 </navigation>
