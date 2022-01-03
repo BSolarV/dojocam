@@ -624,7 +624,7 @@ class Ml_model : AppCompatActivity(){
                 cameraSource?.tootgleDrawOnScreen(true)
                 alphaFactor = 1f
                 //total /= 3
-                total = if (divisor == 0) 0f else total * 2 / divisor
+                total = if (divisor == 0) 0f else total * 5 / divisor
                 val percent = if (divisor == 0) 0f else correctOnes / divisor.toFloat() * 100
                 val rounded = round(total).toInt()
 

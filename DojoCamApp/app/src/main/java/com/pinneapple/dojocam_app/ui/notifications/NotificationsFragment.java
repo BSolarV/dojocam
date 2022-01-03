@@ -41,6 +41,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.pinneapple.dojocam_app.GroupList;
 import com.pinneapple.dojocam_app.LoadingDialog;
+import com.pinneapple.dojocam_app.MainActivity;
 import com.pinneapple.dojocam_app.R;
 import com.pinneapple.dojocam_app.databinding.FragmentNotificationsBinding;
 import com.pinneapple.dojocam_app.objets.UserData;
@@ -138,123 +139,132 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
             e.printStackTrace();
         }
 
-
         best_score = 0;
         times_done = 0;
-
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         String today = formatter.format(date);
 
+        MainActivity.checkLogin(requireActivity());
         DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
 
         //Consulta a BD por los Scores
-        if (userReference != null) {
-            userReference.get().addOnSuccessListener(command -> {
+        userReference.get().addOnSuccessListener(command -> {
 
+            //Exercises_done_names
+            Task<QuerySnapshot> data = db.collection("ejercicios").get();
 
-                //Exercises_done_names
-                Task<QuerySnapshot> data = db.collection("ejercicios").get();
+            data.addOnSuccessListener(command2 -> {
+                UserData user = command.toObject(UserData.class);
+                assert user != null;
 
-                data.addOnSuccessListener(command2 -> {
-                    UserData user = command.toObject(UserData.class);
-                    assert user != null;
+                HashMap<String, HashMap<String, HashMap<String, List<Integer>>>> scores =  new HashMap<>();
+                scores =  user.getScores();
+                HashMap <String, HashMap<String, List<Integer>>> exercise_scores = new HashMap<>();
 
-                    HashMap<String, HashMap<String, HashMap<String, List<Integer>>>> scores =  new HashMap<>();
-                    scores =  user.getScores();
-                    HashMap <String, HashMap<String, List<Integer>>> exercise_scores = new HashMap<>();
+                //Parseo de los scores en las distintas listas
 
-                    //Parseo de los scores en las distintas listas
+                if(scores != null){
+                    exercises_done = new ArrayList<String>(scores.keySet());
+                    /*
+                    for ( String key : scores.keySet() ) {
+                        if(key.length() ==  20){
+                            exercises_done.add(key);
+                        }
+                    }*/
 
-                    if(scores != null){
-                        for ( String key : scores.keySet() ) {
-                            if(key.length() ==  20){
-                                exercises_done.add(key);
+                    List<com.pinneapple.dojocam_app.objects.VideoInfo> docList = command2.toObjects(com.pinneapple.dojocam_app.objects.VideoInfo.class);
+                    if ( data.isComplete() ) {
+                        int j = 0;
+                        int i = 0;
+                        for (com.pinneapple.dojocam_app.objects.VideoInfo videoInfo :
+                                docList) {
+                            if(exercises_done.contains(command2.getDocuments().get(i).getId())) {
+                                exercises_done_names.add(videoInfo.getNombre());
+                                exercises_done_nindex.add(command2.getDocuments().get(i).getId());
+                                j++;
                             }
+                            i++;
                         }
 
-                        List<com.pinneapple.dojocam_app.objects.VideoInfo> docList = command2.toObjects(com.pinneapple.dojocam_app.objects.VideoInfo.class);
-                        if ( data.isComplete() ) {
-                            int j = 0;
-                            int i = 0;
-                            for (com.pinneapple.dojocam_app.objects.VideoInfo videoInfo :
-                                    docList) {
-                                if(exercises_done.contains(command2.getDocuments().get(i).getId().toString())) {
-                                    exercises_done_names.add(videoInfo.getNombre().toString());
-                                    exercises_done_nindex.add(command2.getDocuments().get(i).getId().toString());
-                                    j++;
-                                }
-                                i++;
-                            }
+                    }
 
-                        }
+                    //scores de el ejercicio
+                    exercise_scores = scores.get(exercises_done_nindex.get(index_key));
 
-                        //scores de el ejercicio
-                        exercise_scores = scores.get(exercises_done_nindex.get(index_key));
+                    if (exercise_scores == null){
+                        return;
+                    }
 
-                        day_scores = exercise_scores.get(today).get("scores");
+                    day_scores = new ArrayList<Integer>();
+                    if(exercise_scores.containsKey(today)) {
+                        day_scores = Objects.requireNonNull(exercise_scores.get(today)).get("scores");
+                    }
+                    /*
+                    for ( String key : exercise_scores.keySet() ) {
+                        exercises_done.add(key);
+                    }*/
 
-                        //Toast.makeText(getContext(),day_scores.get(0).toString(), Toast.LENGTH_SHORT).show();
+                    // Se crean las fechas
+                    int aux = date.getDay();
+                    Calendar c = Calendar.getInstance();
+                    try {
+                        c.setTime(formatter.parse(today));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    //sumar o restar días
+                    if(aux != 0){
+                        c.add(Calendar.DATE, -(aux-1));  // number of days to add
+                    }else { //Domingo le resto 6
+                        c.add(Calendar.DATE, -6);
+                    }
+                    String monday = formatter.format(c.getTime());  // dt is now the new date
 
-
-                        for ( String key : exercise_scores.keySet() ) {
-                            exercises_done.add(key.toString());
-                        }
-                        int aux = date.getDay();
-
-                        Calendar c = Calendar.getInstance();
+                    //creo una lista de los dias
+                    List<String> week_days = new ArrayList<String>();
+                    week_days.add(monday);
+                    for (int i = 1; i<7; i++ ) {
                         try {
-                            c.setTime(formatter.parse(today));
+                            c.setTime(formatter.parse(monday));
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        //sumar o restar días
-                        if(aux != 0){
-                            c.add(Calendar.DATE, -(aux-1));  // number of days to add
-                        }else { //Domingo le resto 6
-                            c.add(Calendar.DATE, -6);
-                        }
-                        String monday = formatter.format(c.getTime());  // dt is now the new date
+                        c.add(Calendar.DATE, i);
+                        String aux3 = formatter.format(c.getTime());
+                        week_days.add(aux3);
+                    }
 
-                        //creo una lista de los dias
-                        List<String> week_days = new ArrayList<String>();
-                        week_days.add(monday);
-                        for (int i = 1; i<7; i++ ) {
-                            try {
-                                c.setTime(formatter.parse(monday));
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            c.add(Calendar.DATE, i);
-                            String aux3 = formatter.format(c.getTime());
-                            week_days.add(aux3);
-                        }
-
-                        //obtengo del exercises_scores
-                        for (int i = 0; i<7; i++ ) {
-                            List<Integer> day_s = exercise_scores.get(week_days.get(i)).get(1);
+                    //obtengo del exercises_scores
+                    for (int i = 0; i<7; i++ ) {
+                        if( exercise_scores.containsKey(week_days.get(i)) ){
+                            List<Integer> day_s = exercise_scores.get(week_days.get(i)).get("scores");
                             int prom = 0 ;
                             if(day_s != null){
                                 prom = day_s.stream().mapToInt(Integer::intValue).sum();
                                 prom /= day_s.size();
                             }
                             week_scores.add(prom);
+                        }else{
+                            week_scores.add(0);
                         }
+                    }
 
-                        int aux4 = date.getMonth() + 1;
-                        int aux5 = date.getYear() + 1900;
+                    int aux4 = date.getMonth() + 1;
+                    int aux5 = date.getYear() + 1900;
 
-                        int daysInMonth = 0;
+                    int daysInMonth = 0;
 
-                        List<String> month_days = printDatesInMonth(aux5, aux4, daysInMonth);
+                    List<String> month_days = printDatesInMonth(aux5, aux4, daysInMonth);
 
-                        for (int i = 0; i < 4; i++ ) {
-                            int weekprom = 0;
-                            int div = 0;
-                            for (int j = 0; j < 7; j++ ){
-                                int prom = 0 ;
-                                List<Integer> day_s = exercise_scores.get(month_days.get(j+i*7)).get(1);
+                    for (int i = 0; i < 4; i++ ) {
+                        int weekprom = 0;
+                        int div = 0;
+                        for (int j = 0; j < 7; j++ ){
+                            int prom = 0 ;
+                            if( exercise_scores.containsKey(month_days.get(j+i*7)) ){
+                                List<Integer> day_s = exercise_scores.get(month_days.get(j+i*7)).get("scores");
                                 if(day_s != null){
                                     prom = day_s.stream().mapToInt(Integer::intValue).sum();
                                     prom /= day_s.size();
@@ -267,32 +277,24 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                                     div++;
                                 }
                                 weekprom += prom;
-
                             }
-                            if (div != 0) {
-                                weekprom /= div;
-                            }
-
-                            month_scores.add(weekprom);
-
                         }
-                        setAll();
-                        arrayAdapter.notifyDataSetChanged();
+                        if (div != 0) {
+                            weekprom /= div;
+                        }
+                        month_scores.add(weekprom);
                     }
-                    loadingDialog.dismissDialog();
-
-
-
-                });
-
-
+                    setAll();
+                    arrayAdapter.notifyDataSetChanged();
+                }
+                loadingDialog.dismissDialog();
 
             });
-        } else {
-            Toast.makeText(getContext(), "aaa", Toast.LENGTH_SHORT).show();
-        }
+
+        });
 
     }
+
     private List<String> printDatesInMonth(int year, int month, int daysInMonth) {
         List<String> array = new ArrayList<String>();
         SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");

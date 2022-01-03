@@ -1,5 +1,7 @@
 package com.pinneapple.dojocam_app;
 
+import static android.content.ContentValues.TAG;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,9 +27,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 import androidx.navigation.Navigation;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.auth.User;
 import com.pinneapple.dojocam_app.objects.VideoInfo;
@@ -36,6 +41,7 @@ import com.pinneapple.dojocam_app.objets.UserData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -59,7 +65,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
 
     private List<String> user_list = new ArrayList();
     private List<String> id_list = new ArrayList();
-    private ArrayAdapter adapter2;
+    private ArrayAdapter adapter;
     private LoadingDialog loadingDialog = new LoadingDialog(this);
 
     public addfriend() {
@@ -72,7 +78,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Ejercicios.
+     * @return A new instance of fragment addFriend.
      */
 
     // TODO: Rename and change types and number of parameters
@@ -108,9 +114,9 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
 
         //search_txt = getArguments().getString("difficulty");
 
-        adapter2 = new ArrayAdapter(getContext(), R.layout.list_vid, user_list );
+        adapter = new ArrayAdapter(getContext(), R.layout.list_vid, user_list );
         ListView lv = (ListView) getView().findViewById(R.id.user_list3);
-        lv.setAdapter(adapter2);
+        lv.setAdapter(adapter);
         lv.setOnItemClickListener(this);
 
         loadingDialog.startLoadingDialog();
@@ -134,6 +140,33 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
     public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
 
         Bundle bundle = new Bundle();
+                /*
+        db.collection("Users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                //Log.d(TAG, document.getId() + " => " + document.getData());
+
+                                String aux = document.getId();
+                                System.out.println(aux);
+                                user_list.add(aux);
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG,"Ocurrio un error");
+            }
+        });
+
+
         Task<QuerySnapshot> data = db.collection("Users").get();
 
         data.addOnSuccessListener(command -> {
@@ -162,27 +195,54 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
             //title.setText(command.get("nombre").toString());
             //desc.setText(command.get("descripcion").toString());
         });
+               */
 
-        bundle.putString("weonId",  id_list.get(pos));
+        bundle.putString("weonId",  user_list.get(pos));
         Navigation.findNavController(view).navigate(R.id.perfil_publico, bundle);
 
     }
 
     @Override
     public void onResume() {
-        //System.out.println("Penecitos");
 
         super.onResume();
 
         user_list.clear();
-        id_list.clear();
+        //id_list.clear();
+
+        db.collection("Users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                //Log.d(TAG, document.getId() + " => " + document.getData());
+                                String aux = document.getId();
+                                //System.out.println(aux);
+                                user_list.add(aux);
+                                //id_list.add(aux);
+                                System.out.println(user_list);
+                            }
+                            adapter.notifyDataSetChanged();
+                            loadingDialog.dismissDialog();
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+        //adapter.notifyDataSetChanged();
+        System.out.println("Holaa");
+        System.out.println(user_list);
+        //loadingDialog.dismissDialog();
 
         // Get post and answers from database
-
+/*
         Task<QuerySnapshot> data = db.collection("Users").get();
         data.addOnSuccessListener(command -> {
             List<UserData> docList = command.toObjects(UserData.class);
-
+            //HashMap<List , UserData> docList = command.toObjects(UserData.class);
             if ( data.isComplete() ){
                 int i = 0;
                 for (UserData UserData:
@@ -230,7 +290,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
             AlertDialog dialog = builder.create();
             dialog.show();
 
-        });
+        });*/
     }
 
     @Override
@@ -250,7 +310,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        adapter2.getFilter().filter(newText);
+        adapter.getFilter().filter(newText);
         return true;
     }
 }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Ml_model">
+
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="#66000000"
+        app:layout_anchor="@+id/toolbar"
+        app:layout_anchorGravity="center">
+
+        <ImageButton
+            android:id="@+id/imageBtn"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_home_black_24dp" />
+        <TextView
+            android:id="@+id/textViewAlerta"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text=""
+            android:textSize="22sp" />
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <include layout="@layout/bottom_sheet_layout"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -3,6 +3,7 @@ package com.pinneapple.dojocam_app.ui.dashboard;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,10 +33,13 @@ import androidx.navigation.Navigation;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.pinneapple.dojocam_app.Login.LoginActivity;
+import com.pinneapple.dojocam_app.MainActivity;
 import com.pinneapple.dojocam_app.R;
 import com.pinneapple.dojocam_app.databinding.FragmentDashboardBinding;
 import com.pinneapple.dojocam_app.objects.VideoInfo;
@@ -126,7 +130,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         tec_img.setOnClickListener((View.OnClickListener) this);
         fis.setOnClickListener((View.OnClickListener) this);
         fis_img.setOnClickListener((View.OnClickListener) this);
-
 
         id_list.clear();
 
@@ -311,4 +314,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         super.onResume();
 
     }
+
+
 }

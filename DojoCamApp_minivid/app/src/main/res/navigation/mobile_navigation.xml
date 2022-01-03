@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.pinneapple.dojocam_app.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_dashboard"
+        android:name="com.pinneapple.dojocam_app.ui.dashboard.DashboardFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/action_navigation_dashboard_to_selectDificulty"
+            app:destination="@id/selectDificulty" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="com.pinneapple.dojocam_app.ui.notifications.NotificationsFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/perfil"
+        android:name="com.pinneapple.dojocam_app.Perfil"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_perfil" />
+    <fragment
+        android:id="@+id/exerciseDetail"
+        android:name="com.pinneapple.dojocam_app.ExerciseDetail"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_exercise_detail" >
+        <action
+            android:id="@+id/action_exerciseDetail_to_practice"
+            app:destination="@id/practice" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectDificulty"
+        android:name="com.pinneapple.dojocam_app.SelectDificulty"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_select_dificulty" >
+        <action
+            android:id="@+id/action_selectDificulty_to_ejercicios"
+            app:destination="@id/ejercicios" />
+    </fragment>
+    <fragment
+        android:id="@+id/ejercicios"
+        android:name="com.pinneapple.dojocam_app.Ejercicios"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_ejercicios" >
+        <action
+            android:id="@+id/action_ejercicios_to_exerciseDetail"
+            app:destination="@id/exerciseDetail" />
+    </fragment>
+    <fragment
+        android:id="@+id/practice"
+        android:name="com.pinneapple.dojocam_app.Practice"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_practice" />
+</navigation>
