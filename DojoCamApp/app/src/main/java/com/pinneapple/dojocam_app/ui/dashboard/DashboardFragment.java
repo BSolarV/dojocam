@@ -90,8 +90,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-
-
         // final TextView textView = binding.textDashboard;
         // dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
         //     @Override
@@ -130,25 +128,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         fis_img.setOnClickListener((View.OnClickListener) this);
 
 
-
-
-
-
-
-    }
-    @Override
-    public void onClick(View view) {
-
-        Navigation.findNavController(view).navigate(R.id.selectDificulty);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
         id_list.clear();
 
-        DocumentReference userReference = db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail());
 
         userReference.get().addOnSuccessListener(command -> {
             UserData user = command.toObject(UserData.class);
@@ -189,9 +171,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
             number = rand.nextInt(docList.size());
 
             exercise = docList.get(number);
-            name = (TextView) getView().findViewById(R.id.textView6);
-            dificultad = (TextView) getView().findViewById(R.id.textView7);
-            img = (ImageView) getView().findViewById(R.id.imageView6);
+            name = (TextView) view.findViewById(R.id.textView6);
+            dificultad = (TextView) view.findViewById(R.id.textView7);
+            img = (ImageView) view.findViewById(R.id.imageView6);
             name.setText(exercise.getNombre());
             String diffName="";
             switch (exercise.getDificultad()) {
@@ -211,9 +193,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
             //Toast.makeText(getContext(), exercise.getId(), Toast.LENGTH_SHORT).show();
 
             //Esto manda al fragment de exercise detail
-            one = (TextView) getView().findViewById(R.id.textView6);
-            two = (TextView) getView().findViewById(R.id.textView7);
-            three = (ImageView) getView().findViewById(R.id.imageView6);
+            one = (TextView) view.findViewById(R.id.textView6);
+            two = (TextView) view.findViewById(R.id.textView7);
+            three = (ImageView) view.findViewById(R.id.imageView6);
 
             btn = (Button) getView().findViewById(R.id.button2);
             chat = (Button) getView().findViewById(R.id.button6);
@@ -281,7 +263,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                 }
             });
             btnLastExercise = (Button) getView().findViewById(R.id.Retomar);
-            if(last_exercise == "") {
+            if(last_exercise == null || last_exercise.equals("")) {
                 btnLastExercise.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -315,11 +297,18 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
 
             }
 
-
-
-
-
-
         });
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        Navigation.findNavController(view).navigate(R.id.selectDificulty);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 }

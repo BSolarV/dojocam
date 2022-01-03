@@ -143,8 +143,6 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
         times_done = 0;
 
 
-
-
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         String today = formatter.format(date);
@@ -163,9 +161,9 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                     UserData user = command.toObject(UserData.class);
                     assert user != null;
 
-                    HashMap<String, HashMap<String, List<Integer>>> scores =  new HashMap<>();
+                    HashMap<String, HashMap<String, HashMap<String, List<Integer>>>> scores =  new HashMap<>();
                     scores =  user.getScores();
-                    HashMap <String, List<Integer>> exercise_scores = new HashMap<>();
+                    HashMap <String, HashMap<String, List<Integer>>> exercise_scores = new HashMap<>();
 
                     //Parseo de los scores en las distintas listas
 
@@ -195,9 +193,7 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                         //scores de el ejercicio
                         exercise_scores = scores.get(exercises_done_nindex.get(index_key));
 
-                        day_scores = exercise_scores.get(today);
-
-
+                        day_scores = exercise_scores.get(today).get("scores");
 
                         //Toast.makeText(getContext(),day_scores.get(0).toString(), Toast.LENGTH_SHORT).show();
 
@@ -237,7 +233,7 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
 
                         //obtengo del exercises_scores
                         for (int i = 0; i<7; i++ ) {
-                            List<Integer> day_s = exercise_scores.get(week_days.get(i));
+                            List<Integer> day_s = exercise_scores.get(week_days.get(i)).get(1);
                             int prom = 0 ;
                             if(day_s != null){
                                 prom = day_s.stream().mapToInt(Integer::intValue).sum();
@@ -258,7 +254,7 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                             int div = 0;
                             for (int j = 0; j < 7; j++ ){
                                 int prom = 0 ;
-                                List<Integer> day_s = exercise_scores.get(month_days.get(j+i*7));
+                                List<Integer> day_s = exercise_scores.get(month_days.get(j+i*7)).get(1);
                                 if(day_s != null){
                                     prom = day_s.stream().mapToInt(Integer::intValue).sum();
                                     prom /= day_s.size();
