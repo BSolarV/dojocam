@@ -120,14 +120,15 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
             tip dialog = new tip();
             dialog.show(manager,"message dialog");
         }
-        TextView tec = (TextView) getView().findViewById(R.id.textView11);
-        ImageView tec_img = (ImageView) getView().findViewById(R.id.imageView7);
+
+        //TextView tec = (TextView) getView().findViewById(R.id.textView11);
+        //ImageView tec_img = (ImageView) getView().findViewById(R.id.imageView7);
 
         TextView fis = (TextView) getView().findViewById(R.id.textView12);
         ImageView fis_img = (ImageView) getView().findViewById(R.id.imageView8);
 
-        tec.setOnClickListener((View.OnClickListener) this);
-        tec_img.setOnClickListener((View.OnClickListener) this);
+        //tec.setOnClickListener((View.OnClickListener) this);
+        //tec_img.setOnClickListener((View.OnClickListener) this);
         fis.setOnClickListener((View.OnClickListener) this);
         fis_img.setOnClickListener((View.OnClickListener) this);
 
