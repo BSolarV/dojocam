@@ -136,7 +136,7 @@
     <string name="nombre_recomendado">Defensa Alta</string>
     <string name="pregunta">¿Qué quieres hacer hoy?</string>
     <string name="tecnica">Técnica</string>
-    <string name="fisico">Físico</string>
+    <string name="fisico">Practicar</string>
 
 
     //ex_de
@@ -145,7 +145,7 @@
     <string name="str_respuesta">Respuesta</string>
     <string name="descripcion_tecnica"></string>
     <string name="btn_start">Empezar</string>
-
+    <string name="chat">Chat</string>
 
     //Notifications
     <string name="BestScore">Mejor Puntaje</string>
