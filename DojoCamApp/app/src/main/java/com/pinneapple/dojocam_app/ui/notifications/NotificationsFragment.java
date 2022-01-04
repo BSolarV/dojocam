@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -81,6 +83,9 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
 
     private ArrayList<String> xLabel = new ArrayList<>();
 
+    private SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+    private Date date;
+    private String today;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -91,7 +96,6 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
 
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
 
         return root;
     }
@@ -135,9 +139,11 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
         best_score = 0;
         times_done = 0;
 
+        /*
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         String today = formatter.format(date);
+         */
 
         MainActivity.checkLogin(requireActivity());
         DocumentReference scoresReference = db.collection("Scores").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
@@ -346,11 +352,57 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
         super.onDestroyView();
         binding = null;
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         loadingDialog.startLoadingDialog();
+
+        date = new Date();
+        today = formatter.format(date);
+        TextView dateDisplay = view.findViewById(R.id.statisticsDateDisplay);
+        dateDisplay.setText(today);
+
+        ImageButton prevDayButton = view.findViewById(R.id.statisticsPrevDay);
+        ImageButton nextDayButton = view.findViewById(R.id.statisticsNextDay);
+        nextDayButton.setEnabled(false);
+
+        prevDayButton.setOnClickListener(view1 -> {
+            Calendar c = Calendar.getInstance();
+            try {
+                c.setTime(formatter.parse(today));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            c.add(Calendar.DATE, -1);  // number of days to add
+            today = formatter.format(c.getTime());
+            dateDisplay.setText(today);
+
+            nextDayButton.setEnabled(true);
+
+            consultScores();
+        });
+
+        nextDayButton.setOnClickListener(view1 -> {
+            Calendar c = Calendar.getInstance();
+            try {
+                c.setTime(formatter.parse(today));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            c.add(Calendar.DATE, 1);  // number of days to add
+            today = formatter.format(c.getTime());
+            dateDisplay.setText(today);
+
+            Date todayDate = new Date();
+            String todayDateString = formatter.format(todayDate);
+            if(today.equals(todayDateString))
+                nextDayButton.setEnabled(false);
+
+            consultScores();
+        });
 
     }
 
