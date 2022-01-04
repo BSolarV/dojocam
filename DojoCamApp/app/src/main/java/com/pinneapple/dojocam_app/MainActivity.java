@@ -1,5 +1,6 @@
 package com.pinneapple.dojocam_app;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -137,6 +138,15 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("error", "Login failed with exception: " + e.getMessage());
                 }
             });
+        }
+    }
+
+    public static void checkLogin(Activity activity){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if( user == null ){
+            Intent loginActivity = new Intent(activity, LoginActivity.class);
+            activity.startActivity(loginActivity);
+            activity.finish();
         }
     }
 }
