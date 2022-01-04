@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
+        <!--
         <Button
         android:id="@+id/AddFriend"
         android:layout_width="360dp"
@@ -17,7 +17,7 @@
         android:backgroundTint="@color/purple_200"
         android:layout_gravity="center"
         android:text="Buscar Amigos"/>
-
+        !-->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">

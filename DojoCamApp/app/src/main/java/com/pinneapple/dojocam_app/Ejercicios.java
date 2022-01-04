@@ -3,6 +3,7 @@ package com.pinneapple.dojocam_app;
 import static android.content.ContentValues.TAG;
 
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,6 +48,7 @@ import java.util.Random;
  * Use the {@link Ejercicios#newInstance} factory method to
  * create an instance of this fragment.
  */
+@androidx.annotation.RequiresApi(api = Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class Ejercicios extends ListFragment implements AdapterView.OnItemClickListener,SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
 
     // TODO: Rename parameter arguments, choose names that match

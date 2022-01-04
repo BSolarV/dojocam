@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.pinneapple.dojocam_app.databinding.FragmentPerfilBinding;
+//import com.pinneapple.dojocam_app.databinding.FragmentPerfilBinding;
 import com.pinneapple.dojocam_app.objets.UserData;
 
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +32,7 @@ import java.util.Random;
 
 public class tip extends AppCompatDialogFragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private FragmentPerfilBinding binding;
+    //private FragmentPerfilBinding binding;
     @NonNull
     @NotNull
     @Override

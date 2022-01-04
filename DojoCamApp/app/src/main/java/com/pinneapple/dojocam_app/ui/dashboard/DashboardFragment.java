@@ -200,8 +200,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
             two = (TextView) view.findViewById(R.id.textView7);
             three = (ImageView) view.findViewById(R.id.imageView6);
 
-            btn = (Button) getView().findViewById(R.id.button2);
-            chat = (Button) getView().findViewById(R.id.button6);
+            btn = (Button) view.findViewById(R.id.button2);
+            chat = (Button) view.findViewById(R.id.button6);
             chat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -265,7 +265,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
 
                 }
             });
-            btnLastExercise = (Button) getView().findViewById(R.id.Retomar);
+            btnLastExercise = (Button) view.findViewById(R.id.Retomar);
             if(last_exercise == null || last_exercise.equals("")) {
                 btnLastExercise.setOnClickListener(new View.OnClickListener() {
                     @Override

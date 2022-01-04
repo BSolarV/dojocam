@@ -55,8 +55,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.pinneapple.dojocam_app.objets.Scoredata
 import com.pinneapple.dojocam_app.objets.UserData
 import java.text.SimpleDateFormat
+import kotlin.collections.HashMap
 import kotlin.math.round
 
 
@@ -158,7 +161,7 @@ class Ml_model : AppCompatActivity(){
         override fun onNothingSelected(parent: AdapterView<*>?) {
             // do nothing
         }
-    } 
+    }
 
     private var setClassificationListener =
         CompoundButton.OnCheckedChangeListener { _, isChecked ->
@@ -754,33 +757,51 @@ class Ml_model : AppCompatActivity(){
         //Consulta a Bd para obtener Scores actuales
         if( fbUser?.email == null ) finish()
 
-        val userReference = fbUser?.email.let {
+        val scoreReference = fbUser?.email.let {
             if (it != null) {
-                db.collection("Users").document(it)
+                db.collection("Scores").document(it)
             } else null
         }
 
-        if (userReference != null) {
-            userReference.get().addOnSuccessListener(OnSuccessListener { command: DocumentSnapshot ->
+        if (scoreReference != null) {
+            scoreReference.get().addOnSuccessListener(OnSuccessListener { command: DocumentSnapshot ->
                 try {
-                    user = command.toObject(UserData::class.java)!!
-                    var scores = user.scores
-                    if( scores == null ) {
-                        scores = hashMapOf<String, HashMap<String, HashMap<String, List<Int>>>>()
-                    }
-                    if( !scores.containsKey(this.id_ejercicio) ){
-                        scores[id_ejercicio] = hashMapOf<String, HashMap<String, List<Int>>>()
-                    }
-                    if( !scores[id_ejercicio]?.containsKey(dateNow)!! ){
-                        scores[id_ejercicio]!![dateNow] = hashMapOf( "times" to mutableListOf(), "scores" to mutableListOf(), "percent" to mutableListOf() )
-                    }
-                    scores[id_ejercicio]!![dateNow]!!["times"]?.add(time);
-                    scores[id_ejercicio]!![dateNow]!!["scores"]?.add(total);
-                    scores[id_ejercicio]!![dateNow]!!["percent"]?.add(percent);
+                    var scoreData : HashMap< String, HashMap< String, MutableList<Int> > >?;
+                    scoreData = command.get(id_ejercicio) as HashMap<String, HashMap<String, MutableList<Int>>>?
 
-                    userReference.update("scores", scores)
-                    userReference.update("lastExercisePath", "")
-                    Toast.makeText(this, "done",Toast.LENGTH_SHORT).show()
+                    if( scoreData == null ) scoreData = hashMapOf()
+
+                    if(!scoreData.containsKey(dateNow)){
+                        scoreData[dateNow] = hashMapOf( "times" to mutableListOf(), "scores" to mutableListOf(), "percent" to mutableListOf() )
+                    }
+                    scoreData[dateNow]?.get("times")?.add(time);
+                    scoreData[dateNow]?.get("scores")?.add(total);
+                    scoreData[dateNow]?.get("percent")?.add(percent);
+
+                    scoreReference.set( hashMapOf( id_ejercicio to scoreData), SetOptions.merge())
+                        .addOnSuccessListener {
+                            val userReference = fbUser?.email.let {
+                                if (it != null) {
+                                    db.collection("Users").document(it)
+                                } else null
+                            }
+                            if (userReference != null) {
+                                userReference?.get().addOnSuccessListener(OnSuccessListener { command: DocumentSnapshot ->
+                                    try {
+                                        user = command.toObject(UserData::class.java)!!
+
+                                        if (userReference != null) {
+                                            userReference!!.update("lastExercisePath", "")
+                                        }
+
+                                        Toast.makeText(this, "done2",Toast.LENGTH_SHORT).show()
+
+                                    } catch (e: java.lang.Exception) {
+                                        Log.wtf("PUT DB", e.message)
+                                    }
+                                })
+                            }
+                        }
 
                 } catch (e: java.lang.Exception) {
                     Log.wtf("PUT DB", e.message)

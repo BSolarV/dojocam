@@ -16,7 +16,7 @@ public class UserData {
     private Integer weight;
     //old {ID_ejercicio: {Fecha: Score}}
     //new {ID_ejercicio: {Fecha: [Score1, Score2, Score3, ...]}}
-    private HashMap<String, HashMap<String, HashMap<String, List<Integer>>>> scores;
+    //private HashMap<String, HashMap<String, HashMap<String, List<Integer>>>> scores;
     //private List<String> exercisesDone;
     private String lastExercise;
     private String lastExercisePath;
@@ -103,7 +103,7 @@ public class UserData {
     public void setExercisesDone(List<String> exercisesDone) {
         this.exercisesDone = exercisesDone;
     }
-     */
+
 
     public HashMap<String, HashMap<String, HashMap<String, List<Integer>>>> getScores() {
 
@@ -113,6 +113,8 @@ public class UserData {
     public void setScores(HashMap<String, HashMap<String, HashMap<String, List<Integer>>>> scores) {
         this.scores = scores;
     }
+    */
+
     public String getLastExercise() {
         return lastExercise;
     }
