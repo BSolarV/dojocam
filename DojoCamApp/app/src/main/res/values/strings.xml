@@ -119,6 +119,7 @@
     <string name="porcen_tiempo_act">% de tiempo Activo</string>
     <string name="tiempo_ejercicio">Tiempo de Ejecicio</string>
     <string name="statisticsPoints">Postura</string>
+    <string name="postura">Postura</string>
     <string name="statisticsPerformance">Porcentaje de Logro</string>
     <string name="statisticsTime">Tiempo de Ejercicio</string>
     <string name="puntuacion">Puntuación</string>
@@ -143,7 +144,7 @@
     <string name="nombre_tecnica">Ejercicio</string>
     <string name="str_descripcion">Descripción</string>
     <string name="str_respuesta">Respuesta</string>
-    <string name="descripcion_tecnica"></string>
+    <string name="descripcion_tecnica">d</string>
     <string name="btn_start">Empezar</string>
     <string name="chat">Chat</string>
 
