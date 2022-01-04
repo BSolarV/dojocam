@@ -167,7 +167,8 @@ public class NotificationsFragment_pub extends Fragment implements AdapterView.O
                     assert user != null;
 
                     HashMap<String, HashMap<String, List<Integer>>> scores =  new HashMap<>();
-                    scores =  user.getScores();
+                    //scores =  user.getScores();
+                    scores = null;
                     HashMap <String, List<Integer>> exercise_scores = new HashMap<>();
 
                     //Parseo de los scores en las distintas listas
