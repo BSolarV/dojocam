@@ -72,7 +72,9 @@ public class ChatActivity extends AppCompatActivity {
     private void addMessages(List<BaseMessage> baseMessages) {
         List<IMessage> list = new ArrayList<>();
         for (BaseMessage message : baseMessages) {
-            list.add(new MessageWrapper((TextMessage) message));
+            if (message instanceof TextMessage) {
+                list.add(new MessageWrapper((TextMessage) message));
+            }
         }
         adapter.addToEnd(list, true);
     }
@@ -139,5 +141,68 @@ public class ChatActivity extends AppCompatActivity {
     private void addMessage(TextMessage textMessage) {
         adapter.addToStart(new MessageWrapper(textMessage), true);
         //adapter.notifyItemInserted(0);
+    }
+
+    private void mensaje_recibdo_persona(String listener_id){
+        int limit = 30;
+        int latestId = CometChat.getLastDeliveredMessageId();
+        String UID = "superhero1";
+
+        MessagesRequest messagesRequest= new MessagesRequest.MessagesRequestBuilder()
+                .setMessageId(latestId)
+                .setLimit(limit)
+                .setUID(UID)
+                .build();
+
+        messagesRequest.fetchNext(new CometChat.CallbackListener<List<BaseMessage>>() {
+            @Override
+            public void onSuccess(List <BaseMessage> list) {
+                for (BaseMessage message: list) {
+                    if (message instanceof TextMessage) {
+                        Log.d("TAG", "Text message received successfully: " +
+                                ((TextMessage) message).toString());
+                    } else if (message instanceof MediaMessage) {
+                        Log.d("TAG", "Media message received successfully: " +
+                                ((MediaMessage) message).toString());
+                    }
+                }
+            }
+            @Override
+            public void onError(CometChatException e) {
+                Log.d("TAG", "Message fetching failed with exception: " + e.getMessage());
+            }
+        });
+    }
+
+    public void ultimo_mensaje_grupo (String GUID){
+        int limit = 30;
+        int latestId = CometChat.getLastDeliveredMessageId();
+        //private String GUID = "supergroup";
+
+        MessagesRequest messagesRequest= new MessagesRequest.MessagesRequestBuilder()
+                .setMessageId(latestId)
+                .setLimit(limit)
+                .setGUID(GUID)
+                .build();
+
+        messagesRequest.fetchNext(new CometChat.CallbackListener<List<BaseMessage>>() {
+            @Override
+            public void onSuccess(List <BaseMessage> list) {
+                for (BaseMessage message: list) {
+                    if (message instanceof TextMessage) {
+                        Log.d("TAG", "Text message received successfully: " +
+                                ((TextMessage) message).toString());
+                    } else if (message instanceof MediaMessage) {
+                        Log.d("TAG", "Media message received successfully: " +
+                                ((MediaMessage) message).toString());
+                    }
+                }
+            }
+
+            @Override
+            public void onError(CometChatException e) {
+                Log.d("TAG", "Message fetching failed with exception: " + e.getMessage());
+            }
+        });
     }
 }

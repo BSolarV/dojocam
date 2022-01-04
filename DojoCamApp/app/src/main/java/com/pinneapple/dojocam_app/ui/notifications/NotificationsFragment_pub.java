@@ -163,7 +163,14 @@ public class NotificationsFragment_pub extends Fragment implements AdapterView.O
                 Map< String, Object > DBScores = command.getData();
                 HashMap <String, HashMap<String, List<Integer>>> exercise_scores = new HashMap<>();
 
+<<<<<<< HEAD
                 //Parseo de los scores en las distintas listas
+=======
+                    HashMap<String, HashMap<String, List<Integer>>> scores =  new HashMap<>();
+                    //scores =  user.getScores();
+                    scores = null;
+                    HashMap <String, List<Integer>> exercise_scores = new HashMap<>();
+>>>>>>> fcdf56f82f19b50282dc8bf59bf00ceddad6327c
 
                 if(DBScores != null){
                     exercises_done = new ArrayList<String>(DBScores.keySet());
