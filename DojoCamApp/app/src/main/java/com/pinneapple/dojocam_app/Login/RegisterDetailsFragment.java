@@ -238,13 +238,10 @@ public class RegisterDetailsFragment extends Fragment {
                                         .setDisplayName(name.getText().toString() + lastname.getText().toString())
                                         .build();
                                 FBUser.updateProfile(profileUpdates);
-                                db.collection("Users").document(Objects.requireNonNull(FBUser.getEmail())).set(user)
-                                        .addOnCompleteListener(task1 -> {
-                                            loadingDialog.dismissDialog();
-                                            toMainActivity();
-                                        }
-                                        );
+                                db.collection("Users").document(Objects.requireNonNull(FBUser.getEmail())).set(user);
 
+                                loadingDialog.dismissDialog();
+                                toMainActivity();
                             } else {
                                 // If sign in fails, display a message to the user.
                                 System.out.println("Hola aqui nos vamos error");

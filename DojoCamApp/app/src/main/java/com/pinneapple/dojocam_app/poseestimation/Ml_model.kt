@@ -46,6 +46,7 @@ import java.util.*
 import android.content.ComponentName
 
 import android.content.ServiceConnection
+import android.graphics.PointF
 import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
@@ -55,12 +56,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
-import com.pinneapple.dojocam_app.objets.Scoredata
 import com.pinneapple.dojocam_app.objets.UserData
+import org.tensorflow.lite.examples.poseestimation.data.BodyPart
+import org.tensorflow.lite.examples.poseestimation.data.KeyPoint
+import org.tensorflow.lite.examples.poseestimation.data.Person
+import java.io.File
+import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
-import kotlin.collections.HashMap
-import kotlin.math.round
+import kotlin.math.floor
 
 
 class Ml_model : AppCompatActivity(){
@@ -161,7 +164,7 @@ class Ml_model : AppCompatActivity(){
         override fun onNothingSelected(parent: AdapterView<*>?) {
             // do nothing
         }
-    }
+    } 
 
     private var setClassificationListener =
         CompoundButton.OnCheckedChangeListener { _, isChecked ->
@@ -279,10 +282,9 @@ class Ml_model : AppCompatActivity(){
             floatingVideoVideo = mService.videoView
 
             floatingVideoVideo.setOnPreparedListener(MediaPlayer.OnPreparedListener {
+                timerCounter()
                 it.start()
                 videoDuration = it.duration
-                timerCounter()
-                timePracticingRunner()
             })
         }
 
@@ -356,8 +358,6 @@ class Ml_model : AppCompatActivity(){
             unbindService(mConnection);
             mBound = false;
         }
-        timer?.cancel()
-        timePracticingTimer?.cancel()
     }
 
 /*
@@ -561,19 +561,6 @@ class Ml_model : AppCompatActivity(){
         timer!!.schedule(task, 0, 100)
     }
 
-    private var practiceTime: Int = 0;
-    private var timePracticingTimer: Timer? = null
-    private fun timePracticingRunner() {
-        timePracticingTimer = Timer()
-        val task: TimerTask = object : TimerTask() {
-            @RequiresApi(Build.VERSION_CODES.N)
-            override fun run() {
-                runOnUiThread { practiceTime++; }
-            }
-        }
-        timePracticingTimer!!.schedule(task, 0, 1000)
-    }
-
     private var videoDuration = 99999
     private var currentTime = 0
     private var lastSec: Int? = null
@@ -584,14 +571,28 @@ class Ml_model : AppCompatActivity(){
     private var learning = 0
     private var showed = false
     private var alphaFactor = 1f
-    private var total = 0f
+    private var total = 0
     private var divisor = 0
-    private var correctOnes = 0;
 
     private var labels: MutableList<Int> = mutableListOf()
 
 
     private fun read() {
+        /*
+        try {
+            Log.wtf("READ: ", LABELS_FILENAME)
+            val myObj = File(LABELS_FILENAME)
+            val myReader = Scanner(myObj)
+            while (myReader.hasNextLine()) {
+                val data = myReader.nextLine()
+                labels.add(data.toInt())
+            }
+            myReader.close()
+            Log.wtf("READ: ", labels.toString())
+        } catch (e: FileNotFoundException) {
+            println("An error occurred.")
+            e.printStackTrace()
+        }*/
         try{
             val bufferReader = this.assets.open(LABELS_FILENAME).bufferedReader()
             while (bufferReader.ready()) {
@@ -623,24 +624,19 @@ class Ml_model : AppCompatActivity(){
                 cameraSource?.tootgleDrawOnScreen( true )
                 learning++
             }
-            if( learning == 2 ) {
-                cameraSource?.tootgleDrawOnScreen(true)
-                alphaFactor = 1f
+            if( learning == 2 ){
+                cameraSource?.tootgleDrawOnScreen( true )
+                alphaFactor =  1f
                 //total /= 3
-                total = if (divisor == 0) 0f else total * 5 / divisor
-                val percent = if (divisor == 0) 0f else correctOnes / divisor.toFloat() * 100
-                val rounded = round(total).toInt()
+                divisor = 1
+                total = if (divisor == 0) 0 else total/divisor
 
                 //Corro función que envía el puntaje a BD
-                putScoreBD(practiceTime, rounded, round(percent).toInt())
+                putScoreBD(total)
 
-                cameraSource?.setDrawOnScreen("Bien Hecho!! \n $rounded", 48f, alphaFactor)
+                cameraSource?.setDrawOnScreen("Bien Hecho!! \n $total", 48f, alphaFactor )
                 keepAsking = false
                 counterTime++
-                learning++
-            }else if( learning == 3 ) {
-                val rounded = round(total).toInt()
-                cameraSource?.setDrawOnScreen("Bien Hecho!! \n $rounded", 48f, alphaFactor )
             } else {
                 val text = when (textIndex) {
                     1 -> " Bien Hecho"
@@ -689,11 +685,7 @@ class Ml_model : AppCompatActivity(){
         if ( keepAsking && index < labels.size ){
             if( learning != 0 ) {
                 if( labels[index] - 100 < currentTime && currentTime < labels[index] + 300  ){
-                    val points = cameraSource?.scorePose(labels[index].toString()) ?: 0
-                    total += points;
-                    if( points > 100 ){
-                        correctOnes += 1;
-                    }
+                    total += cameraSource?.scorePose(labels[index].toString()) ?: 0
                     divisor++
                     if (currentTime > labels[index]) {
                         index++
@@ -743,12 +735,10 @@ class Ml_model : AppCompatActivity(){
         }
     }
 
-    private fun putScoreBD(time: Int, total: Int, percent: Int) {
+    private fun putScoreBD(total: Int) {
 
-        Log.wtf("Saving DB:", "Init Save")
 
         if( added ) return
-
         added = true
 
         val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
@@ -757,62 +747,69 @@ class Ml_model : AppCompatActivity(){
         //Consulta a Bd para obtener Scores actuales
         if( fbUser?.email == null ) finish()
 
-        val scoreReference = fbUser?.email.let {
+        val userReference = fbUser?.email.let {
             if (it != null) {
-                db.collection("Scores").document(it)
+                db.collection("Users").document(it)
             } else null
         }
 
-        if (scoreReference != null) {
-            scoreReference.get().addOnSuccessListener(OnSuccessListener { command: DocumentSnapshot ->
+        if (userReference != null) {
+            userReference.get().addOnSuccessListener(OnSuccessListener { command: DocumentSnapshot ->
                 try {
-                    var scoreData : HashMap< String, HashMap< String, MutableList<Int> > >?;
-                    scoreData = command.get(id_ejercicio) as HashMap<String, HashMap<String, MutableList<Int>>>?
-
-                    if( scoreData == null ) scoreData = hashMapOf()
-
-                    if(!scoreData.containsKey(dateNow)){
-                        scoreData[dateNow] = hashMapOf( "times" to mutableListOf(), "scores" to mutableListOf(), "percent" to mutableListOf() )
+                    user = command.toObject(UserData::class.java)!!
+                    var scores = user.scores
+                    if( scores == null ) {
+                        scores = hashMapOf<String, HashMap<String, List<Int>>>()
                     }
-                    scoreData[dateNow]?.get("times")?.add(time);
-                    scoreData[dateNow]?.get("scores")?.add(total);
-                    scoreData[dateNow]?.get("percent")?.add(percent);
+                    if( !scores.containsKey(this.id_ejercicio) ){
+                        scores[id_ejercicio] = hashMapOf<String, List<Int>>()
+                    }
+                    if( !scores[id_ejercicio]?.containsKey(dateNow)!! ){
+                        scores[id_ejercicio]!![dateNow] = mutableListOf();
+                    }
+                    scores[id_ejercicio]!![dateNow]!!.add(total)
 
-                    scoreReference.set( hashMapOf( id_ejercicio to scoreData), SetOptions.merge())
-                        .addOnSuccessListener {
-                            val userReference = fbUser?.email.let {
-                                if (it != null) {
-                                    db.collection("Users").document(it)
-                                } else null
-                            }
-                            if (userReference != null) {
-                                userReference?.get().addOnSuccessListener(OnSuccessListener { command: DocumentSnapshot ->
-                                    try {
-                                        user = command.toObject(UserData::class.java)!!
-
-                                        if (userReference != null) {
-                                            userReference!!.update("lastExercisePath", "")
-                                        }
-
-                                        Toast.makeText(this, "done2",Toast.LENGTH_SHORT).show()
-
-                                    } catch (e: java.lang.Exception) {
-                                        Log.wtf("PUT DB", e.message)
-                                    }
-                                })
-                            }
-                        }
+                    userReference.update("scores", scores)
+                    userReference.update("lastExercisePath", "")
+                    Toast.makeText(this, "done",Toast.LENGTH_SHORT).show()
 
                 } catch (e: java.lang.Exception) {
                     Log.wtf("PUT DB", e.message)
-                    Toast.makeText(this, e.message, Toast.LENGTH_LONG).show();
                 }
             })
         } else {
             finish()
         }
 
-        Log.wtf("Saving DB:", "SAVED!")
+        /*
+        val timestamp = Timestamp.now()
+        antScore?.forEachIndexed { index, any ->
+            if(antScore!![index] == id_ejercicio) {
+
+                aux = antScore!![index+1] as List<Map<String,*>>
+                ind = index+1
+                return@forEachIndexed
+            }
+        }
+
+        var none = true
+        if(aux == null){
+            aux = listOf()
+            none = false
+        }
+        aux!!.toMutableList().add(mapOf("timestamp" to timestamp, "score" to total))
+
+        if(!none) {
+
+            antScore!!.toMutableList().add(id_ejercicio)
+            antScore!!.toMutableList().add(aux)
+        } else{
+           antScore!!.toMutableList()[ind] = aux
+        }
+
+        userReference?.update("score", antScore)
+        */
+
     }
 
     /**

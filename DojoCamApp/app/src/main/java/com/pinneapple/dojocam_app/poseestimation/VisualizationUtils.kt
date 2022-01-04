@@ -112,7 +112,6 @@ object VisualizationUtils {
         val bgPaint = Paint().apply {
             color = Color.rgb(178,178,178)
             style = Paint.Style.FILL
-            isAntiAlias = true
         }
 
         val textPaint = Paint().apply {
@@ -121,7 +120,6 @@ object VisualizationUtils {
             style = Paint.Style.FILL
             textSize = size
             textAlign = Paint.Align.CENTER
-            isAntiAlias = true
         }
 
         val output = input.copy(Bitmap.Config.ARGB_8888,true)
@@ -151,7 +149,7 @@ object VisualizationUtils {
 
     fun drawFeedback(input: Bitmap, status: Int): Bitmap {
 
-        val size = 50f
+        val size = 20f
         val offset = 8f
 
         val feedbackColor: Int
@@ -170,19 +168,15 @@ object VisualizationUtils {
         val paintCircle = Paint().apply {
             strokeWidth = 10f
             color = feedbackColor
-            alpha = 100
             style = Paint.Style.FILL
-            isAntiAlias = true
         }
 
         val textPaint = Paint().apply {
             strokeWidth = 700f
             color = Color.WHITE
-            alpha = 100
             style = Paint.Style.FILL
             textSize = size
             textAlign = Paint.Align.CENTER
-            isAntiAlias = true
         }
 
         val output = input.copy(Bitmap.Config.ARGB_8888,true)
@@ -190,15 +184,16 @@ object VisualizationUtils {
         val originalSizeCanvas = Canvas(output)
 
         originalSizeCanvas.drawCircle(
-            originalSizeCanvas.width/2f,
-            size,
+            originalSizeCanvas.width - size/2f - offset,
+            size/2f + offset,
             size,
             paintCircle
         )
+
         originalSizeCanvas.drawText(
             text,
-            originalSizeCanvas.width/2f,
-            size+size/3f,
+            originalSizeCanvas.width - size/2f - offset,
+            size/2f + offset + offset,
             textPaint
         )
         return output
@@ -207,28 +202,6 @@ object VisualizationUtils {
     public fun drawTextOnScreen( input: Bitmap, text: String, paint: Paint ): Bitmap{
         val output = input.copy(Bitmap.Config.ARGB_8888,true)
         val originalSizeCanvas = Canvas(output)
-
-        val bgPaint = Paint().apply {
-            color = Color.argb(150,178,178,178)
-            style = Paint.Style.FILL
-            isAntiAlias = true
-        }
-
-        val offset = 20f;
-
-        val rectF = RectF(
-                offset,  // left
-                originalSizeCanvas.height/2 - paint.textSize-offset,  // top
-                originalSizeCanvas.width - offset,  // right
-                originalSizeCanvas.height/2 + paint.textSize/2+offset // bottom
-        )
-        val cornersRadius = 5f
-        originalSizeCanvas.drawRoundRect(
-                rectF,
-                cornersRadius,
-                cornersRadius,
-                bgPaint
-        )
 
         originalSizeCanvas.drawText(
             text,

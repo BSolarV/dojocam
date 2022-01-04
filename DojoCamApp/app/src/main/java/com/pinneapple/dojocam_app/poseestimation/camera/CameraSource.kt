@@ -286,7 +286,6 @@ class CameraSource(
                 style = Paint.Style.FILL
                 textSize = onScreenSize
                 textAlign = Paint.Align.CENTER
-                isAntiAlias = true
             }
             outputBitmap = VisualizationUtils.drawTextOnScreen( outputBitmap, onScreenText, paint )
         }
