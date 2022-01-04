@@ -120,14 +120,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
             tip dialog = new tip();
             dialog.show(manager,"message dialog");
         }
-<<<<<<< HEAD
+
 
         //TextView tec = (TextView) getView().findViewById(R.id.textView11);
         //ImageView tec_img = (ImageView) getView().findViewById(R.id.imageView7);
-=======
+
         TextView tec = (TextView) getView().findViewById(R.id.textView12);
         ImageView tec_img = (ImageView) getView().findViewById(R.id.imageView8);
->>>>>>> fcdf56f82f19b50282dc8bf59bf00ceddad6327c
+
 
         TextView fis = (TextView) getView().findViewById(R.id.textView12);
         ImageView fis_img = (ImageView) getView().findViewById(R.id.imageView8);

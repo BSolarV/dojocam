@@ -77,11 +77,10 @@ public class NotificationsFragment_pub extends Fragment implements AdapterView.O
     private Integer times_done = 0;
     private Boolean firstTime = true;
 
+    String weonId;
     private ArrayAdapter<String> arrayAdapter;
 
     private Integer index_key = 0;
-
-    String weonId;
 
     private ArrayList<String> xLabel = new ArrayList<>();
 
@@ -111,8 +110,6 @@ public class NotificationsFragment_pub extends Fragment implements AdapterView.O
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void consultScores() {
-
-        weonId = getArguments().getString("weonId");
         //Borrando dayScores
         try {
             day_scores.clear();
@@ -149,6 +146,8 @@ public class NotificationsFragment_pub extends Fragment implements AdapterView.O
         String today = formatter.format(date);
          */
 
+        weonId = getArguments().getString("weonId");
+
         MainActivity.checkLogin(requireActivity());
         DocumentReference scoresReference = db.collection("Scores").document(weonId);
 
@@ -163,14 +162,7 @@ public class NotificationsFragment_pub extends Fragment implements AdapterView.O
                 Map< String, Object > DBScores = command.getData();
                 HashMap <String, HashMap<String, List<Integer>>> exercise_scores = new HashMap<>();
 
-<<<<<<< HEAD
                 //Parseo de los scores en las distintas listas
-=======
-                    HashMap<String, HashMap<String, List<Integer>>> scores =  new HashMap<>();
-                    //scores =  user.getScores();
-                    scores = null;
-                    HashMap <String, List<Integer>> exercise_scores = new HashMap<>();
->>>>>>> fcdf56f82f19b50282dc8bf59bf00ceddad6327c
 
                 if(DBScores != null){
                     exercises_done = new ArrayList<String>(DBScores.keySet());
