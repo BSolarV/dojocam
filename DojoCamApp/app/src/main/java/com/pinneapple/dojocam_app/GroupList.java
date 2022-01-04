@@ -58,7 +58,7 @@ public class GroupList extends AppCompatActivity {
         String UID = user_email.getEmail(); // Replace with the UID of the user to login
         String[] arr_de_email = UID.split("@", 2);
         String[] arr_de_email_usuario = {};
-        String[] arr_de_emails_super = {"superhero1, superhero2", "superhero3", "superhero4", "superhero5"};
+        String[] arr_de_emails_super = {"superhero1", "superhero2", "superhero3", "superhero4", "superhero5"};
         Random rand = new Random();
         AppSettings appSettings=new AppSettings.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region).build();
         CometChat.init(this, appID,appSettings, new CometChat.CallbackListener<String>() {
