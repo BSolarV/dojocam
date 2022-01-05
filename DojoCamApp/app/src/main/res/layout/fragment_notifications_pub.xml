@@ -6,82 +6,106 @@
     android:layout_height="match_parent"
     tools:context=".ui.notifications.NotificationsFragment_pub">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="horizontal"
-                android:background="#3A8AC0">
+                android:background="#3A8AC0"
+                android:orientation="horizontal">
 
                 <RadioButton
                     android:id="@+id/radio_day"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
                     android:button="@null"
                     android:text="@string/dia"
-                    android:layout_gravity="center_horizontal"
                     android:textAlignment="center" />
 
                 <RadioButton
                     android:id="@+id/radio_week"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
                     android:button="@null"
                     android:text="@string/semana"
-                    android:layout_gravity="center_horizontal"
                     android:textAlignment="center" />
 
                 <RadioButton
                     android:id="@+id/radio_month"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
                     android:button="@null"
                     android:text="@string/mes"
-                    android:layout_gravity="center_horizontal"
                     android:textAlignment="center" />
 
             </RadioGroup>
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_weight="1" />
+
             <LinearLayout
+                android:id="@+id/statisticsDateSelectors"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:gravity="center"
                 android:orientation="horizontal">
-
+                <ImageButton
+                    android:id="@+id/statisticsPrevDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_baseline_arrow_back_ios_24"
+                    android:background="@color/transparent"/>
+                <TextView
+                    android:id="@+id/statisticsDateDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:textSize="18sp"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
+                    android:text="@string/RegisterDefaultDate"/>
+                <ImageButton
+                    android:id="@+id/statisticsNextDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:background="@color/transparent"
+                    android:src="@drawable/ic_baseline_arrow_forward_ios_24"/>
             </LinearLayout>
 
-            <androidx.cardview.widget.CardView
+            <Space
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1" >
-
-            </androidx.cardview.widget.CardView>
+                android:layout_height="10dp"
+                android:layout_weight="1" />
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
+                android:layout_marginVertical="5dp"
                 android:layout_marginEnd="32dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="10dp"
-                android:hint="Ejercicios"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:hint="Ejercicios">
 
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteTextView"
@@ -95,72 +119,113 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="34dp"
+                android:layout_height="10dp"
                 android:layout_marginBottom="10dp" />
 
 
-            <RadioGroup
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/bestScoreTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/BestScore" />
-
-                <TextView
-                    android:id="@+id/timesDoneTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/TimesDone" />
-
-            </RadioGroup>
-
-            <RadioGroup
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:background="#3A8AC0">
-                <TextView
-                    android:id="@+id/bestScore"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="-" />
-
-                <TextView
-                    android:id="@+id/timesDone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="-" />
-            </RadioGroup>
-
-            <EditText
-                android:id="@+id/editTextPostura"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:editable="false"
-                android:ems="10"
-                android:inputType="none"
-                android:text="@string/postura" />
-
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/barChart"
-                android:layout_width="match_parent"
-                android:layout_height="1000px" />
-
-
-
         </LinearLayout>
-    </ScrollView>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/bestScoreTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/BestScore" />
+
+                    <TextView
+                        android:id="@+id/timesDoneTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/TimesDone" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#3A8AC0"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/bestScore"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="-" />
+
+                    <TextView
+                        android:id="@+id/timesDone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="-" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/editTextPostura"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:gravity="center"
+                    android:layout_marginVertical="10dp"
+                    android:text="@string/statisticsPoints" />
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="1000px" />
+
+                <TextView
+                    android:id="@+id/textViewPerformance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:gravity="center"
+                    android:layout_marginVertical="10dp"
+                    android:text="@string/statisticsPerformance" />
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barChartPerformance"
+                    android:layout_width="match_parent"
+                    android:layout_height="1000px" />
+
+                <TextView
+                    android:id="@+id/textViewTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:gravity="center"
+                    android:layout_marginVertical="10dp"
+                    android:text="@string/statisticsTime" />
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barChartTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="1000px" />
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

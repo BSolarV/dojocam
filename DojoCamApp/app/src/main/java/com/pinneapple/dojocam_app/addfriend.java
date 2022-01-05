@@ -197,7 +197,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
         });
                */
 
-        bundle.putString("weonId",  user_list.get(pos));
+        bundle.putString("weonId",  id_list.get(pos));
         Navigation.findNavController(view).navigate(R.id.perfil_publico, bundle);
 
     }
@@ -208,7 +208,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
         super.onResume();
 
         user_list.clear();
-        //id_list.clear();
+        id_list.clear();
 
         db.collection("Users")
                 .get()
@@ -218,9 +218,10 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 //Log.d(TAG, document.getId() + " => " + document.getData());
-                                String aux = document.getId();
+                                String aux = document.get("firstName", String.class) + " " + document.get("lastName", String.class) + " (" + document.getId() + ")";
                                 //System.out.println(aux);
                                 user_list.add(aux);
+                                id_list.add(document.getId());
                                 //id_list.add(aux);
                                 System.out.println(user_list);
                             }

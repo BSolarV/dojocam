@@ -732,8 +732,6 @@ class Ml_model : AppCompatActivity(){
                     userReference.update("lastExercisePath", id_ejercicio)
                     userReference.update("lastExercise", difficulty)
 
-                    Toast.makeText(this, "done2",Toast.LENGTH_SHORT).show()
-
                 } catch (e: java.lang.Exception) {
                     Log.wtf("PUT DB", e.message)
                 }
@@ -793,8 +791,6 @@ class Ml_model : AppCompatActivity(){
                                         if (userReference != null) {
                                             userReference!!.update("lastExercisePath", "")
                                         }
-
-                                        Toast.makeText(this, "done2",Toast.LENGTH_SHORT).show()
 
                                     } catch (e: java.lang.Exception) {
                                         Log.wtf("PUT DB", e.message)

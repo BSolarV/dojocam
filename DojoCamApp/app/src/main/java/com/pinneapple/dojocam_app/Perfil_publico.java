@@ -8,6 +8,7 @@ import static android.content.ContentValues.TAG;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -88,6 +89,7 @@ import java.util.Objects;
 public class Perfil_publico extends Fragment {
 
     private FragmentPerfilBinding binding;
+    private Context context;
 
     ImageView imageViewProfilePicture;
 
@@ -145,6 +147,8 @@ public class Perfil_publico extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        context = requireContext();
         //loadingDialog.startLoadingDialog();
     }
 
@@ -189,13 +193,13 @@ public class Perfil_publico extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity(), "No posee Foto de Perfil", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "No posee Foto de Perfil", Toast.LENGTH_SHORT).show();
             }
         });
 
         userReference.get().addOnSuccessListener(command -> {
             UserData user = command.toObject(UserData.class);
-            assert user != null;
+
             System.out.println(user.getFirstName());
 
             TextView tv1 = (TextView)getView().findViewById(R.id.ProfileFirstName_p);
@@ -263,7 +267,7 @@ public class Perfil_publico extends Fragment {
             }
 
             if (followers.contains(weonId.toString())){
-                Toast.makeText(getActivity(),
+                Toast.makeText(context,
                                 "Ya sigues a este usuario",
                                 Toast.LENGTH_SHORT)
                         .show();
@@ -360,14 +364,14 @@ public class Perfil_publico extends Fragment {
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(getActivity(), "No se logro actaulizar", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "No se logro actaulizar", Toast.LENGTH_SHORT).show();
                 // Handle unsuccessful uploads
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Toast
-                        .makeText(getActivity(),
+                        .makeText(context,
                                 "Actualizado",
                                 Toast.LENGTH_SHORT)
                         .show();
@@ -400,7 +404,7 @@ public class Perfil_publico extends Fragment {
                                     // Dismiss dialog
                                     progressDialog.dismiss();
                                     Toast
-                                            .makeText(getActivity(),
+                                            .makeText(context,
                                                     "Actualizado",
                                                     Toast.LENGTH_SHORT)
                                             .show();
@@ -413,7 +417,7 @@ public class Perfil_publico extends Fragment {
                             // Error, Image not uploaded
                             progressDialog.dismiss();
                             Toast
-                                    .makeText(getActivity(),
+                                    .makeText(context,
                                             "Failed " + e.getMessage(),
                                             Toast.LENGTH_SHORT)
                                     .show();

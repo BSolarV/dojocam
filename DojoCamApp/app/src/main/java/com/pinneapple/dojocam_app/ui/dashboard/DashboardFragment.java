@@ -94,13 +94,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // final TextView textView = binding.textDashboard;
-        // dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-        //     @Override
-        //     public void onChanged(@Nullable String s) {
-        //         textView.setText(s);
-        //     }
-        // });
         return root;
     }
 
@@ -155,6 +148,41 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                 last_exercise = "";
             } else {
                 last_exercise = user.getLastExercisePath();
+            }
+
+            btnLastExercise = (Button) view.findViewById(R.id.Retomar);
+            if(last_exercise == null || last_exercise.equals("")) {
+                btnLastExercise.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(getContext(),"No hay ejercicios Pendientes", Toast.LENGTH_SHORT ).show();
+
+                    }
+                });
+            }
+            else {
+                Task<DocumentSnapshot> data2 = db.collection("ejercicios").document(last_exercise).get();
+                data2.addOnSuccessListener(command2 -> {
+                    btnLastExercise.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Bundle bundle = new Bundle();
+
+                            bundle.putString("difficulty" , command2.get("dificultad").toString());
+                            bundle.putString("videoId", last_exercise);
+                            bundle.putString("name", command2.get("nombre").toString());
+
+                            Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
+
+                        }
+                    });
+
+
+                });
+                /*data2.addOnFailureListener(error ->{
+                    Toast.makeText(getContext(),"No hay ejercicios Pendientes", Toast.LENGTH_SHORT ).show();
+                });*/
+
             }
 
 
@@ -271,40 +299,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
 
                 }
             });
-            btnLastExercise = (Button) view.findViewById(R.id.Retomar);
-            if(last_exercise == null || last_exercise.equals("")) {
-                btnLastExercise.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(getContext(),"No hay ejercicios Pendientes", Toast.LENGTH_SHORT ).show();
-
-                    }
-                });
-            }
-            else {
-                Task<DocumentSnapshot> data2 = db.collection("ejercicios").document(last_exercise).get();
-                data2.addOnSuccessListener(command2 -> {
-                    btnLastExercise.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Bundle bundle = new Bundle();
-
-                            bundle.putString("difficulty" , command2.get("dificultad").toString());
-                            bundle.putString("videoId", last_exercise);
-                            bundle.putString("name", command2.get("nombre").toString());
-
-                            Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
-
-                        }
-                    });
-
-
-                });
-                /*data2.addOnFailureListener(error ->{
-                    Toast.makeText(getContext(),"No hay ejercicios Pendientes", Toast.LENGTH_SHORT ).show();
-                });*/
-
-            }
 
         });
     }

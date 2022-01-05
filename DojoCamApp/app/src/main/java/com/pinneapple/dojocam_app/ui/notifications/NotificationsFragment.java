@@ -27,6 +27,7 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.tasks.Task;
@@ -252,8 +253,8 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
             displayBarsBySegment();
         });
 
-        initBars();
-
+        setUpData();
+        displayBarsBySegment();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -557,7 +558,8 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         index_key = i;
-        consultScores();
+        setUpData();
+        displayBarsBySegment();
     }
 
     private void displayBarsBySegment(){
@@ -565,6 +567,8 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
         BarChart barChart_s = (BarChart) requireView().findViewById(R.id.barChart);
         BarChart barChart_p = (BarChart) requireView().findViewById(R.id.barChartPerformance);
         BarChart barChart_t = (BarChart) requireView().findViewById(R.id.barChartTime);
+
+        if( barChart_s == null ) return;
 
         BarDataSet barDataSet_s;
         BarDataSet barDataSet_p;
@@ -578,42 +582,9 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
 
         switch (dataSegment){
             case 0:
-
-                xLabel.clear();
-                for( int i = 0; i <= day_scores.size()+1; i++ )  xLabel.add(Integer.toString(i));
-
-                xAxis = barChart_s.getXAxis();
-                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-                xAxis.setLabelCount(day_scores.size());
-                xAxis.setDrawGridLines(false);
-                xAxis.setValueFormatter(new ValueFormatter() {
-                    @Override
-                    public String getAxisLabel(float value, AxisBase axis) {
-                        return xLabel.get((int) value);
-                    }
-                });
-
-                xAxis = barChart_p.getXAxis();
-                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-                xAxis.setLabelCount(day_scores.size());
-                xAxis.setDrawGridLines(false);
-                xAxis.setValueFormatter(new ValueFormatter() {
-                    @Override
-                    public String getAxisLabel(float value, AxisBase axis) {
-                        return xLabel.get((int) value);
-                    }
-                });
-
-                xAxis = barChart_t.getXAxis();
-                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-                xAxis.setLabelCount(day_scores.size());
-                xAxis.setDrawGridLines(false);
-                xAxis.setValueFormatter(new ValueFormatter() {
-                    @Override
-                    public String getAxisLabel(float value, AxisBase axis) {
-                        return xLabel.get((int) value);
-                    }
-                });
+                resetChart(barChart_s);
+                resetChart(barChart_p);
+                resetChart(barChart_t);
 
                 ArrayList<BarEntry> dias_s = new ArrayList<>();
                 ArrayList<BarEntry> dias_p = new ArrayList<>();
@@ -662,9 +633,37 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                 barChart_t.getDescription().setText("Tiempo de Entrenamiento");
                 barChart_t.animateY(2000);
 
+                xLabel.clear();
+                for( int i = 0; i <= day_scores.size(); i++ )  xLabel.add(Integer.toString(i));
+
+                xAxis = barChart_s.getXAxis();
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                xAxis.setDrawGridLines(false);
+                xAxis.setGranularity(1f);
+                xAxis.setGranularityEnabled(true);
+                xAxis.setValueFormatter(new IndexAxisValueFormatter(xLabel));
+
+                xAxis = barChart_p.getXAxis();
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                xAxis.setDrawGridLines(false);
+                xAxis.setGranularity(1f);
+                xAxis.setGranularityEnabled(true);
+                xAxis.setValueFormatter(new IndexAxisValueFormatter(xLabel));
+
+                xAxis = barChart_t.getXAxis();
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                xAxis.setDrawGridLines(false);
+                xAxis.setGranularity(1f);
+                xAxis.setGranularityEnabled(true);
+                xAxis.setValueFormatter(new IndexAxisValueFormatter(xLabel));
+
                 break;
 
             case 1:
+                resetChart(barChart_s);
+                resetChart(barChart_p);
+                resetChart(barChart_t);
+
                 xLabel.clear();
                 xLabel.add("");
                 xLabel.add("Lunes");
@@ -770,6 +769,10 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                 break;
 
             case 2:
+                resetChart(barChart_s);
+                resetChart(barChart_p);
+                resetChart(barChart_t);
+
                 ArrayList<BarEntry> mes_s = new ArrayList<>();
                 ArrayList<BarEntry> mes_p = new ArrayList<>();
                 ArrayList<BarEntry> mes_t = new ArrayList<>();
@@ -872,5 +875,13 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
 
                 break;
         }
+    }
+
+    private void resetChart(BarChart barChart) {
+        if( barChart.getData() != null ) barChart.getData().clearValues();
+        barChart.getXAxis().setValueFormatter(null);
+        barChart.notifyDataSetChanged();
+        barChart.clear();
+        barChart.invalidate();
     }
 }
