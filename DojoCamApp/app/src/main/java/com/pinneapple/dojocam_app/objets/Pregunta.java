@@ -8,16 +8,18 @@ public class Pregunta {
     private String respuesta;
     private List<String> rating;
     private List<String> ratingNeg;
+    private Integer interes;
     public Pregunta() {
 
     }
 
-    public Pregunta(String id, String pregunta, String respuesta,List<String> rating,List<String> ratingNeg) {
+    public Pregunta(String id, String pregunta, String respuesta,List<String> rating,List<String> ratingNeg,Integer interes) {
         this.id = id;
         this.pregunta = pregunta;
         this.respuesta = respuesta;
         this.rating = rating;
         this.ratingNeg = ratingNeg;
+        this.interes = interes;
     }
 
     public String getId() {
@@ -58,5 +60,13 @@ public class Pregunta {
 
     public void setRatingNeg(List<String> ratingNeg) {
         this.ratingNeg = ratingNeg;
+    }
+
+    public Integer getInteres() {
+        return interes;
+    }
+
+    public void setInteres(Integer interes) {
+        this.interes = interes;
     }
 }

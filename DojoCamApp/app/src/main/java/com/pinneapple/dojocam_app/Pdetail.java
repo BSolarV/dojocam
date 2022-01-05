@@ -156,9 +156,7 @@ public class Pdetail extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         DocumentReference userReference = db.collection("FAQTest").document(id1);
-        Log.i("AAA",res.getText().toString());
         if(res.getText().toString().equals("-Pendiente") ){
-            Log.i("AAA","SI ENTRO");
             Toast.makeText(getContext(), "No hay respuesta que evaluar", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -176,6 +174,7 @@ public class Pdetail extends Fragment implements View.OnClickListener {
                 }
                 userReference.update("rating",newrate);
                 userReference.update("ratingNeg",newrateNeg);
+                userReference.update("interes",newrate.size()+newrateNeg.size());
                 break;
             case R.id.buttonNeg:
                 if(!newrateNeg.contains(userId)){
@@ -190,6 +189,7 @@ public class Pdetail extends Fragment implements View.OnClickListener {
                 }
                 userReference.update("rating",newrate);
                 userReference.update("ratingNeg",newrateNeg);
+                userReference.update("interes",newrate.size()+newrateNeg.size());
                 break;
         }
         pri.setText(newrate.size() + " les fue util");

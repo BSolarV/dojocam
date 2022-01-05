@@ -30,7 +30,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.core.OrderBy;
 import com.pinneapple.dojocam_app.objets.Pregunta;
 
 import java.util.ArrayList;
@@ -160,7 +162,7 @@ public class Pfrecuentes extends ListFragment implements AdapterView.OnItemClick
                         bdQuestions.add(value.toString());
                         userReference.update("data",bdQuestions);*/
                         CollectionReference questions = db.collection("FAQTest");
-                        questions.add(new Pregunta("",value.toString(),"-Pendiente",new ArrayList<>(),new ArrayList<>()));
+                        questions.add(new Pregunta("",value.toString(),"-Pendiente",new ArrayList<>(),new ArrayList<>(),0));
                         // Do something with value!
                     }
                 });
@@ -206,7 +208,7 @@ public class Pfrecuentes extends ListFragment implements AdapterView.OnItemClick
 
         // Get post and answers from database
 
-        Task<QuerySnapshot> data = db.collection("FAQTest").get();
+        Task<QuerySnapshot> data = db.collection("FAQTest").orderBy("interes", Query.Direction.DESCENDING).get();
         data.addOnSuccessListener(command -> {
             List<Pregunta> docList = command.toObjects(Pregunta.class);
 
