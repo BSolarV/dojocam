@@ -5,14 +5,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.cometchat.pro.core.CometChat;
 import com.cometchat.pro.models.Group;
+import com.squareup.picasso.Picasso;
+import com.stfalcon.chatkit.commons.ImageLoader;
+import com.stfalcon.chatkit.messages.MessageInput;
+import com.stfalcon.chatkit.messages.MessagesList;
+import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
 import java.util.List;
 
@@ -38,6 +46,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.GroupViewHolde
         holder.bind(groups.get(position));
 
     }
+
     @Override
     public int getItemCount() {
         return groups.size();

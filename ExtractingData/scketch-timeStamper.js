@@ -4,10 +4,6 @@ let secs_per_train = 1;
 var video;
 let path = "./Videos/";
 let videos = [
-  ["Barrido_Delante_A.mp4",0],
-  ["Codazo_Giro_A.mp4",0],
-  ["Codazo_Lateral_B_SHORT.mp4",0],
-  ["Cross_B_SHORT.mp4",0],
   ["Defensa_Alta_B_SHORT.mp4",0],
   ["Defensa_Baja_B_SHORT.mp4",0],
   ["Defensa_Codazo_Delante_M_S.mp4",0],
@@ -71,6 +67,7 @@ function setup() {
   video.volume(0);
   video.noLoop();
   video.hide();
+  video.speed(0.25);
 
   setOptions();
 
@@ -103,20 +100,19 @@ function setup() {
   //Posenet
   poseNet = ml5.poseNet(
     video, 
-    {
-      imageScaleFactor: 0.3,
-      outputStride: 16,
-      flipHorizontal: false,
-      minConfidence: 0.5,
-      maxPoseDetections: 1,
-      scoreThreshold: 0.5,
-      nmsRadius: 20,
-      detectionType: 'multiple',
-      inputResolution: 513,
-      multiplier: 0.75,
-      quantBytes: 2,
-    },
-    modelReady
+      {
+        imageScaleFactor: 1,
+        outputStride: 8,
+        flipHorizontal: false,
+        minConfidence: 0.1,
+        maxPoseDetections: 1,
+        scoreThreshold: 0.1,
+        detectionType: 'multiple',
+        inputResolution: 801,
+        multiplier: 1.01,
+        quantBytes: 4,
+      },
+      modelReady
   );
 
 poseNet.on('pose', function (results) {

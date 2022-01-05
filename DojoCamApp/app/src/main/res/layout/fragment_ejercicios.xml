@@ -30,8 +30,9 @@
 
                 <ListView
                     android:id="@+id/vid_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="681dp" />
+                    android:layout_width="453dp"
+                    android:layout_height="wrap_content" />
+
             </LinearLayout>
         </ScrollView>
 

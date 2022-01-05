@@ -177,14 +177,14 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
         //id_list2.clear();
 
         // Get post and answers from database
-
+/*
         Button add_friend = (Button) getView().findViewById(R.id.AddFriend);
         add_friend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(v).navigate(R.id.AddFriend);
             }
-        });
+        });*/
         DocumentReference userReference = db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         userReference.get().addOnSuccessListener(command -> {
             boolean bo = false;

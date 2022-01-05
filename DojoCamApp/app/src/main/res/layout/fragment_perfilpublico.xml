@@ -17,13 +17,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-
-
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="50dp" />
-
-
 
             <ImageView
                 android:id="@+id/ProfileImage_p"
@@ -176,8 +172,14 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginHorizontal="50dp"
                 android:text="Seguir" />
-
-
+            <Button
+                android:id="@+id/StatsPub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/purple_200"
+                android:layout_marginTop="30dp"
+                android:layout_marginHorizontal="50dp"
+                android:text="Ver Estadisticas" />
 
         </LinearLayout>
     </ScrollView>

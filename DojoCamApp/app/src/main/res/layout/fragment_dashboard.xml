@@ -120,31 +120,6 @@
                         android:layout_weight="1"
                         android:orientation="horizontal">
 
-                        <RelativeLayout
-                            android:layout_width="218dp"
-                            android:layout_height="match_parent">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/textView11"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:text="@string/tecnica" />
-
-                                <ImageView
-                                    android:id="@+id/imageView7"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="179dp"
-                                    android:src="@drawable/tecnica" />
-
-                            </LinearLayout>
-
-                        </RelativeLayout>
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -166,13 +141,13 @@
                                     android:id="@+id/imageView8"
                                     android:layout_width="match_parent"
                                     android:layout_height="179dp"
-                                    android:src="@drawable/fisico" />
+                                    android:src="@drawable/img_practicar" />
 
                                 <Button
                                     android:id="@+id/button6"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="CHAT" />
+                                    android:text="@string/chat" />
                             </LinearLayout>
 
                         </RelativeLayout>

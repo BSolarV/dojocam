@@ -198,7 +198,7 @@ public class Perfil extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity(), "No posee Foto de Perfil", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "No posee Foto de Perfil", Toast.LENGTH_SHORT).show();
             }
         });
 

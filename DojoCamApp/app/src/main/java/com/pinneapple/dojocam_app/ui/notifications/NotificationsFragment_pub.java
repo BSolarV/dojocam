@@ -13,7 +13,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,14 +51,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class NotificationsFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class NotificationsFragment_pub extends Fragment implements AdapterView.OnItemClickListener {
 
     private NotificationsViewModel notificationsViewModel;
     private FragmentNotificationsBinding binding;
     private LoadingDialog loadingDialog = new LoadingDialog(this);
-    private Boolean isLoading = false;
-
-    private Integer dataSegment = 0;
 
     private List<Integer> day_scores = new ArrayList<Integer>();
     private List<Integer> week_scores= new ArrayList<Integer>();
@@ -81,6 +77,7 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
     private Integer times_done = 0;
     private Boolean firstTime = true;
 
+    String weonId;
     private ArrayAdapter<String> arrayAdapter;
 
     private Integer index_key = 0;
@@ -92,9 +89,6 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
     private String today;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-    private Boolean retrieved = false;
-    private Map< String, Object > DBScores;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -116,7 +110,24 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void consultScores() {
-
+        //Borrando dayScores
+        try {
+            day_scores.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //Borrando weekScores
+        try {
+            week_scores.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //Borrando monthScores
+        try {
+            month_scores.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //Borrando exercisesDone
         try {
             exercises_done.clear();
@@ -126,8 +137,19 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
             e.printStackTrace();
         }
 
+        best_score = 0;
+        times_done = 0;
+
+        /*
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        String today = formatter.format(date);
+         */
+
+        weonId = getArguments().getString("weonId");
+
         MainActivity.checkLogin(requireActivity());
-        DocumentReference scoresReference = db.collection("Scores").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+        DocumentReference scoresReference = db.collection("Scores").document(weonId);
 
         //Consulta a BD por los Scores
         scoresReference.get().addOnSuccessListener(command -> {
@@ -137,8 +159,8 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
 
             data.addOnSuccessListener(command2 -> {
                 HashMap< String, HashMap<String, HashMap<String, List<Integer>>>> scores =  new HashMap<>();
-                DBScores = command.getData();
-                retrieved = true;
+                Map< String, Object > DBScores = command.getData();
+                HashMap <String, HashMap<String, List<Integer>>> exercise_scores = new HashMap<>();
 
                 //Parseo de los scores en las distintas listas
 
@@ -167,8 +189,146 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
 
                     }
 
-                    setUpData();
+                    //scores de el ejercicio
+                    exercise_scores =  new HashMap<String, HashMap<String, List<Integer>>>();
+
+                    HashMap<String, HashMap<String, List<Long>>> scoresLong = (HashMap<String, HashMap<String, List<Long>>>) DBScores.get(exercises_done_nindex.get(index_key));
+
+                    for (String oneDate : scoresLong.keySet()){
+                        for ( String type: scoresLong.get(oneDate).keySet() ){
+                            if( !exercise_scores.containsKey(oneDate) ) {
+                                exercise_scores.put(oneDate, new HashMap<String, List<Integer>>());
+                            }
+                            if( !exercise_scores.get(oneDate).containsKey(type) ){
+                                exercise_scores.get(oneDate).put(type, new ArrayList<Integer>());
+                            }
+                            for(int index = 0; index < scoresLong.get(oneDate).get(type).size(); index++){
+                                exercise_scores.get(oneDate).get(type).add( scoresLong.get(oneDate).get(type).get(index).intValue() );
+                            }
+                        }
+                    }
+
+                    day_scores = new ArrayList<Integer>();
+                    day_percent = new ArrayList<Integer>();
+                    day_times = new ArrayList<Integer>();
+                    if(exercise_scores.containsKey(today)) {
+                        day_scores = Objects.requireNonNull(exercise_scores.get(today)).get("scores");
+                        day_percent = Objects.requireNonNull(exercise_scores.get(today)).get("percent");
+                        day_times = Objects.requireNonNull(exercise_scores.get(today)).get("times");
+
+                    }
+                    /*
+                    for ( String key : exercise_scores.keySet() ) {
+                        exercises_done.add(key);
+                    }*/
+
+                    // Se crean las fechas
+                    int aux = date.getDay();
+                    Calendar c = Calendar.getInstance();
+                    try {
+                        c.setTime(formatter.parse(today));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    //sumar o restar días
+                    if(aux != 0){
+                        c.add(Calendar.DATE, -(aux-1));  // number of days to add
+                    }else { //Domingo le resto 6
+                        c.add(Calendar.DATE, -6);
+                    }
+                    String monday = formatter.format(c.getTime());  // dt is now the new date
+
+                    //creo una lista de los dias
+                    List<String> week_days = new ArrayList<String>();
+                    week_days.add(monday);
+                    for (int i = 1; i<7; i++ ) {
+                        try {
+                            c.setTime(formatter.parse(monday));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        c.add(Calendar.DATE, i);
+                        String aux3 = formatter.format(c.getTime());
+                        week_days.add(aux3);
+                    }
+
+                    //obtengo del exercises_scores
+                    for (int i = 0; i<7; i++ ) {
+                        if( exercise_scores.containsKey(week_days.get(i)) ){
+                            List<Integer> day_s = Objects.requireNonNull(exercise_scores.get(week_days.get(i))).get("scores");
+                            List<Integer> day_p = Objects.requireNonNull(exercise_scores.get(week_days.get(i))).get("percent");
+                            List<Integer> day_t = Objects.requireNonNull(exercise_scores.get(week_days.get(i))).get("times");
+                            int prom_score = 0;
+                            int prom_percent = 0;
+                            int prom_time = 0;
+                            if(day_s != null){
+                                int sum_s = day_s.stream().mapToInt(Integer::intValue).sum();
+                                int sum_p = day_p.stream().mapToInt(Integer::intValue).sum();
+                                int sum_t = day_t.stream().mapToInt(Integer::intValue).sum();
+
+                                prom_score = (Integer) Math.round( (float) sum_s / day_s.size() );
+                                prom_percent = (Integer) Math.round( (float) sum_p / day_s.size() );
+                                prom_time = (Integer) Math.round( (float) sum_t / day_s.size() );
+                            }
+                            week_scores.add(prom_score);
+                            week_percent.add(prom_percent);
+                            week_times.add(prom_time);
+                        }else{
+                            week_scores.add(0);
+                            week_percent.add(0);
+                            week_times.add(0);
+                        }
+                    }
+
+                    int aux4 = date.getMonth() + 1;
+                    int aux5 = date.getYear() + 1900;
+
+                    int daysInMonth = 0;
+
+                    List<String> month_days = printDatesInMonth(aux5, aux4, daysInMonth);
+
+                    for (int i = 0; i < 4; i++ ) {
+
+                        int weekprom_s = 0;
+                        int weekprom_p = 0;
+                        int weekprom_t = 0;
+                        int div = 0;
+
+                        for (int j = 0; j < 7; j++ ){
+
+                            if( exercise_scores.containsKey(month_days.get(j+i*7)) ){
+
+                                List<Integer> day_s = exercise_scores.get(month_days.get(j+i*7)).get("scores");
+                                List<Integer> day_p = exercise_scores.get(month_days.get(j+i*7)).get("percent");
+                                List<Integer> day_t = exercise_scores.get(month_days.get(j+i*7)).get("times");
+
+                                if(day_s != null){
+                                    weekprom_s += day_s.stream().mapToInt(Integer::intValue).sum();
+                                    weekprom_p += day_p.stream().mapToInt(Integer::intValue).sum();
+                                    weekprom_t += day_t.stream().mapToInt(Integer::intValue).sum();
+                                    div += day_s.size();
+
+                                    times_done += day_s.size();
+                                    if ((Integer) Collections.max(day_s) > best_score) {
+                                        best_score = (Integer) Collections.max(day_s);
+                                    }
+
+                                }
+                            }
+                        }
+                        if (div != 0) {
+                            weekprom_s /=  div;
+                            weekprom_p /=  div;
+                            weekprom_t /=  div;
+                        }
+                        month_scores.add(weekprom_s);
+                        month_percent.add(weekprom_p);
+                        month_times.add(weekprom_t);
+                    }
+                    setAll();
+                    arrayAdapter.notifyDataSetChanged();
                 }
+                loadingDialog.dismissDialog();
 
             });
 
@@ -201,10 +361,7 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(!isLoading){
-            loadingDialog.startLoadingDialog();
-            isLoading = true;
-        }
+        loadingDialog.startLoadingDialog();
 
         date = new Date();
         today = formatter.format(date);
@@ -228,8 +385,7 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
 
             nextDayButton.setEnabled(true);
 
-            setUpData();
-            displayBarsBySegment();
+            consultScores();
         });
 
         nextDayButton.setOnClickListener(view1 -> {
@@ -248,196 +404,9 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
             if(today.equals(todayDateString))
                 nextDayButton.setEnabled(false);
 
-            setUpData();
-            displayBarsBySegment();
+            consultScores();
         });
 
-        initBars();
-
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void setUpData(){
-
-        if ( !retrieved ) {
-            Toast.makeText(requireContext(), "No se recupero la información.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        //Borrando dayScores
-        try {
-            day_scores.clear();
-            day_times.clear();
-            day_percent.clear();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //Borrando weekScores
-        try {
-            week_scores.clear();
-            week_percent.clear();
-            week_times.clear();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //Borrando monthScores
-        try {
-            month_scores.clear();
-            month_times.clear();
-            month_percent.clear();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        best_score = 0;
-        times_done = 0;
-
-        if(!isLoading){
-            loadingDialog.startLoadingDialog();
-            isLoading = true;
-        }
-
-        HashMap <String, HashMap<String, List<Integer>>> exercise_scores = new HashMap<>();
-
-        //scores de el ejercicio
-        exercise_scores =  new HashMap<String, HashMap<String, List<Integer>>>();
-
-        HashMap<String, HashMap<String, List<Long>>> scoresLong = (HashMap<String, HashMap<String, List<Long>>>) DBScores.get(exercises_done_nindex.get(index_key));
-
-        for (String oneDate : scoresLong.keySet()){
-            for ( String type: scoresLong.get(oneDate).keySet() ){
-                if( !exercise_scores.containsKey(oneDate) ) {
-                    exercise_scores.put(oneDate, new HashMap<String, List<Integer>>());
-                }
-                if( !exercise_scores.get(oneDate).containsKey(type) ){
-                    exercise_scores.get(oneDate).put(type, new ArrayList<Integer>());
-                }
-                for(int index = 0; index < scoresLong.get(oneDate).get(type).size(); index++){
-                    exercise_scores.get(oneDate).get(type).add( scoresLong.get(oneDate).get(type).get(index).intValue() );
-                }
-            }
-        }
-
-        day_scores = new ArrayList<Integer>();
-        day_percent = new ArrayList<Integer>();
-        day_times = new ArrayList<Integer>();
-        if(exercise_scores.containsKey(today)) {
-            day_scores = Objects.requireNonNull(exercise_scores.get(today)).get("scores");
-            day_percent = Objects.requireNonNull(exercise_scores.get(today)).get("percent");
-            day_times = Objects.requireNonNull(exercise_scores.get(today)).get("times");
-
-        }
-
-        // Se crean las fechas
-        int aux = date.getDay();
-        Calendar c = Calendar.getInstance();
-        try {
-            c.setTime(formatter.parse(today));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        //sumar o restar días
-        if(aux != 0){
-            c.add(Calendar.DATE, -(aux-1));  // number of days to add
-        }else { //Domingo le resto 6
-            c.add(Calendar.DATE, -6);
-        }
-        String monday = formatter.format(c.getTime());  // dt is now the new date
-
-        //creo una lista de los dias
-        List<String> week_days = new ArrayList<String>();
-        week_days.add(monday);
-        for (int i = 1; i<7; i++ ) {
-            try {
-                c.setTime(formatter.parse(monday));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            c.add(Calendar.DATE, i);
-            String aux3 = formatter.format(c.getTime());
-            week_days.add(aux3);
-        }
-
-        //obtengo del exercises_scores
-        for (int i = 0; i<7; i++ ) {
-            if( exercise_scores.containsKey(week_days.get(i)) ){
-                List<Integer> day_s = Objects.requireNonNull(exercise_scores.get(week_days.get(i))).get("scores");
-                List<Integer> day_p = Objects.requireNonNull(exercise_scores.get(week_days.get(i))).get("percent");
-                List<Integer> day_t = Objects.requireNonNull(exercise_scores.get(week_days.get(i))).get("times");
-                int prom_score = 0;
-                int prom_percent = 0;
-                int prom_time = 0;
-                if(day_s != null){
-                    int sum_s = day_s.stream().mapToInt(Integer::intValue).sum();
-                    int sum_p = day_p.stream().mapToInt(Integer::intValue).sum();
-                    int sum_t = day_t.stream().mapToInt(Integer::intValue).sum();
-
-                    prom_score = (Integer) Math.round( (float) sum_s / day_s.size() );
-                    prom_percent = (Integer) Math.round( (float) sum_p / day_s.size() );
-                    prom_time = (Integer) Math.round( (float) sum_t / day_s.size() );
-                }
-                week_scores.add(prom_score);
-                week_percent.add(prom_percent);
-                week_times.add(prom_time);
-            }else{
-                week_scores.add(0);
-                week_percent.add(0);
-                week_times.add(0);
-            }
-        }
-
-        int aux4 = date.getMonth() + 1;
-        int aux5 = date.getYear() + 1900;
-
-        int daysInMonth = 0;
-
-        List<String> month_days = printDatesInMonth(aux5, aux4, daysInMonth);
-
-        for (int i = 0; i < 4; i++ ) {
-
-            int weekprom_s = 0;
-            int weekprom_p = 0;
-            int weekprom_t = 0;
-            int div = 0;
-
-            for (int j = 0; j < 7; j++ ){
-
-                if( exercise_scores.containsKey(month_days.get(j+i*7)) ){
-
-                    List<Integer> day_s = exercise_scores.get(month_days.get(j+i*7)).get("scores");
-                    List<Integer> day_p = exercise_scores.get(month_days.get(j+i*7)).get("percent");
-                    List<Integer> day_t = exercise_scores.get(month_days.get(j+i*7)).get("times");
-
-                    if(day_s != null){
-                        weekprom_s += day_s.stream().mapToInt(Integer::intValue).sum();
-                        weekprom_p += day_p.stream().mapToInt(Integer::intValue).sum();
-                        weekprom_t += day_t.stream().mapToInt(Integer::intValue).sum();
-                        div += day_s.size();
-
-                        times_done += day_s.size();
-                        if ((Integer) Collections.max(day_s) > best_score) {
-                            best_score = (Integer) Collections.max(day_s);
-                        }
-
-                    }
-                }
-            }
-            if (div != 0) {
-                weekprom_s /=  div;
-                weekprom_p /=  div;
-                weekprom_t /=  div;
-            }
-            month_scores.add(weekprom_s);
-            month_percent.add(weekprom_p);
-            month_times.add(weekprom_t);
-        }
-        setAll();
-        arrayAdapter.notifyDataSetChanged();
-
-        if(isLoading){
-            loadingDialog.dismissDialog();
-            isLoading = false;
-        }
     }
 
     public void setAll(){
@@ -452,46 +421,6 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
 
         binding.autoCompleteTextView.setOnItemClickListener(this);
 
-
-
-        RadioButton radio_day = (RadioButton) getView().findViewById(R.id.radio_day);
-        RadioButton radio_week = (RadioButton) getView().findViewById(R.id.radio_week);
-        RadioButton radio_month = (RadioButton) getView().findViewById(R.id.radio_month);
-
-        TextView bestScore = (TextView) getView().findViewById(R.id.bestScore);
-        TextView timesDone = (TextView) getView().findViewById(R.id.timesDone);
-
-        bestScore.setText(best_score.toString());
-        timesDone.setText(times_done.toString());
-
-
-        radio_day.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dataSegment = 0;
-                displayBarsBySegment();
-            }
-
-        });
-
-        radio_week.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dataSegment = 1;
-                displayBarsBySegment();
-            }
-        });
-        radio_month.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dataSegment = 2;
-                displayBarsBySegment();
-            }
-        });
-
-    }
-
-    private void initBars(){
 
         BarChart barChart_s = (BarChart) requireView().findViewById(R.id.barChart);
         BarChart barChart_p = (BarChart) requireView().findViewById(R.id.barChartPerformance);
@@ -550,74 +479,26 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
         barChart_t.setData(barData_t);
         barChart_t.getDescription().setText("Tiempo de Entrenamiento");
         barChart_t.animateY(2000);
-    }
+
+        RadioButton radio_day = (RadioButton) getView().findViewById(R.id.radio_day);
+        RadioButton radio_week = (RadioButton) getView().findViewById(R.id.radio_week);
+        RadioButton radio_month = (RadioButton) getView().findViewById(R.id.radio_month);
+
+        TextView bestScore = (TextView) getView().findViewById(R.id.bestScore);
+        TextView timesDone = (TextView) getView().findViewById(R.id.timesDone);
+
+        bestScore.setText(best_score.toString());
+        timesDone.setText(times_done.toString());
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        index_key = i;
-        consultScores();
-    }
-
-    private void displayBarsBySegment(){
-
-        BarChart barChart_s = (BarChart) requireView().findViewById(R.id.barChart);
-        BarChart barChart_p = (BarChart) requireView().findViewById(R.id.barChartPerformance);
-        BarChart barChart_t = (BarChart) requireView().findViewById(R.id.barChartTime);
-
-        BarDataSet barDataSet_s;
-        BarDataSet barDataSet_p;
-        BarDataSet barDataSet_t;
-
-        BarData barData_s;
-        BarData barData_p;
-        BarData barData_t;
-
-        XAxis xAxis;
-
-        switch (dataSegment){
-            case 0:
-
-                xLabel.clear();
-                for( int i = 0; i <= day_scores.size()+1; i++ )  xLabel.add(Integer.toString(i));
-
-                xAxis = barChart_s.getXAxis();
-                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-                xAxis.setLabelCount(day_scores.size());
-                xAxis.setDrawGridLines(false);
-                xAxis.setValueFormatter(new ValueFormatter() {
-                    @Override
-                    public String getAxisLabel(float value, AxisBase axis) {
-                        return xLabel.get((int) value);
-                    }
-                });
-
-                xAxis = barChart_p.getXAxis();
-                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-                xAxis.setLabelCount(day_scores.size());
-                xAxis.setDrawGridLines(false);
-                xAxis.setValueFormatter(new ValueFormatter() {
-                    @Override
-                    public String getAxisLabel(float value, AxisBase axis) {
-                        return xLabel.get((int) value);
-                    }
-                });
-
-                xAxis = barChart_t.getXAxis();
-                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-                xAxis.setLabelCount(day_scores.size());
-                xAxis.setDrawGridLines(false);
-                xAxis.setValueFormatter(new ValueFormatter() {
-                    @Override
-                    public String getAxisLabel(float value, AxisBase axis) {
-                        return xLabel.get((int) value);
-                    }
-                });
-
+        radio_day.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 ArrayList<BarEntry> dias_s = new ArrayList<>();
                 ArrayList<BarEntry> dias_p = new ArrayList<>();
                 ArrayList<BarEntry> dias_t = new ArrayList<>();
+
+                //xLabel.clear();
 
                 if(day_scores != null) {
                     for (int i = 0; i < day_scores.size(); i++) {
@@ -627,9 +508,10 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                     }
                 }
 
-                barDataSet_s = new BarDataSet(dias_s, "Vez del día");
-                barDataSet_p = new BarDataSet(dias_p, "Vez del día");
-                barDataSet_t = new BarDataSet(dias_t, "Vez del día");
+
+                BarDataSet barDataSet_s = new BarDataSet(dias_s, "Dia");
+                BarDataSet barDataSet_p = new BarDataSet(dias_p, "Dia");
+                BarDataSet barDataSet_t = new BarDataSet(dias_t, "Dia");
 
                 barDataSet_s.setColors(ColorTemplate.MATERIAL_COLORS);
                 barDataSet_s.setValueTextColor(Color.BLACK);
@@ -643,9 +525,9 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                 barDataSet_t.setValueTextColor(Color.BLACK);
                 barDataSet_t.setValueTextSize(16f);
 
-                barData_s = new BarData(barDataSet_s);
-                barData_p = new BarData(barDataSet_p);
-                barData_t = new BarData(barDataSet_t);
+                BarData barData_s = new BarData(barDataSet_s);
+                BarData barData_p = new BarData(barDataSet_p);
+                BarData barData_t = new BarData(barDataSet_t);
 
                 barChart_s.setFitBars(true);
                 barChart_s.setData(barData_s);
@@ -661,62 +543,13 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                 barChart_t.setData(barData_t);
                 barChart_t.getDescription().setText("Tiempo de Entrenamiento");
                 barChart_t.animateY(2000);
+            }
 
-                break;
+        });
 
-            case 1:
-                xLabel.clear();
-                xLabel.add("");
-                xLabel.add("Lunes");
-                xLabel.add("Martes");
-                xLabel.add("Miercoles");
-                xLabel.add("Jueves");
-                xLabel.add("Viernes");
-                xLabel.add("Sabado");
-                xLabel.add("Domingo");
-
-                xAxis = barChart_s.getXAxis();
-                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-                xAxis.setDrawGridLines(false);
-                xAxis.setLabelCount(week_scores.size());
-                xAxis.setValueFormatter(new ValueFormatter() {
-                    @Override
-                    public String getAxisLabel(float value, AxisBase axis) {
-                        if(value >= 8.0) {
-                            return "";
-                        }
-                        return xLabel.get((int)value);
-                    }
-                });
-
-                xAxis = barChart_p.getXAxis();
-                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-                xAxis.setDrawGridLines(false);
-                xAxis.setLabelCount(week_scores.size());
-                xAxis.setValueFormatter(new ValueFormatter() {
-                    @Override
-                    public String getAxisLabel(float value, AxisBase axis) {
-                        if(value >= 8.0) {
-                            return "";
-                        }
-                        return xLabel.get((int)value);
-                    }
-                });
-
-                xAxis = barChart_t.getXAxis();
-                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-                xAxis.setDrawGridLines(false);
-                xAxis.setLabelCount(week_scores.size());
-                xAxis.setValueFormatter(new ValueFormatter() {
-                    @Override
-                    public String getAxisLabel(float value, AxisBase axis) {
-                        if(value >= 8.0) {
-                            return "";
-                        }
-                        return xLabel.get((int)value);
-                    }
-                });
-
+        radio_week.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 ArrayList<BarEntry> semana_s = new ArrayList<>();
                 ArrayList<BarEntry> semana_p = new ArrayList<>();
                 ArrayList<BarEntry> semana_t = new ArrayList<>();
@@ -732,9 +565,9 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                 }
 
 
-                barDataSet_s = new BarDataSet(semana_s, "Día");
-                barDataSet_p = new BarDataSet(semana_p, "Día");
-                barDataSet_t = new BarDataSet(semana_t, "Día");
+                BarDataSet barDataSet_s = new BarDataSet(semana_s, "Puntaje Semanal");
+                BarDataSet barDataSet_p = new BarDataSet(semana_p, "Porcentaje de Logro Semanal");
+                BarDataSet barDataSet_t = new BarDataSet(semana_t, "Tiempo de Ejercicio Semanal");
 
                 barDataSet_s.setColors(ColorTemplate.MATERIAL_COLORS);
                 barDataSet_s.setValueTextColor(Color.BLACK);
@@ -767,9 +600,60 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                 barChart_t.getDescription().setText("Tiempo de Entrenamiento");
                 barChart_t.animateY(2000);
 
-                break;
+                xLabel.clear();
+                xLabel.add("");
+                xLabel.add("Lunes");
+                xLabel.add("Martes");
+                xLabel.add("Miercoles");
+                xLabel.add("Jueves");
+                xLabel.add("Viernes");
+                xLabel.add("Sabado");
+                xLabel.add("Domingo");
 
-            case 2:
+                XAxis xAxis = barChart_s.getXAxis();
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                xAxis.setDrawGridLines(false);
+                xAxis.setValueFormatter(new ValueFormatter() {
+                    @Override
+                    public String getAxisLabel(float value, AxisBase axis) {
+                        if(value >= 8.0) {
+                            return "";
+                        }
+                        return xLabel.get((int)value);
+                    }
+                });
+
+                xAxis = barChart_p.getXAxis();
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                xAxis.setDrawGridLines(false);
+                xAxis.setValueFormatter(new ValueFormatter() {
+                    @Override
+                    public String getAxisLabel(float value, AxisBase axis) {
+                        if(value >= 8.0) {
+                            return "";
+                        }
+                        return xLabel.get((int)value);
+                    }
+                });
+
+                xAxis = barChart_t.getXAxis();
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                xAxis.setDrawGridLines(false);
+                xAxis.setValueFormatter(new ValueFormatter() {
+                    @Override
+                    public String getAxisLabel(float value, AxisBase axis) {
+                        if(value >= 8.0) {
+                            return "";
+                        }
+                        return xLabel.get((int)value);
+                    }
+                });
+
+            }
+        });
+        radio_month.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 ArrayList<BarEntry> mes_s = new ArrayList<>();
                 ArrayList<BarEntry> mes_p = new ArrayList<>();
                 ArrayList<BarEntry> mes_t = new ArrayList<>();
@@ -782,10 +666,9 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                 xLabel.add("Semana 2");
                 xLabel.add("Semana 3");
                 xLabel.add("Semana 4");
-                xAxis = barChart_s.getXAxis();
+                XAxis xAxis = barChart_s.getXAxis();
                 xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
                 xAxis.setDrawGridLines(false);
-                xAxis.setLabelCount(month_scores.size());
                 xAxis.setValueFormatter(new ValueFormatter() {
                     @Override
                     public String getAxisLabel(float value, AxisBase axis) {
@@ -799,7 +682,6 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                 xAxis = barChart_p.getXAxis();
                 xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
                 xAxis.setDrawGridLines(false);
-                xAxis.setLabelCount(month_scores.size());
                 xAxis.setValueFormatter(new ValueFormatter() {
                     @Override
                     public String getAxisLabel(float value, AxisBase axis) {
@@ -813,7 +695,6 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                 xAxis = barChart_t.getXAxis();
                 xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
                 xAxis.setDrawGridLines(false);
-                xAxis.setLabelCount(month_scores.size());
                 xAxis.setValueFormatter(new ValueFormatter() {
                     @Override
                     public String getAxisLabel(float value, AxisBase axis) {
@@ -835,9 +716,9 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                     //Toast.makeText(getContext(),day_scores.get(0).toString(), Toast.LENGTH_SHORT).show();
                 }
 
-                barDataSet_s = new BarDataSet(mes_s, "Semana");
-                barDataSet_p = new BarDataSet(mes_p, "Semana");
-                barDataSet_t = new BarDataSet(mes_t, "Semana");
+                BarDataSet barDataSet_s = new BarDataSet(mes_s, "Puntajes Mensuales");
+                BarDataSet barDataSet_p = new BarDataSet(mes_p, "Porcentaje Mensual");
+                BarDataSet barDataSet_t = new BarDataSet(mes_t, "Tiempo Mensual");
 
                 barDataSet_s.setColors(ColorTemplate.MATERIAL_COLORS);
                 barDataSet_s.setValueTextColor(Color.BLACK);
@@ -851,26 +732,35 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                 barDataSet_t.setValueTextColor(Color.BLACK);
                 barDataSet_t.setValueTextSize(16f);
 
-                barData_s = new BarData(barDataSet_s);
-                barData_p = new BarData(barDataSet_p);
-                barData_t = new BarData(barDataSet_t);
+                BarData barData_s = new BarData(barDataSet_s);
+                BarData barData_p = new BarData(barDataSet_p);
+                BarData barData_t = new BarData(barDataSet_t);
 
                 barChart_s.setFitBars(true);
                 barChart_s.setData(barData_s);
-                barChart_s.getDescription().setText("Promedio Puntaje Semanal");
+                barChart_s.getDescription().setText("Puntajes Diarios");
                 barChart_s.animateY(2000);
 
                 barChart_p.setFitBars(true);
                 barChart_p.setData(barData_p);
-                barChart_p.getDescription().setText("Porcentaje de Logro Semanal");
+                barChart_p.getDescription().setText("Porcentaje de Logro");
                 barChart_p.animateY(2000);
 
                 barChart_t.setFitBars(true);
                 barChart_t.setData(barData_t);
-                barChart_t.getDescription().setText("Tiempo de Entrenamiento Semanal");
+                barChart_t.getDescription().setText("Tiempo de Entrenamiento");
                 barChart_t.animateY(2000);
 
-                break;
-        }
+            }
+        });
+
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        index_key = i;
+        consultScores();
     }
 }
