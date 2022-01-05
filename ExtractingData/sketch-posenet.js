@@ -67,17 +67,16 @@ function setup() {
   poseNet = ml5.poseNet(
       video, 
       {
-        imageScaleFactor: 0.3,
-        outputStride: 16,
+        imageScaleFactor: 1,
+        outputStride: 8,
         flipHorizontal: false,
-        minConfidence: 0.5,
+        minConfidence: 0.1,
         maxPoseDetections: 1,
-        scoreThreshold: 0.5,
-        nmsRadius: 20,
+        scoreThreshold: 0.1,
         detectionType: 'multiple',
-        inputResolution: 513,
-        multiplier: 0.75,
-        quantBytes: 2,
+        inputResolution: 801,
+        multiplier: 1.01,
+        quantBytes: 4,
       },
       modelReady
     );

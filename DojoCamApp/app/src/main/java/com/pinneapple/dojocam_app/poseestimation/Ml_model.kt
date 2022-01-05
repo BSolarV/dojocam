@@ -617,7 +617,7 @@ class Ml_model : AppCompatActivity(){
         currentTime = floatingVideoVideo.currentPosition
         //current = currentTime / 1000
 
-        if( currentTime + 20 >= videoDuration ){
+        if( currentTime + 100 >= videoDuration ){
 
             if( counterTime == 0 ){
                 cameraSource?.tootgleDrawOnScreen( true )
