@@ -172,6 +172,7 @@ public class NotificationsFragment_pub extends Fragment implements AdapterView.O
                     }
 
                     setUpData();
+                    displayBarsBySegment();
                 }
 
             });

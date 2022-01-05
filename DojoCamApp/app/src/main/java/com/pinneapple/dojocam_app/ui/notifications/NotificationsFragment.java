@@ -169,6 +169,7 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
                     }
 
                     setUpData();
+                    displayBarsBySegment();
                 }
 
             });
