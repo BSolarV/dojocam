@@ -261,7 +261,6 @@ public class NotificationsFragment extends Fragment implements AdapterView.OnIte
     private void setUpData(){
 
         if ( !retrieved ) {
-            Toast.makeText(requireContext(), "No se recupero la información.", Toast.LENGTH_SHORT).show();
             return;
         }
 

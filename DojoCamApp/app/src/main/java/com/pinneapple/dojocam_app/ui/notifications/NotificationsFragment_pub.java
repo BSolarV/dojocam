@@ -264,7 +264,6 @@ public class NotificationsFragment_pub extends Fragment implements AdapterView.O
     private void setUpData(){
 
         if ( !retrieved ) {
-            Toast.makeText(requireContext(), "No se recupero la información.", Toast.LENGTH_SHORT).show();
             return;
         }
 
