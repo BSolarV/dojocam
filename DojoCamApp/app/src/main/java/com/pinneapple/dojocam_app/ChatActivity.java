@@ -37,7 +37,7 @@ public class ChatActivity extends AppCompatActivity {
 
     public static void start(Context context, String groupID) {
         Intent starter = new Intent(context, ChatActivity.class);
-        //groupIDint = groupID;
+        groupIDint = groupID;
         context.startActivity(starter);
     }
 
@@ -54,7 +54,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void fetchPreviousMessages() {
-        String groupIDint = "supergroup";
+        //String groupIDint = "supergroup";
         MessagesRequest messagesRequest = new MessagesRequest.MessagesRequestBuilder().setGUID(groupIDint).build();
         messagesRequest.fetchPrevious(new CometChat.CallbackListener<List<BaseMessage>>() {
             @Override
@@ -84,11 +84,8 @@ public class ChatActivity extends AppCompatActivity {
         CometChat.addMessageListener(listenerID, new CometChat.MessageListener() {
             @Override
             public void onTextMessageReceived(TextMessage textMessage) {
-
                 fetchPreviousMessages();
-
                 adapter.addToStart(new MessageWrapper(textMessage), true);
-
             }
             @Override
             public void onMediaMessageReceived(MediaMessage mediaMessage) {
@@ -117,13 +114,11 @@ public class ChatActivity extends AppCompatActivity {
                 Picasso.get().load(url).into(imageView);
             }
         };
-
         adapter = new MessagesListAdapter<>(senderId, imageLoader);
         messagesList.setAdapter(adapter);
     }
 
     private void sendMessage(String message) {
-        String groupIDint = "supergroup";
         TextMessage textMessage = new TextMessage(groupIDint, message, CometChatConstants.RECEIVER_TYPE_GROUP);
         CometChat.sendMessage(textMessage, new CometChat.CallbackListener<TextMessage>() {
             @Override

@@ -77,7 +77,7 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite-gpu:2.5.0'
     implementation 'org.tensorflow:tensorflow-lite-support:0.2.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-
+    implementation "io.grpc:grpc-okhttp:1.32.2"
     implementation 'com.cometchat:pro-android-chat-sdk:3.0.1'
     implementation 'com.github.stfalcon-studio:Chatkit:v0.4.1'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'

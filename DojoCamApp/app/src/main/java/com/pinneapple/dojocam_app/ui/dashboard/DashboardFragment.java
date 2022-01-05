@@ -32,6 +32,7 @@ import androidx.navigation.Navigation;
 
 
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -235,10 +236,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
             three = (ImageView) view.findViewById(R.id.imageView6);
 
             btn = (Button) view.findViewById(R.id.button2);
-            chat = (Button) view.findViewById(R.id.button6);
+            FloatingActionButton chat = view.findViewById(R.id.fab);
             chat.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View view) {
                     Intent i = new Intent(getContext(), GroupList.class);
                     startActivity(i);
                 }

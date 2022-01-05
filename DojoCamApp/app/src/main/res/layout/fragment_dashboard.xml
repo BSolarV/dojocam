@@ -22,13 +22,21 @@
 
                 <TextView
                     android:id="@+id/dashboardTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="338dp"
+                    android:layout_height="65dp"
                     android:layout_marginVertical="10dp"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="@string/dif_recomendado"
                     android:textSize="22sp" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|bottom"
+                    android:layout_margin="16dp"
+                    android:src="@drawable/chat" />
             </LinearLayout>
 
             <LinearLayout
@@ -102,7 +110,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="352dp"
                     android:layout_weight="1"
-
                     android:orientation="vertical">
 
                     <TextView
@@ -143,11 +150,6 @@
                                     android:layout_height="179dp"
                                     android:src="@drawable/img_practicar" />
 
-                                <Button
-                                    android:id="@+id/button6"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/chat" />
                             </LinearLayout>
 
                         </RelativeLayout>
@@ -162,6 +164,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Ultimo Ejercicio" />
+
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

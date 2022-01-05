@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -17,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class GroupList extends AppCompatActivity {
@@ -24,7 +26,9 @@ public class GroupList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final Activity activity = this;
         setContentView(R.layout.activity_group_list);
+        activity.setTitle("Settings");
         initCometChat();
         getGroupList();
     }
@@ -58,24 +62,70 @@ public class GroupList extends AppCompatActivity {
         String UID = user_email.getEmail(); // Replace with the UID of the user to login
         String[] arr_de_email = UID.split("@", 2);
         String[] arr_de_email_usuario = {};
-        String[] arr_de_emails_super = {"superhero1", "superhero2", "superhero3", "superhero4", "superhero5"};
+        String[] arr_de_emails_super = {"superhero1", "superhero2", "superhero3", "superhero5"};
         Random rand = new Random();
         AppSettings appSettings=new AppSettings.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region).build();
         CometChat.init(this, appID,appSettings, new CometChat.CallbackListener<String>() {
             @Override
             public void onSuccess(String successMessage) {
-                CometChat.login(arr_de_emails_super[rand.nextInt(5)], authKey, new CometChat.CallbackListener<User>() {
-                    @Override
-                    public void onSuccess(User user) {
-                        Log.d("das", "Login Successful : " + user.toString());
-                    }
+                Log.d("das", arr_de_email[0]);
+                if (arr_de_email[0].equals("monica-santa-ana")){
+                    Log.d("das", arr_de_email[0]);
+                    CometChat.login("seba", authKey, new CometChat.CallbackListener<User>() {
+                        @Override
+                        public void onSuccess(User user) {
+                            Log.d("das", "Login Successful : " + user.toString());
+                        }
 
-                    @Override
-                    public void onError(CometChatException e) {
-                        Log.d("error", "Login failed with exception: " + e.getMessage());
-                    }
-                });
+                        @Override
+                        public void onError(CometChatException e) {
+                            Log.d("error", "Login failed with exception: " + e.getMessage());
+                        }
+                    });
+                    return;
+                }
+                if (arr_de_email[0].equals("prueba15")){
+                    CometChat.login("superhero4", authKey, new CometChat.CallbackListener<User>() {
+                        @Override
+                        public void onSuccess(User user) {
+                            Log.d("das", "Login Successful : " + user.toString());
+                        }
+
+                        @Override
+                        public void onError(CometChatException e) {
+                            Log.d("error", "Login failed with exception: " + e.getMessage());
+                        }
+                    });
+                    return;
+                }
+                if (arr_de_email[0].equals("bastian.solar.v")){
+                    CometChat.login("bsolar", authKey, new CometChat.CallbackListener<User>() {
+                        @Override
+                        public void onSuccess(User user) {
+                            Log.d("das", "Login Successful : " + user.toString());
+                        }
+
+                        @Override
+                        public void onError(CometChatException e) {
+                            Log.d("error", "Login failed with exception: " + e.getMessage());
+                        }
+                    });
+                    return;
+                }
                 if (CometChat.getLoggedInUser() == null) {
+                    LoginChat isLogged = new LoginChat();
+                    LoginChat.isLogged = true;
+                    CometChat.login(arr_de_emails_super[rand.nextInt(4)], authKey, new CometChat.CallbackListener<User>() {
+                        @Override
+                        public void onSuccess(User user) {
+                            Log.d("das", "Login Successful : " + user.toString());
+                        }
+
+                        @Override
+                        public void onError(CometChatException e) {
+                            Log.d("error", "Login failed with exception: " + e.getMessage());
+                        }
+                    });
                 }
             }
             @Override
