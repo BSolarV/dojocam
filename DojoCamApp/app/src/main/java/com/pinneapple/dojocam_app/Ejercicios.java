@@ -112,14 +112,7 @@ public class Ejercicios extends ListFragment implements AdapterView.OnItemClickL
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
         //super.onViewCreated(view, savedInstanceState);
-
-        Random r = new Random();
-        int il = r.nextInt(100);
-        if(il > 70){
-            FragmentManager manager = getActivity().getSupportFragmentManager();
-            tip dialog = new tip();
-            dialog.show(manager,"message dialog");
-        }
+        
         difficulty = getArguments().getString("difficulty");
 
         /*TextView pri = (TextView) getView().findViewById(R.id.textView);
