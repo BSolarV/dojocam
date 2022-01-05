@@ -69,7 +69,7 @@ public class GroupList extends AppCompatActivity {
             @Override
             public void onSuccess(String successMessage) {
                 Log.d("das", arr_de_email[0]);
-                if (arr_de_email[0].equals("monica-santa-ana")){
+                if (arr_de_email[0].equals("jo")){
                     Log.d("das", arr_de_email[0]);
                     CometChat.login("seba", authKey, new CometChat.CallbackListener<User>() {
                         @Override
