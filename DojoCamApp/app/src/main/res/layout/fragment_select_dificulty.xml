@@ -27,7 +27,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:background="@color/second_bg"
+                android:background="@drawable/layout_bg"
                 android:elevation="10dp"
                 android:orientation="horizontal"
                 android:padding="10dp">
@@ -35,12 +35,22 @@
                 <RelativeLayout
                     android:layout_width="205dp"
                     android:layout_height="match_parent">
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_gravity="center"
+                        app:cardBackgroundColor="@color/second_bg"
+                        app:cardElevation="0dp">
 
-                    <ImageView
-                        android:id="@+id/imageView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/principiante" />
+                        <ImageView
+                            android:id="@+id/imageView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/principiante" />
+                    </androidx.cardview.widget.CardView>
+
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -67,7 +77,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:background="@color/second_bg"
+                android:background="@drawable/layout_bg"
                 android:elevation="10dp"
                 android:orientation="horizontal"
                 android:padding="10dp">
@@ -75,12 +85,21 @@
                 <RelativeLayout
                     android:layout_width="205dp"
                     android:layout_height="match_parent">
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="20dp"
+                        android:layout_marginLeft="20dp"
+                        app:cardBackgroundColor="@color/second_bg"
+                        app:cardElevation="0dp">
 
                     <ImageView
                         android:id="@+id/imageView2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@drawable/intermedio" />
+                    </androidx.cardview.widget.CardView>
+
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -105,7 +124,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:background="@color/second_bg"
+                android:background="@drawable/layout_bg"
                 android:elevation="10dp"
                 android:orientation="horizontal"
                 android:padding="10dp">
@@ -113,12 +132,21 @@
                 <RelativeLayout
                     android:layout_width="205dp"
                     android:layout_height="match_parent">
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="20dp"
+                        android:layout_marginLeft="20dp"
+                        app:cardBackgroundColor="@color/second_bg"
+                        app:cardElevation="0dp">
 
                     <ImageView
                         android:id="@+id/imageView3"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@drawable/avanzado" />
+                    </androidx.cardview.widget.CardView>
+
                 </RelativeLayout>
 
                 <RelativeLayout
