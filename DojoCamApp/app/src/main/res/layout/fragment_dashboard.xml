@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.dashboard.DashboardFragment">
-
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:src="@drawable/chat" />
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -30,13 +37,7 @@
                     android:text="@string/dif_recomendado"
                     android:textSize="22sp" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|bottom"
-                    android:layout_margin="16dp"
-                    android:src="@drawable/chat" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -44,6 +45,7 @@
                 android:layout_height="259dp"
                 android:background="@drawable/layout_bg"                android:elevation="10dp"
                 android:orientation="horizontal"
+                android:layout_margin="12dp"
                 android:padding="10dp">
 
                 <RelativeLayout
@@ -101,15 +103,15 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
-                android:orientation="horizontal"
-                ></LinearLayout>
+                android:layout_height="39dp"
+                android:orientation="horizontal"></LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="297dp"
                 android:background="@drawable/layout_bg"
                 android:elevation="10dp"
+                android:layout_margin="12dp"
                 android:orientation="horizontal"
                 android:padding="10dp">
 
@@ -174,14 +176,86 @@
 
                 </LinearLayout>
 
-            </LinearLayout>
 
-            <Button
-                android:id="@+id/Retomar"
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Ultimo Ejercicio" />
+                android:layout_height="39dp"
+                android:orientation="horizontal"></LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="319dp"
+                android:background="@drawable/layout_bg"
+                android:elevation="10dp"
+                android:layout_margin="12dp"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="352dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="129dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Retomar último ejercicio"
+                        android:textSize="22sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="280dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:orientation="vertical"
+                                    app:cardBackgroundColor="@color/second_bg"
+                                    app:cardCornerRadius="30dp"
+                                    app:cardElevation="0dp">
+
+                                    <ImageView
+                                        android:id="@+id/imageView9"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="179dp"
+                                        android:background="@drawable/image_rounded"
+                                        android:src="@drawable/img_practicar" />
+                                </androidx.cardview.widget.CardView>
+
+                                <Button
+                                    android:id="@+id/Retomar"
+                                    android:layout_width="232dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Ultimo Ejercicio" />
+                            </LinearLayout>
+
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
