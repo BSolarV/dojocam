@@ -93,11 +93,17 @@ public class LoginFragment extends Fragment {
                 if( !binding.LoginEmail.getText().toString().isEmpty() &
                         !binding.LoginPassword.getText().toString().isEmpty() ) {
                     loadingDialog.startLoadingDialog();
+                    Log.wtf("LoginFragment", "Login");
                     FirebaseAuth.getInstance()
                         .signInWithEmailAndPassword(
                             binding.LoginEmail.getText().toString(),
                             binding.LoginPassword.getText().toString())
+                            .addOnCompleteListener(onActivityResult -> {
+                                Log.wtf("LoginFragment", onActivityResult.getResult().toString());
+                            })
                         .addOnCompleteListener(resultTask -> {
+                            Log.wtf("LoginFragment", "Login Success");
+                            Log.wtf("LoginFragment", resultTask.getResult().toString());
                             if( resultTask.isSuccessful() ){
                                 Intent mainActivity = new Intent(getContext(), MainActivity.class);
                                 startActivity(mainActivity);
@@ -131,16 +137,20 @@ public class LoginFragment extends Fragment {
         binding.GoogleSingIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loadingDialog.startLoadingDialog();
                 if( showOneTapUI ){
                     showOneTapUI = false;
                     oneTapClient.beginSignIn(signInRequest)
+                            .addOnCompleteListener(task -> {
+                                loadingDialog.dismissDialog();
+                            })
                             .addOnSuccessListener(requireActivity(), result -> {
                                 try {
                                     startIntentSenderForResult(
                                             result.getPendingIntent().getIntentSender(), REQ_ONE_TAP,
                                             null, 0, 0, 0, null);
                                 } catch (IntentSender.SendIntentException e) {
-                                    Toast.makeText(requireContext(), "Couldn't start One Tap UI: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(requireContext(), "No se pudo conectar con servicios de Google.", Toast.LENGTH_LONG).show();
                                 }
                             })
                             .addOnFailureListener(requireActivity(), new OnFailureListener() {
@@ -148,11 +158,12 @@ public class LoginFragment extends Fragment {
                                 public void onFailure(@NonNull Exception e) {
                                     // No saved credentials found. Launch the One Tap sign-up flow, or
                                     // do nothing and continue presenting the signed-out UI.
-                                    Toast.makeText(requireContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(requireContext(), "Ocurrió un error inesperado con los servicios de Google.", Toast.LENGTH_LONG).show();
                                 }
                             });
                 } else {
-                    Toast.makeText(requireContext(), "No se pudo volver a intentar.", Toast.LENGTH_LONG).show();
+                    loadingDialog.dismissDialog();
+                    Toast.makeText(requireContext(), "Por motivos de seguridad reinicie la aplicación para reintentar con Google.", Toast.LENGTH_LONG).show();
                 }
             }
         });

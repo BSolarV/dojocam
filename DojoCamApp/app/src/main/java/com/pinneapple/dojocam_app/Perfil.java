@@ -69,8 +69,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -454,6 +458,23 @@ public class Perfil extends Fragment {
         }
         else
             Toast.makeText(getActivity(), "Permission not Granted", Toast.LENGTH_SHORT).show();
+    }
+
+    private String createHash256(String text) {
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+
+            md.update(text.getBytes(StandardCharsets.UTF_8));
+            byte[] digest = md.digest();
+
+            String hex = String.format("%064x", new BigInteger(1, digest));
+            return hex;
+
+        } catch (NoSuchAlgorithmException e) {
+            Log.wtf("Hash256", e.getMessage());
+            return null;
+        }
     }
 
 

@@ -23,6 +23,8 @@ public class LoadingDialog {
         builder.setCancelable(true);
 
         dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
     public void dismissDialog() {
