@@ -468,8 +468,7 @@ public class Perfil extends Fragment {
             md.update(text.getBytes(StandardCharsets.UTF_8));
             byte[] digest = md.digest();
 
-            String hex = String.format("%064x", new BigInteger(1, digest));
-            return hex;
+            return String.format("%064x", new BigInteger(1, digest));
 
         } catch (NoSuchAlgorithmException e) {
             Log.wtf("Hash256", e.getMessage());

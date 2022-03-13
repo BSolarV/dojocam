@@ -6,14 +6,14 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 32
     buildToolsVersion "30.0.3"
     ndkVersion '21.3.6528147'
 
     defaultConfig {
         applicationId "com.pinneapple.dojocam_app"
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdkVersion 32
         versionCode 1
         versionName "1.0"
 
@@ -48,8 +48,8 @@ dependencies {
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
-    implementation 'androidx.navigation:navigation-fragment:2.4.1'
-    implementation 'androidx.navigation:navigation-ui:2.4.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.4.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     implementation 'com.google.code.gson:gson:2.8.8'
