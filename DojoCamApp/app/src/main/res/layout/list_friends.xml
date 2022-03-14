@@ -18,8 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
         android:layout_marginLeft="10dp"
-        android:textSize="30dp"
-        android:textColor="#1E90FF"
+        android:textSize="20dp"
+        android:textColor="##FF6200EE"
         android:id="@+id/textViewCountry"
         android:layout_row="0"
         android:layout_column="1" />

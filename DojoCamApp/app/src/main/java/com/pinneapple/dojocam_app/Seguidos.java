@@ -134,7 +134,7 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
         //lv.setOnItemClickListener(this);
 
         //setContentView(R.layout.fragment_seguidos);
-        
+
 
         ListView listView = (ListView) getView().findViewById(R.id.user_list2);
         listView.addHeaderView(textView);
