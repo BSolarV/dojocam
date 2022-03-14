@@ -68,6 +68,13 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
     private ArrayAdapter adapter;
     private LoadingDialog loadingDialog = new LoadingDialog(this);
 
+    private ListView listView;
+    private String countryNames[] = {};
+
+    private String capitalNames[] = {};
+
+    private Integer imageid[] = {};
+
     public addfriend() {
         // Required empty public constructor
     }
@@ -100,6 +107,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
