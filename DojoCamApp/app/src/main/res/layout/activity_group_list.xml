@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
+    android:layout_height="500dp"
     tools:context=".GroupList">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -25,6 +25,18 @@
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="108dp"
         tools:layout_editor_absoluteY="2dp" />
+
+    <ImageButton
+        android:id="@+id/imageButtonchat"
+        android:layout_width="73dp"
+        android:layout_height="71dp"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/plus"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="338dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

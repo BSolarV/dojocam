@@ -50,6 +50,7 @@
                 android:layout_height="384dp"
                 android:background="@drawable/layout_bg"
                 android:elevation="10dp"
+                android:layout_margin="12dp"
                 android:orientation="vertical"
                 android:padding="10dp">
 

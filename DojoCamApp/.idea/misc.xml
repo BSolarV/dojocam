@@ -38,7 +38,6 @@
         <entry key="..\:/Desktop/2021-2/App/dojocam/dojocam/DojoCamApp/app/src/main/res/layout/fragment_seguidos.xml" value="0.1" />
         <entry key="..\:/Desktop/2021-2/App/dojocam/dojocam/DojoCamApp/app/src/main/res/menu/bottom_nav_menu.xml" value="0.2351851851851852" />
         <entry key="..\:/Desktop/2021-2/App_clean/DojoCamApp/app/src/main/res/layout/activity_main_ml.xml" value="0.3109375" />
-        <entry key="..\:/PineAppleTeam/DojoCamApp/app/src/main/res/layout/loading_layout.xml" value="0.18802083333333333" />
         <entry key="..\:/PinneApple/DojoCamApp/app/src/main/res/layout/activity_login.xml" value="0.20677083333333332" />
         <entry key="..\:/PinneApple/DojoCamApp/app/src/main/res/layout/activity_main.xml" value="0.20677083333333332" />
         <entry key="..\:/PinneApple/DojoCamApp/app/src/main/res/layout/activity_main_ml.xml" value="0.20677083333333332" />
@@ -70,7 +69,10 @@
         <entry key="..\:/Users/cajal/Documents/USM/SEMESTRE 9-10/II/FDSW/dojocam/DojoCamApp/app/src/main/res/layout/fragment_home.xml" value="0.15052083333333333" />
         <entry key="..\:/Users/cajal/Documents/USM/SEMESTRE 9-10/II/FDSW/dojocam/DojoCamApp/app/src/main/res/layout/fragment_login.xml" value="0.20652173913043478" />
         <entry key="..\:/Users/cajal/Documents/USM/SEMESTRE 9-10/II/FDSW/dojocam/DojoCamApp/app/src/main/res/layout/fragment_notifications.xml" value="0.2" />
+        <entry key="..\:/Users/cajal/Documents/USM/SEMESTRE 9-10/II/FDSW/dojocam/DojoCamApp/app/src/main/res/layout/fragment_pdetail.xml" value="0.13177083333333334" />
         <entry key="..\:/Users/cajal/Documents/USM/SEMESTRE 9-10/II/FDSW/dojocam/DojoCamApp/app/src/main/res/layout/fragment_perfil.xml" value="0.12864583333333332" />
+        <entry key="..\:/Users/cajal/Documents/USM/SEMESTRE 9-10/II/FDSW/dojocam/DojoCamApp/app/src/main/res/layout/fragment_pfrecuentes.xml" value="0.32421875" />
+        <entry key="..\:/Users/cajal/Documents/USM/SEMESTRE 9-10/II/FDSW/dojocam/DojoCamApp/app/src/main/res/layout/fragment_seguidos.xml" value="0.1" />
         <entry key="..\:/Users/cajal/Documents/USM/SEMESTRE 9-10/II/FDSW/dojocam/DojoCamApp/app/src/main/res/layout/fragment_select_dificulty.xml" value="0.1" />
         <entry key="..\:/Users/cajal/Documents/USM/SEMESTRE 9-10/II/FDSW/dojocam/DojoCamApp/app/src/main/res/layout/loading_layout.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/cajal/Documents/USM/SEMESTRE 9-10/II/FDSW/dojocam/DojoCamApp/app/src/main/res/layout/ok.xml" value="0.22395833333333334" />
@@ -90,6 +92,14 @@
         <entry key="..\:/Users/claudio/Desktop/dojocam/DojoCamApp/app/src/main/res/layout/fragment_perfilpublico.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/claudio/Desktop/dojocam/DojoCamApp/app/src/main/res/layout/fragment_select_dificulty.xml" value="0.1625" />
         <entry key="..\:/Users/claudio/Desktop/dojocam/DojoCamApp/app/src/main/res/menu/main.xml" value="0.20729166666666668" />
+        <entry key="..\:/Users/rodri/OneDrive/Escritorio/Nueva carpeta/dojocam/DojoCamApp/app/src/main/res/layout/activity_group_list.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/rodri/OneDrive/Escritorio/Nueva carpeta/dojocam/DojoCamApp/app/src/main/res/layout/activity_newchatselector.xml" value="0.18802083333333333" />
+        <entry key="..\:/Users/rodri/OneDrive/Escritorio/Nueva carpeta/dojocam/DojoCamApp/app/src/main/res/layout/content_login.xml" value="0.2971014492753623" />
+        <entry key="..\:/Users/rodri/OneDrive/Escritorio/Nueva carpeta/dojocam/DojoCamApp/app/src/main/res/layout/fragment_ejercicios.xml" value="0.2971014492753623" />
+        <entry key="..\:/Users/rodri/OneDrive/Escritorio/Nueva carpeta/dojocam/DojoCamApp/app/src/main/res/layout/fragment_login.xml" value="0.2971014492753623" />
+        <entry key="..\:/Users/rodri/OneDrive/Escritorio/Nueva carpeta/dojocam/DojoCamApp/app/src/main/res/layout/fragment_notifications.xml" value="0.2971014492753623" />
+        <entry key="..\:/Users/rodri/OneDrive/Escritorio/Nueva carpeta/dojocam/DojoCamApp/app/src/main/res/layout/fragment_perfil.xml" value="0.2971014492753623" />
+        <entry key="..\:/Users/rodri/OneDrive/Escritorio/Nueva carpeta/dojocam/DojoCamApp/app/src/main/res/layout/fragment_perfilpublico.xml" value="0.2971014492753623" />
         <entry key="..\:/Users/rodri/OneDrive/Escritorio/dhjsd/dojocam/DojoCamApp/app/src/main/res/drawable/baseline_account_circle_18.xml" value="0.1915" />
         <entry key="..\:/Users/rodri/OneDrive/Escritorio/dhjsd/dojocam/DojoCamApp/app/src/main/res/layout/activity_chat.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/rodri/OneDrive/Escritorio/dhjsd/dojocam/DojoCamApp/app/src/main/res/layout/activity_group_list.xml" value="0.36666666666666664" />

@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Perfil_publico">
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/Prop_preg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_baseline_add_24" />
 
 
     <LinearLayout
@@ -30,18 +38,11 @@
                     android:id="@+id/preg_list4"
                     android:layout_width="match_parent"
                     android:layout_height="681dp" />
-                <Button
-                    android:id="@+id/Prop_preg"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/purple_200"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginHorizontal="50dp"
-                    android:text="Enviar nueva Pregunta" />
+
             </LinearLayout>
 
         </ScrollView>
 
     </LinearLayout>
 
-</FrameLayout>
+</RelativeLayout>
