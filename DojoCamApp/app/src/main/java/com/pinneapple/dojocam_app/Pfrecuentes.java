@@ -26,6 +26,7 @@ import androidx.appcompat.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -142,7 +143,7 @@ public class Pfrecuentes extends ListFragment implements AdapterView.OnItemClick
         TextView tv51 = (TextView)getView().findViewById(R.id.Res3);
         tv51.setText(Html.fromHtml(tuString5));*/
 
-        Button btn = (Button) getView().findViewById(R.id.Prop_preg);
+        FloatingActionButton btn = (FloatingActionButton) getView().findViewById(R.id.Prop_preg);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
