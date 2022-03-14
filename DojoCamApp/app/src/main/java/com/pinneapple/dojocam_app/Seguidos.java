@@ -134,11 +134,7 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
         //lv.setOnItemClickListener(this);
 
         //setContentView(R.layout.fragment_seguidos);
-
-        // Setting header
-        TextView textView = new TextView(getContext());
-        textView.setTypeface(Typeface.DEFAULT_BOLD);
-        textView.setText("Lista de Amigos");
+        
 
         ListView listView = (ListView) getView().findViewById(R.id.user_list2);
         listView.addHeaderView(textView);
@@ -179,13 +175,15 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
 
         CustomCountryList customCountryList = new CustomCountryList((Activity) getContext(), countryNames, imageid);
         listView.setAdapter(customCountryList);
-
+/*
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Toast.makeText(getContext(),"Amigo "+countryNames[position-1],Toast.LENGTH_SHORT).show();        }
-        });
+                Toast.makeText(getContext(),"Amigo "+countryNames[position-1],Toast.LENGTH_SHORT).show();
+            }
 
+        });
+*/
         loadingDialog.startLoadingDialog();
 
     }
@@ -226,7 +224,7 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
             }
         });
 
-        bundle.putString("weonId", user_list2.get(pos));
+        bundle.putString("weonId", countryNames[pos]);
         Navigation.findNavController(view).navigate(R.id.perfil_publico, bundle);
 
     }
