@@ -2,7 +2,9 @@ package com.pinneapple.dojocam_app;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -100,10 +102,68 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        String[] countryNames = {};
+        Integer[] imageid = {};
+
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        DocumentReference userReference = db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        userReference.get().addOnSuccessListener(command -> {
+            boolean bo = false;
+            Friends followers = command.toObject(Friends.class);
+            if(followers != null) {
+                System.out.println(followers.getFollowers());
+                int i = 0;
+                for (String amiwo : followers.getFollowers()) {
+                    System.out.println(amiwo);
+                    countryNames[i] = amiwo;
+                    imageid[i] = R.mipmap.dojocam_ic;
+                    i++;
+                   //user_list2.add(amiwo);
+                }
+            }else{
+                Toast.makeText(getContext(),"Busca Amigos en Perfil", Toast.LENGTH_SHORT).show();
+                bo = true;
+            }
+            adapter.notifyDataSetChanged();
+            loadingDialog.dismissDialog();
+            /*if (bo) {
+                Navigation.findNavController(getView()).navigate(R.id.AddFriend);
+            }*/
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
+            }
+        });
+
+
+        //setContentView(R.layout.fragment_seguidos);
+
+        // Setting header
+        TextView textView = new TextView(getContext());
+        textView.setTypeface(Typeface.DEFAULT_BOLD);
+        textView.setText("Lista de Amigos");
+
+
+        ListView listView = (ListView) getView().findViewById(R.id.user_list31);
+        listView.addHeaderView(textView);
+
+        // For populating list data
+        CustomCountryList customCountryList = new CustomCountryList((Activity) getContext(), countryNames, imageid);
+        listView.setAdapter(customCountryList);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Toast.makeText(getContext(),"You Selected "+countryNames[position-1]+ " as Country",Toast.LENGTH_SHORT).show();        }
+        });
+
     }
 
     @Override
