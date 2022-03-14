@@ -194,8 +194,6 @@ public class RegisterDetailsFragment extends Fragment {
 
         loadingDialog.startLoadingDialog();
 
-
-
         if( GSingIn ){
             FirebaseAuth.getInstance().signInWithCredential(GCredential)
                     .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
@@ -243,13 +241,17 @@ public class RegisterDetailsFragment extends Fragment {
                                             loadingDialog.dismissDialog();
                                             toMainActivity();
                                         }
-                                        );
+                                        )
+                                .addOnFailureListener(result -> {
+                                    loadingDialog.dismissDialog();
+                                    Log.wtf("Error Register", result.getMessage());
+                                    Toast.makeText(requireActivity(), "No se pudo guardar la información, revise su conexión a internet.", Toast.LENGTH_SHORT).show();
+                                });
 
                             } else {
                                 // If sign in fails, display a message to the user.
-                                System.out.println("Hola aqui nos vamos error");
-                                Toast.makeText(requireContext(), Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();
                                 loadingDialog.dismissDialog();
+                                Toast.makeText(requireActivity(), "No se pudo guardar la información, revise su conexión a internet.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

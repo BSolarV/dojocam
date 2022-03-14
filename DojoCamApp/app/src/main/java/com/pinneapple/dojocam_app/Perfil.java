@@ -7,24 +7,21 @@ import static android.content.ContentValues.TAG;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 
 import android.os.StrictMode;
@@ -42,18 +39,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.OnProgressListener;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -77,8 +69,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -92,6 +83,12 @@ public class Perfil extends Fragment {
     private FragmentPerfilBinding binding;
 
     ImageView imageViewProfilePicture;
+
+    SharedPreferences sharedPreferences;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+
+    UserData user;
 
     private String imageId;
     private String image_path;
@@ -109,8 +106,6 @@ public class Perfil extends Fragment {
     private LoadingDialog loadingDialog = new LoadingDialog(this);
 
     // Attributes
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-
     StorageReference sref = FirebaseStorage.getInstance().getReference();
     StorageReference mStorageReference;
 
@@ -141,6 +136,7 @@ public class Perfil extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = requireActivity().getSharedPreferences(requireContext().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -191,26 +187,10 @@ public class Perfil extends Fragment {
         DocumentReference userReference = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
         //Uri downloadURI = sref.child(Objects.requireNonNull("images/"+FirebaseAuth.getInstance().getCurrentUser().getEmail())+".jpg").getDownloadUrl().getResult();
 
-        //imageViewProfilePicture.setImageURI(downloadURI);
-        sref.child("images/" + Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail())+ ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                System.out.println(uri);
-                Bitmap bm = getImageBitmap(uri.toString());
-                imageViewProfilePicture.setImageBitmap(bm);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(requireContext(), "No posee Foto de Perfil", Toast.LENGTH_SHORT).show();
-            }
-        });
-
 
         userReference.get().addOnSuccessListener(command -> {
-            UserData user = command.toObject(UserData.class);
+            user = command.toObject(UserData.class);
             assert user != null;
-
 
             binding.ProfileFirstName.setText( user.getFirstName() );
             binding.ProfileLastName.setText( user.getLastName());
@@ -230,6 +210,15 @@ public class Perfil extends Fragment {
             binding.ProfileHeight.setText( user.getHeight().toString() );
             binding.ProfileWeight.setText( user.getWeight().toString() );
             loadingDialog.dismissDialog();
+
+            // Set up the ImageView
+            String imageId = user.getImageName();
+            if(imageId != null) {
+                retrieveImagePath(requireContext(), imageId);
+            }else {
+                binding.ProfileImage.setImageResource(R.drawable.ic_usr_no_image);
+            }
+
         });
         // Logout
         Button logout = (Button) getView().findViewById(R.id.ProfileLogoutButton);
@@ -341,8 +330,10 @@ public class Perfil extends Fragment {
     }
     private void takePictureFromCamera(){
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if(takePicture.resolveActivity(getActivity().getPackageManager()) != null){
-            startActivityForResult(takePicture, 2);
+        Boolean result = checkAndRequestPermissions();
+
+        if (result && takePicture.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivityForResult(takePicture, 2);
         }
     }
     @Override
@@ -360,6 +351,7 @@ public class Perfil extends Fragment {
             case 2:
                 if(resultCode == RESULT_OK){
                     Bundle bundle = data.getExtras();
+                    Log.wtf("Bundle", bundle.toString());
                     Bitmap bitmapImage = (Bitmap) bundle.get("data");
                     imageViewProfilePicture.setImageBitmap(bitmapImage);
                     uploadFile(bitmapImage);
@@ -368,88 +360,129 @@ public class Perfil extends Fragment {
         }
     }
     private void uploadFile(Bitmap bitmap) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://dojocam-app.appspot.com");
-        StorageReference ImagesRef = storageRef.child("images/" + Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()) + ".jpg");
+        FirebaseUser FBUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (FBUser == null) {
+            Intent loginActivity = new Intent(requireActivity(), LoginActivity.class);
+            startActivity(loginActivity);
+            requireActivity().finish();
+        } else {
+            String email = FBUser.getEmail();
+            Date date = new Date();
+            String imageId = createHash256(email + date.toString());
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, baos);
-        byte[] data = baos.toByteArray();
-        UploadTask uploadTask = ImagesRef.putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(getActivity(), "No se logro actaulizar", Toast.LENGTH_SHORT).show();
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast
-                        .makeText(getActivity(),
-                                "Actualizado",
-                                Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
+            // Save image in to user
+
+            user.setImageName(imageId);
+            Task<Void> result = db.collection("Users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail())).update("imageName", imageId);
+            result.addOnCompleteListener(task -> {Log.wtf("Update", "Completed: "+task);});
+            result.addOnSuccessListener(task -> {Log.wtf("Update", "Image name updated");});
+            result.addOnFailureListener(task -> {Log.wtf("Update", "Image name not updated: "+task.getMessage());});
+
+            // Save image to Firebase Storage
+            StorageReference storageRef = storage.getReferenceFromUrl("gs://dojocam-app.appspot.com");
+            StorageReference ImagesRef = storageRef.child("Images/" + imageId + ".jpg");
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 40, baos);
+            byte[] data = baos.toByteArray();
+            UploadTask uploadTask = ImagesRef.putBytes(data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(getActivity(), "No se logro actaulizar", Toast.LENGTH_SHORT).show();
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast
+                            .makeText(getActivity(),
+                                    "Actualizado",
+                                    Toast.LENGTH_SHORT)
+                            .show();
+                }
+            });
+        }
     }
     private void uploadImage(Uri selectedImageUri)
     {
-        if (selectedImageUri != null) {
+        FirebaseUser FBUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (FBUser == null) {
+            Intent loginActivity = new Intent(requireActivity(), LoginActivity.class);
+            startActivity(loginActivity);
+            requireActivity().finish();
+        } else {
+            String email = FBUser.getEmail();
+            Date date = new Date();
+            String imageId = createHash256(email+date.toString());
 
-            // Code for showing progressDialog while uploading
-            ProgressDialog progressDialog
-                    = new ProgressDialog(getActivity());
-            progressDialog.setTitle("Uploading...");
-            progressDialog.show();
+            if (selectedImageUri != null) {
 
-            // Defining the child of storageReference
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReferenceFromUrl("gs://dojocam-app.appspot.com");
+                // Code for showing progressDialog while uploading
+                ProgressDialog progressDialog
+                        = new ProgressDialog(getActivity());
+                progressDialog.setTitle("Uploading...");
+                progressDialog.show();
 
-            StorageReference ImagesRef = storageRef.child("images/" + Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()) + ".jpg");
-            ImagesRef.putFile(selectedImageUri)
-                    .addOnSuccessListener(
-                            new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(
-                                        UploadTask.TaskSnapshot taskSnapshot)
-                                {
-                                    // Image uploaded successfully
-                                    // Dismiss dialog
-                                    progressDialog.dismiss();
-                                    Toast
-                                            .makeText(getActivity(),
-                                                    "Actualizado",
-                                                    Toast.LENGTH_SHORT)
-                                            .show();
-                                }
-                            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e)
-                        {
-                            // Error, Image not uploaded
-                            progressDialog.dismiss();
-                            Toast
-                                    .makeText(getActivity(),
-                                            "Failed " + e.getMessage(),
-                                            Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    });
-        }
-    }
-    private boolean checkAndRequestPermissions(){
-        if(Build.VERSION.SDK_INT >= 23){
-            int cameraPermission = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA);
-            if(cameraPermission == PackageManager.PERMISSION_DENIED){
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 20);
-                return false;
+                // Save image in to user
+                user.setImageName(imageId);
+
+                assert email != null;
+                db.collection("Users").document(email).update("imageName", imageId)
+                .addOnCompleteListener(task -> {Log.wtf("Update", "Completed: "+task.getResult());})
+                .addOnSuccessListener(task -> {Log.wtf("Update", "Image name updated");})
+                .addOnFailureListener(task -> {Log.wtf("Update", "Image name not updated: "+task.getMessage());});
+
+                // Save image to Firebase Storage
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://dojocam-app.appspot.com");
+
+                StorageReference ImagesRef = storageRef.child("Images/" + imageId + ".jpg");
+                ImagesRef.putFile(selectedImageUri)
+                        .addOnSuccessListener(
+                                new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(
+                                            UploadTask.TaskSnapshot taskSnapshot) {
+                                        // Image uploaded successfully
+                                        // Dismiss dialog
+                                        progressDialog.dismiss();
+                                        Toast
+                                                .makeText(getActivity(),
+                                                        "Actualizado",
+                                                        Toast.LENGTH_SHORT)
+                                                .show();
+                                    }
+                                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Error, Image not uploaded
+                                progressDialog.dismiss();
+                                Toast
+                                        .makeText(getActivity(),
+                                                "Failed " + e.getMessage(),
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        });
             }
         }
-        return true;
     }
+
+    private boolean checkAndRequestPermissions(){
+        try {
+            int cameraPermission = ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA);
+            if(cameraPermission == PackageManager.PERMISSION_DENIED){
+                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, 20);
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            Log.wtf("Error", e);
+            return false;
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -459,6 +492,8 @@ public class Perfil extends Fragment {
         else
             Toast.makeText(getActivity(), "Permission not Granted", Toast.LENGTH_SHORT).show();
     }
+
+    /* Save Image in cache */
 
     private String createHash256(String text) {
         MessageDigest md = null;
@@ -476,5 +511,62 @@ public class Perfil extends Fragment {
         }
     }
 
+    public void retrieveImagePath(Context context, String imageId) {
+        if( sharedPreferences.contains(imageId) ){
+
+            String image_path = sharedPreferences.getString(imageId, null);
+            Uri uri = Uri.parse( image_path );
+            imageViewProfilePicture.setImageURI(uri);
+
+        }else{
+            downloadFile(context, imageId);
+        }
+    }
+    private void downloadFile(Context context, String imageId) {
+        try {
+            String rootDir = context.getCacheDir()
+                    + File.separator + "ProfileImages";
+            File rootFile = new File(rootDir);
+            if(!rootFile.exists()) {
+                rootFile.mkdirs();
+            }
+
+            StorageReference reference = storage.getReference();
+            StorageReference fileReference = reference.child("Images/"+imageId+".jpg");
+
+            final File localFile = new File(rootFile,imageId+".jpg");
+
+
+            fileReference.getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Log.wtf("FIREBASE!", ";local tem file created  created " + localFile.toString());
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString(imageId, localFile.getPath());
+                            editor.apply();
+
+                            String image_path = localFile.getPath();
+                            Uri uri = Uri.parse( image_path );
+                            imageViewProfilePicture.setImageURI(uri);
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Log.wtf("FIREBASE!", "No se pudo guardar la imagen en caché: " + exception.toString());
+                            assert getFragmentManager() != null;
+                            getFragmentManager().popBackStack();
+                        }
+                    });
+
+
+
+        } catch (Exception e) {
+            Log.wtf("Error....", e.toString());
+            getFragmentManager().popBackStack();
+        }
+    }
 
 }
