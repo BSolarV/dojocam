@@ -114,7 +114,6 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
         }
 
 
-
     }
 
     @Override
@@ -147,7 +146,6 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
         listView.setOnItemClickListener(this);
 
         DocumentReference userReference = db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-
 
         userReference.get().addOnSuccessListener(command -> {
             boolean bo = false;
@@ -185,7 +183,7 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Toast.makeText(getContext(),"You Selected "+countryNames[position-1]+ " as Country",Toast.LENGTH_SHORT).show();        }
+                Toast.makeText(getContext(),"Amigo "+countryNames[position-1],Toast.LENGTH_SHORT).show();        }
         });
 
         loadingDialog.startLoadingDialog();
@@ -210,7 +208,6 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
 
         Bundle bundle = new Bundle();
         Task<QuerySnapshot> data = db.collection("Users").get();
-
 
         DocumentReference userReference = db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         userReference.get().addOnSuccessListener(command -> {

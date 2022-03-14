@@ -32,7 +32,7 @@ class CustomCountryList extends ArrayAdapter {
         ImageView imageFlag = (ImageView) row.findViewById(R.id.imageViewFlag);
 
         textViewCountry.setText(countryNames[position]);
-        imageFlag.setImageResource(imageid[position]);
+        //imageFlag.setImageResource(imageid[position]);
         return  row;
     }
 }
