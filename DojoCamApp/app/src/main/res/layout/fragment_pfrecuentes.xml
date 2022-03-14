@@ -30,6 +30,14 @@
                     android:id="@+id/preg_list4"
                     android:layout_width="match_parent"
                     android:layout_height="681dp" />
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/chat" />
                 <Button
                     android:id="@+id/Prop_preg"
                     android:layout_width="match_parent"
