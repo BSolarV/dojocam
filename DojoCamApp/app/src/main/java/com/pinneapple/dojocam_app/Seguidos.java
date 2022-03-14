@@ -73,6 +73,7 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
     private ArrayAdapter adapter;
     private LoadingDialog loadingDialog = new LoadingDialog(this);
 
+
     private String search_txt;
     public Seguidos() {
         // Required empty public constructor
@@ -103,66 +104,11 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String[] countryNames = {};
-        Integer[] imageid = {};
-
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-        DocumentReference userReference = db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-        userReference.get().addOnSuccessListener(command -> {
-            boolean bo = false;
-            Friends followers = command.toObject(Friends.class);
-            if(followers != null) {
-                System.out.println(followers.getFollowers());
-                int i = 0;
-                for (String amiwo : followers.getFollowers()) {
-                    System.out.println(amiwo);
-                    countryNames[i] = amiwo;
-                    imageid[i] = R.mipmap.dojocam_ic;
-                    i++;
-                   //user_list2.add(amiwo);
-                }
-            }else{
-                Toast.makeText(getContext(),"Busca Amigos en Perfil", Toast.LENGTH_SHORT).show();
-                bo = true;
-            }
-            adapter.notifyDataSetChanged();
-            loadingDialog.dismissDialog();
-            /*if (bo) {
-                Navigation.findNavController(getView()).navigate(R.id.AddFriend);
-            }*/
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
-            }
-        });
 
 
         //setContentView(R.layout.fragment_seguidos);
 
-        // Setting header
-        TextView textView = new TextView(getContext());
-        textView.setTypeface(Typeface.DEFAULT_BOLD);
-        textView.setText("Lista de Amigos");
 
-
-        ListView listView = (ListView) getView().findViewById(R.id.user_list31);
-        listView.addHeaderView(textView);
-
-        // For populating list data
-        CustomCountryList customCountryList = new CustomCountryList((Activity) getContext(), countryNames, imageid);
-        listView.setAdapter(customCountryList);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Toast.makeText(getContext(),"You Selected "+countryNames[position-1]+ " as Country",Toast.LENGTH_SHORT).show();        }
-        });
 
     }
 
@@ -176,7 +122,65 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
 
+
+       /* String[] countryNames = new String[0];
+        Integer[] imageid = new Integer[0];
+
+
+        DocumentReference userReference = db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        userReference.get().addOnSuccessListener(command -> {
+            boolean bo = false;
+            Friends followers = command.toObject(Friends.class);
+            if(followers != null) {
+                System.out.println(followers.getFollowers());
+                int i = 0;
+                for (String amiwo : followers.getFollowers()) {
+                    System.out.println(amiwo);
+                    try {
+                        countryNames[i] = amiwo;
+                        imageid[i] = R.mipmap.dojocam_ic;
+                    }catch (Exception e){
+                        System.out.println("\nException caught index");
+                    }
+
+                    i++;
+                    //user_list2.add(amiwo);
+                }
+            }else{
+                Toast.makeText(getContext(),"Busca Amigos en Perfil", Toast.LENGTH_SHORT).show();
+                bo = true;
+            }
+            adapter.notifyDataSetChanged();
+            loadingDialog.dismissDialog();
+            *//*if (bo) {
+                Navigation.findNavController(getView()).navigate(R.id.AddFriend);
+            }*//*
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
+            }
+        });
+
         //search_txt = getArguments().getString("difficulty");
+        // Setting header
+        TextView textView = new TextView(getContext());
+        textView.setTypeface(Typeface.DEFAULT_BOLD);
+        //textView.setText("Lista de Amigos");
+
+
+        ListView listView = (ListView) getView().findViewById(R.id.user_list31);
+        listView.addHeaderView(textView);
+
+        // For populating list data
+        CustomCountryList customCountryList = new CustomCountryList((Activity) getContext(), countryNames, imageid);
+        listView.setAdapter(customCountryList);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Toast.makeText(getContext(),"You Selected "+countryNames[position-1]+ " as Country",Toast.LENGTH_SHORT).show();        }
+        });*/
 
         adapter = new ArrayAdapter(getContext(), R.layout.list_vid, user_list2 );
         ListView lv = (ListView) getView().findViewById(R.id.user_list2);
@@ -204,7 +208,7 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
     public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
 
         Bundle bundle = new Bundle();
-        Task<QuerySnapshot> data = db.collection("Users").get();
+        /*Task<QuerySnapshot> data = db.collection("Users").get();
 
 
         DocumentReference userReference = db.collection("Friends").document(FirebaseAuth.getInstance().getCurrentUser().getEmail());
@@ -222,7 +226,7 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
             public void onFailure(@NonNull Exception e) {
                 Log.w(TAG, "No se logro Seguir, intentalo denuevo", e);
             }
-        });
+        });*/
         bundle.putString("weonId", user_list2.get(pos));
         Navigation.findNavController(view).navigate(R.id.perfil_publico, bundle);
 
