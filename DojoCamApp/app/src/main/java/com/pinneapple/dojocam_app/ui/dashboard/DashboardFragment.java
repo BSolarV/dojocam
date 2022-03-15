@@ -158,7 +158,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
 
 
             //Last exercise
-            retomar = (TextView) getView().findViewById(R.id.textView);
+            retomar = (TextView) getView().findViewById(R.id.textView80);
             retomar_img = (ImageView) getView().findViewById(R.id.imageView9);
 
 
