@@ -13,6 +13,7 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="10dp"
         android:src="@drawable/chat" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -43,19 +44,21 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="259dp"
-                android:background="@drawable/layout_bg"                android:elevation="10dp"
-                android:orientation="horizontal"
                 android:layout_margin="12dp"
+                android:background="@drawable/layout_bg"
+                android:elevation="10dp"
+                android:orientation="horizontal"
                 android:padding="10dp">
 
                 <RelativeLayout
                     android:layout_width="212dp"
                     android:layout_height="match_parent">
+
                     <androidx.cardview.widget.CardView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="20dp"
                         app:cardBackgroundColor="@color/second_bg"
+                        app:cardCornerRadius="20dp"
                         app:cardElevation="0dp">
 
                         <ImageView
@@ -109,9 +112,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="297dp"
+                android:layout_margin="12dp"
                 android:background="@drawable/layout_bg"
                 android:elevation="10dp"
-                android:layout_margin="12dp"
                 android:orientation="horizontal"
                 android:padding="10dp">
 
@@ -178,6 +181,7 @@
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="39dp"
@@ -186,15 +190,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="319dp"
+                android:layout_margin="12dp"
                 android:background="@drawable/layout_bg"
                 android:elevation="10dp"
-                android:layout_margin="12dp"
                 android:orientation="horizontal"
                 android:padding="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="352dp"
+                    android:layout_height="300dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -237,15 +241,9 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="179dp"
                                         android:background="@drawable/image_rounded"
-                                        android:src="@drawable/img_practicar" />
+                                        android:src="@drawable/retomar" />
                                 </androidx.cardview.widget.CardView>
 
-                                <Button
-                                    android:id="@+id/Retomar"
-                                    android:layout_width="232dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:text="Ultimo Ejercicio" />
                             </LinearLayout>
 
                         </RelativeLayout>

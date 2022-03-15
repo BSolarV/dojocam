@@ -85,7 +85,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     private ImageView three;
     private Button btn;
     private Button chat;
-    private Button btnLastExercise;
+
+
+    private TextView retomar;
+    private ImageView retomar_img;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -151,20 +155,48 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                 last_exercise = user.getLastExercisePath();
             }
 
-            btnLastExercise = (Button) view.findViewById(R.id.Retomar);
+
+
+            //Last exercise
+            retomar = (TextView) getView().findViewById(R.id.textView);
+            retomar_img = (ImageView) getView().findViewById(R.id.imageView9);
+
+
             if(last_exercise == null || last_exercise.equals("")) {
-                btnLastExercise.setOnClickListener(new View.OnClickListener() {
+                retomar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(getContext(),"No hay ejercicios Pendientes", Toast.LENGTH_SHORT ).show();
 
                     }
                 });
+                retomar_img.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(getContext(),"No hay ejercicios Pendientes", Toast.LENGTH_SHORT ).show();
+
+                    }
+                });
+
             }
             else {
                 Task<DocumentSnapshot> data2 = db.collection("ejercicios").document(last_exercise).get();
                 data2.addOnSuccessListener(command2 -> {
-                    btnLastExercise.setOnClickListener(new View.OnClickListener() {
+
+                    retomar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Bundle bundle = new Bundle();
+
+                            bundle.putString("difficulty" , command2.get("dificultad").toString());
+                            bundle.putString("videoId", last_exercise);
+                            bundle.putString("name", command2.get("nombre").toString());
+
+                            Navigation.findNavController(view).navigate(R.id.exerciseDetail, bundle);
+
+                        }
+                    });
+                    retomar_img.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             Bundle bundle = new Bundle();
