@@ -38,7 +38,7 @@ public class Newchatselector extends AppCompatActivity {
                 String[] usuarios = {UID, uid2};
                 Log.d("das", "Login Successful : " + Arrays.toString(usuarios));
                 try {
-                    Apical.main(usuarios);
+                    Apical.sendpost(usuarios);
                 } catch (IOException e) {
                     Log.d("das", "error en el envioo del a callllllll");
                     e.printStackTrace();

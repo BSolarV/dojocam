@@ -1,9 +1,15 @@
 package com.pinneapple.dojocam_app;
 
+import android.net.Uri;
 import android.util.Log;
+
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -15,6 +21,9 @@ public class Apical {
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     final OkHttpClient client = new OkHttpClient();
+    FirebaseUser user_email = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseAuth userhaciachat = FirebaseAuth.getInstance();
+    String nombre = user_email.getDisplayName();
 
     String post(String url, String json) throws IOException {
         RequestBody body = RequestBody.create(JSON, json);
@@ -32,11 +41,16 @@ public class Apical {
         catch (Exception e){
             Log.d("das", String.valueOf(e));
         }
-        return "se hoizopozozoz";
+        return "no paso";
+    }
+
+
+    String JSONcrearusuario(String player1){
+        return "{\"uid\":\""+player1+"\",\"name\":\""+nombre+"\"}";
     }
 
     String JSONgrupocreado(String player1, String player2) {
-        String data = "{\"guid\":\""+player1+player2+"\",\"name\":\""+player1+player2+"\",\"type\":\"private\"}";
+        String data = "{\"guid\":\""+player1+player2+"\",\"name\":\""+nombre+" - "+player2+"\",\"type\":\"private\"}";
         return data;
     }
 
@@ -45,8 +59,25 @@ public class Apical {
         System.out.println(data);
         return data;
     }
+    public static void crearusuario(String args) throws IOException{
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try  {
+                    Apical example = new Apical();
+                    String user2add = example.JSONcrearusuario(args);
+                    Log.d("Crear usuario", user2add+"SE AGREGO ESE USUSAARI");
+                    String response_usercreated = example.post("https://1985642356a8baff.api-us.cometchat.io/v3/groups", user2add);
+                    System.out.println(response_usercreated);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }
 
-    public static void main(String[] args) throws IOException {
+    public static void sendpost(String[] args) throws IOException{
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -66,5 +97,8 @@ public class Apical {
         });
 
         thread.start();
+    }
+
+    public static void main(String args) throws IOException {
     }
 }
