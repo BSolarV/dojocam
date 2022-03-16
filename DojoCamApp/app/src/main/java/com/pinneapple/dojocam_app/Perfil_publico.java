@@ -197,7 +197,7 @@ public class Perfil_publico extends Fragment {
             }
         });
 
-        userReference.get().addOnSuccessListener(command -> {
+            userReference.get().addOnSuccessListener(command -> {
             UserData user = command.toObject(UserData.class);
 
             System.out.println(user.getFirstName());

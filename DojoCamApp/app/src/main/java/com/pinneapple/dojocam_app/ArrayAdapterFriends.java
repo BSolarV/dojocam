@@ -2,6 +2,7 @@ package com.pinneapple.dojocam_app;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,10 @@ import android.widget.TextView;
 
 class CustomCountryList extends ArrayAdapter {
     private String[] countryNames;
-    private Integer[] imageid;
+    private Uri[] imageid;
     private Activity context;
 
-    public CustomCountryList(Activity context, String[] countryNames, Integer[] imageid) {
+    public CustomCountryList(Activity context, String[] countryNames, Uri[] imageid) {
         super(context, R.layout.list_friends, countryNames);
         this.context = context;
         this.countryNames = countryNames;

@@ -3,7 +3,9 @@ package com.pinneapple.dojocam_app;
 import static android.content.ContentValues.TAG;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,14 +42,21 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.auth.User;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.pinneapple.dojocam_app.objects.VideoInfo;
 import com.pinneapple.dojocam_app.objets.Friends;
 import com.pinneapple.dojocam_app.objets.UserData;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -76,8 +86,10 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
     private String search_txt;
 
     String[] countryNames = new String[100];
-    Integer[] imageid = new Integer[100];
+    Uri[] imageid = new Uri[100];
 
+    SharedPreferences sharedPreferences;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
 
     public Seguidos() {
         // Required empty public constructor
@@ -150,8 +162,9 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
                 int i = 0;
                 for (String amiwo : followers.getFollowers()) {
                     System.out.println(amiwo);
-                    countryNames[i] = amiwo;
-                    imageid[i] = R.mipmap.dojocam_ic;
+                    countryNames[i] = "Holaaaaa";
+
+                    //imageid[i] = R.mipmap.dojocam_ic_round;
                     i++;
                     //user_list2.add(amiwo);
                 }
@@ -276,12 +289,17 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
             boolean bo = false;
             Friends followers = command.toObject(Friends.class);
             if(followers != null) {
-                System.out.println(followers.getFollowers());
                 int i = 0;
                 for (String amiwo : followers.getFollowers()) {
                     System.out.println(amiwo);
                     countryNames[i] = amiwo;
-                    imageid[i] = R.mipmap.dojocam_ic;
+                    DocumentReference userReference_amiwo = db.collection("Users").document(amiwo);
+                    int finalI = i;
+                    userReference_amiwo.get().addOnSuccessListener(command2 -> {
+                        UserData user = command2.toObject(UserData.class);
+                        retrieveImagePath(requireContext(),user.getImageName(),finalI);
+                    });
+
                     i++;
                     //user_list2.add(amiwo);
                 }
@@ -301,6 +319,69 @@ public class Seguidos extends ListFragment implements AdapterView.OnItemClickLis
             }
         });
 
+    }
+
+    public void retrieveImagePath(Context context, String imageId, Integer i) {
+        sharedPreferences = requireActivity().getSharedPreferences(requireContext().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        if( sharedPreferences.contains(imageId) ){
+
+            String image_path = sharedPreferences.getString(imageId, null);
+            Uri uri = Uri.parse( image_path );
+            imageid[i] = uri;
+            //imageViewProfilePicture.setImageURI(uri);
+
+        }else{
+            downloadFile(context, imageId, i);
+        }
+    }
+
+    private void downloadFile(Context context, String imageId, Integer i) {
+        try {
+            String rootDir = context.getCacheDir()
+                    + File.separator + "ProfileImages";
+            File rootFile = new File(rootDir);
+            if(!rootFile.exists()) {
+                rootFile.mkdirs();
+            }
+
+            StorageReference reference = storage.getReference();
+            StorageReference fileReference = reference.child("Images/"+imageId+".jpg");
+
+            final File localFile = new File(rootFile,imageId+".jpg");
+
+
+            fileReference.getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Log.wtf("FIREBASE!", ";local tem file created  created " + localFile.toString());
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString(imageId, localFile.getPath());
+                            editor.apply();
+
+                            String image_path = localFile.getPath();
+                            Uri uri = Uri.parse( image_path );
+                            imageid[i] = uri;
+                            //imageViewProfilePicture.setImageURI(uri);
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Log.wtf("FIREBASE!", "No se pudo guardar la imagen en caché: " + exception.toString());
+                            //assert getFragmentManager() != null;
+                            //getFragmentManager().popBackStack();
+                        }
+                    });
+
+
+
+        } catch (Exception e) {
+            Log.wtf("Error....", e.toString());
+            getFragmentManager().popBackStack();
+        }
     }
 
     @Override
