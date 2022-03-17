@@ -30,6 +30,8 @@ import androidx.navigation.Navigation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -40,6 +42,7 @@ import com.pinneapple.dojocam_app.objets.UserData;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -204,9 +207,19 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
         });
                */
 
+
+        FirebaseUser user_email = FirebaseAuth.getInstance().getCurrentUser();
+        String UID = user_email.getEmail(); // Replace with the UID of the user to login
+        String[] arr_de_email = UID.split("@", 2);
+        Apical apical = new Apical();
+        String[] lista_post = new String[]{arr_de_email[0], id_list.get(pos)};
+        try {
+            apical.sendpost(lista_post);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         bundle.putString("weonId",  id_list.get(pos));
         Navigation.findNavController(view).navigate(R.id.perfil_publico, bundle);
-
     }
 
     @Override
