@@ -49,6 +49,7 @@ import java.util.List;
  * Use the {@link addfriend#newInstance} factory method to
  * create an instance of this fragment.
  */
+
 public class addfriend extends ListFragment implements AdapterView.OnItemClickListener,SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -70,9 +71,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
 
     private ListView listView;
     private String countryNames[] = {};
-
     private String capitalNames[] = {};
-
     private Integer imageid[] = {};
 
     public addfriend() {
@@ -107,7 +106,6 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
@@ -117,6 +115,7 @@ public class addfriend extends ListFragment implements AdapterView.OnItemClickLi
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_addfriends, container, false);
     }
+
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
 
